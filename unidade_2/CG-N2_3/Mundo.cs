@@ -2,7 +2,7 @@
   Autor: Dalton Solano dos Reis
 **/
 
-#define CG_Gizmo
+// #define CG_Gizmo
 // #define CG_Privado
 
 using System;
@@ -25,6 +25,7 @@ namespace gcgcg
       if (instanciaMundo == null)
         instanciaMundo = new Mundo(width, height);
       return instanciaMundo;
+      
     }
 
     private CameraOrtho camera = new CameraOrtho();
@@ -43,16 +44,30 @@ namespace gcgcg
     protected override void OnLoad(EventArgs e)
     {
       base.OnLoad(e);
-      camera.xmin = 0; camera.xmax = 600; camera.ymin = 0; camera.ymax = 600;
+      camera.xmin = -300;
+      camera.xmax = 300;
+      camera.ymin = -300; 
+      camera.ymax = 300;
 
       Console.WriteLine(" --- Ajuda / Teclas: ");
       Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
       objetoId = Utilitario.charProximo(objetoId);
-      obj_Retangulo = new Retangulo(objetoId, null, new Ponto4D(50, 50, 0), new Ponto4D(150, 150, 0));
-      obj_Retangulo.ObjetoCor.CorR = 255; obj_Retangulo.ObjetoCor.CorG = 0; obj_Retangulo.ObjetoCor.CorB = 255;
-      objetosLista.Add(obj_Retangulo);
-      objetoSelecionado = obj_Retangulo;
+
+      var linhaVertical = new Linha(objetoId, null,  new Ponto4D(), new Ponto4D(0, 200));
+      linhaVertical.ObjetoCor = new Cor(0, 150, 0);
+      linhaVertical.PrimitivaTamanho = 5;
+      objetosLista.Add(linhaVertical);
+      
+      var linhaHorizonta = new Linha(objetoId, null,  new Ponto4D(), new Ponto4D(200));
+      linhaHorizonta.ObjetoCor = new Cor(255, 0, 0);
+      linhaHorizonta.PrimitivaTamanho = 5;
+      objetosLista.Add(linhaHorizonta);
+      
+      var circulo = new Circulo(objetoId, null, 72, 100);
+      circulo.PrimitivaTamanho = 5;
+      circulo.ObjetoCor = new Cor(255, 255, 0);
+      objetosLista.Add(circulo);
 
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
@@ -100,11 +115,26 @@ namespace gcgcg
         Exit();
       else if (e.Key == Key.E)
       {
-        Console.WriteLine("--- Objetos / Pontos: ");
-        for (var i = 0; i < objetosLista.Count; i++)
-        {
-          Console.WriteLine(objetosLista[i]);
-        }
+        camera.PanEsquerda();
+      }
+      else if (e.Key == Key.D)
+      {
+        camera.PanDireita();
+      }else if (e.Key == Key.C)
+      {
+        camera.PanCima();
+      }
+      else if(e.Key == Key.B)
+      {
+        camera.PanBaixo();
+      }
+      else if (e.Key == Key.I)
+      {
+        camera.ZoomIn(); 
+      }
+      else if (e.Key == Key.O)
+      {
+        camera.ZoomOut();
       }
       else if (e.Key == Key.O)
         bBoxDesenhar = !bBoxDesenhar;

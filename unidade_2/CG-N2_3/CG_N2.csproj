@@ -6,13 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-  <!--   
-MacOS
-    <PackageReference Include="OpenTK" Version="3.2.0"/>
-Windows
+    <!--   
+  MacOS
+      <PackageReference Include="OpenTK" Version="3.2.0"/>
+  Windows
+      <PackageReference Include="OpenTK.NetCore" Version="*" />
+    -->
+    <PackageReference Include="Microsoft.Win32.SystemEvents" Version="4.5.0" />
     <PackageReference Include="OpenTK.NetCore" Version="*" />
-  -->
-    <PackageReference Include="OpenTK" Version="3.2.0"/>
+    <PackageReference Include="System.Drawing.Common" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,9 +22,9 @@ Windows
   </ItemGroup>
 
   <ItemGroup>
-     <Reference Include="CG_Biblioteca">
-       <HintPath>..\..\CG_Biblioteca\bin\Debug\netcoreapp3.1\CG_Biblioteca.dll</HintPath>
-     </Reference>
+    <Reference Include="CG_Biblioteca">
+      <HintPath>..\..\CG_Biblioteca\bin\Debug\netcoreapp3.1\CG_Biblioteca.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
