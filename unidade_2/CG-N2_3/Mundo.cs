@@ -54,20 +54,44 @@ namespace gcgcg
 
       objetoId = Utilitario.charProximo(objetoId);
 
-      var linhaVertical = new Linha(objetoId, null,  new Ponto4D(), new Ponto4D(0, 200));
+      var linhaVertical = new SegReta(objetoId, null,  new Ponto4D(0,-100), new Ponto4D(0,100));
       linhaVertical.ObjetoCor = new Cor(0, 150, 0);
       linhaVertical.PrimitivaTamanho = 5;
       objetosLista.Add(linhaVertical);
       
-      var linhaHorizonta = new Linha(objetoId, null,  new Ponto4D(), new Ponto4D(200));
-      linhaHorizonta.ObjetoCor = new Cor(255, 0, 0);
-      linhaHorizonta.PrimitivaTamanho = 5;
-      objetosLista.Add(linhaHorizonta);
+      var linhaHorizontal = new SegReta(objetoId, null,  new Ponto4D(0,-100), new Ponto4D(100, -100));
+      linhaHorizontal.ObjetoCor = new Cor(255, 0, 0);
+      linhaHorizontal.PrimitivaTamanho = 5;
+      objetosLista.Add(linhaHorizontal);
       
-      var circulo = new Circulo(objetoId, null, 72, 100);
-      circulo.PrimitivaTamanho = 5;
-      circulo.ObjetoCor = new Cor(255, 255, 0);
-      objetosLista.Add(circulo);
+      var circuloDeCima = new Circulo(objetoId, null, 72, 100);
+      circuloDeCima.PrimitivaTamanho = 5;
+      circuloDeCima.ObjetoCor = new Cor(0, 0, 0);
+      objetosLista.Add(circuloDeCima);
+      
+      var circuloDaEsquerda = new Circulo(objetoId, null, 72, 100, new Ponto4D(-100, -200));
+      circuloDaEsquerda.PrimitivaTamanho = 5;
+      circuloDaEsquerda.ObjetoCor = new Cor(0, 0, 0);
+      objetosLista.Add(circuloDaEsquerda);
+      
+      var circuloDaDireita = new Circulo(objetoId, null, 72, 100, new Ponto4D(100, -200));
+      circuloDaDireita.PrimitivaTamanho = 5;
+      circuloDaDireita.ObjetoCor = new Cor(0, 0, 0);
+      objetosLista.Add(circuloDaDireita);
+
+      var verdeTurquesa = new Cor(51, 255, 237);
+      
+      var segRetaEsquerda = new SegReta(objetoId, null, new Ponto4D(0, 0), new Ponto4D(-100, -200));
+      segRetaEsquerda.ObjetoCor = verdeTurquesa;
+      objetosLista.Add(segRetaEsquerda);
+      
+      var segRetaDireita = new SegReta(objetoId, null, new Ponto4D(0, 0), new Ponto4D(100, -200));
+      segRetaDireita.ObjetoCor = verdeTurquesa;
+      objetosLista.Add(segRetaDireita);
+      
+      var segRetaBase = new SegReta(objetoId, null, new Ponto4D(-100, -200), new Ponto4D(100, -200));
+      segRetaBase.ObjetoCor = verdeTurquesa;
+      objetosLista.Add(segRetaBase);
 
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
