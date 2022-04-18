@@ -3,11 +3,27 @@
 **/
 
 using System;
+using OpenTK.Graphics.ES11;
 
 namespace gcgcg
 {
   public abstract class Utilitario
   {
+    private static int indexPrimitivaEscolhida = 0;
+    private static readonly PrimitiveType[] _primitivasGeometricasParaAlteracao = new[]
+    {
+      PrimitiveType.Points,
+      PrimitiveType.Lines,
+      PrimitiveType.LineLoop,
+      PrimitiveType.LineStrip,
+      PrimitiveType.Triangles,
+      PrimitiveType.TriangleStrip,
+      PrimitiveType.TriangleFan,
+      PrimitiveType.Quads,
+      PrimitiveType.QuadStrip, 
+      PrimitiveType.Polygon
+    }; 
+    
     public static char charProximo(char atual) {
       return Convert.ToChar(atual + 1);
     }
@@ -52,5 +68,15 @@ namespace gcgcg
       Console.WriteLine(" Senão tiver objeto selecionado adiciona novo objeto no mundo. ");
     }
 
+    public static void ModificarPrimitivaEscolhida()
+    {
+      if (indexPrimitivaEscolhida == _primitivasGeometricasParaAlteracao.Length - 1)
+      {
+        indexPrimitivaEscolhida = 0;
+        return;
+      }
+      indexPrimitivaEscolhida++;
+      Console.WriteLine(_primitivasGeometricasParaAlteracao[indexPrimitivaEscolhida].ToString());
+    }
   }
 }
