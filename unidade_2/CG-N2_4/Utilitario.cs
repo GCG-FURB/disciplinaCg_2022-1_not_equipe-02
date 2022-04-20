@@ -3,7 +3,7 @@
 **/
 
 using System;
-using OpenTK.Graphics.ES11;
+using OpenTK.Graphics.OpenGL;
 
 namespace gcgcg
 {
@@ -78,5 +78,7 @@ namespace gcgcg
       indexPrimitivaEscolhida++;
       Console.WriteLine(_primitivasGeometricasParaAlteracao[indexPrimitivaEscolhida].ToString());
     }
+
+    public static PrimitiveType ObterPrimitivaAtual() => _primitivasGeometricasParaAlteracao[indexPrimitivaEscolhida];
   }
 }

@@ -47,55 +47,34 @@ namespace gcgcg
     protected override void OnLoad(EventArgs e)
     {
       base.OnLoad(e);
-      camera.xmin = -300;
-      camera.xmax = 300;
-      camera.ymin = -300; 
-      camera.ymax = 300;
+      camera.xmin = -400;
+      camera.xmax = 400;
+      camera.ymin = -400; 
+      camera.ymax = 400;
 
       Console.WriteLine(" --- Ajuda / Teclas: ");
       Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
       objetoId = Utilitario.charProximo(objetoId);
 
-      var linhaVertical = new SegReta(objetoId, null,  new Ponto4D(0,-100), new Ponto4D(0,100));
+      var linhaVertical = new SegReta(objetoId, null,  new Ponto4D(0), new Ponto4D(0,200));
       linhaVertical.ObjetoCor = new Cor(0, 150, 0);
       linhaVertical.PrimitivaTamanho = 5;
       objetosLista.Add(linhaVertical);
       
-      var linhaHorizontal = new SegReta(objetoId, null,  new Ponto4D(0,-100), new Ponto4D(100, -100));
+      var linhaHorizontal = new SegReta(objetoId, null,  new Ponto4D(0), new Ponto4D(200));
       linhaHorizontal.ObjetoCor = new Cor(255, 0, 0);
       linhaHorizontal.PrimitivaTamanho = 5;
       objetosLista.Add(linhaHorizontal);
       
-      // var circuloDeCima = new Circulo(objetoId, null, 72, 100);
-      // circuloDeCima.PrimitivaTamanho = 5;
-      // circuloDeCima.ObjetoCor = new Cor(0, 0, 0);
-      // objetosLista.Add(circuloDeCima);
-      //
-      // var circuloDaEsquerda = new Circulo(objetoId, null, 72, 100, new Ponto4D(-100, -200));
-      // circuloDaEsquerda.PrimitivaTamanho = 5;
-      // circuloDaEsquerda.ObjetoCor = new Cor(0, 0, 0);
-      // objetosLista.Add(circuloDaEsquerda);
-      //
-      // var circuloDaDireita = new Circulo(objetoId, null, 72, 100, new Ponto4D(100, -200));
-      // circuloDaDireita.PrimitivaTamanho = 5;
-      // circuloDaDireita.ObjetoCor = new Cor(0, 0, 0);
-      // objetosLista.Add(circuloDaDireita);
-      //
-      // var verdeTurquesa = new Cor(51, 255, 237);
-      //
-      // var segRetaEsquerda = new SegReta(objetoId, null, new Ponto4D(0, 0), new Ponto4D(-100, -200));
-      // segRetaEsquerda.ObjetoCor = verdeTurquesa;
-      // objetosLista.Add(segRetaEsquerda);
-      //
-      // var segRetaDireita = new SegReta(objetoId, null, new Ponto4D(0, 0), new Ponto4D(100, -200));
-      // segRetaDireita.ObjetoCor = verdeTurquesa;
-      // objetosLista.Add(segRetaDireita);
-      //
-      // var segRetaBase = new SegReta(objetoId, null, new Ponto4D(-100, -200), new Ponto4D(100, -200));
-      // segRetaBase.ObjetoCor = verdeTurquesa;
-      // objetosLista.Add(segRetaBase);
-
+      var pontoA = new Ponto4D(-200, 200);
+      var pontoB = new Ponto4D(200, 200);
+      var pontoC = new Ponto4D(-200, -200);
+      var pontoD = new Ponto4D(200, -200);
+      
+      var exercico04 = new Exercicio04(objetoId, null, Utilitario.ObterPrimitivaAtual(), pontoA, pontoB,  pontoC, pontoD);
+      exercico04.ObjetoCor = new Cor(255, 0, 0);
+      objetosLista.Add(exercico04);
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
       obj_SegReta = new Privado_SegReta(objetoId, null, new Ponto4D(50, 150), new Ponto4D(150, 250));
@@ -166,6 +145,8 @@ namespace gcgcg
       else if (e.Key == Key.Space)
       {
         Utilitario.ModificarPrimitivaEscolhida();
+        var exercicio = (Exercicio04)objetosLista[2];
+        exercicio.PrimitivaTipo = Utilitario.ObterPrimitivaAtual();
       }
       else if (e.Key == Key.O)
       {
