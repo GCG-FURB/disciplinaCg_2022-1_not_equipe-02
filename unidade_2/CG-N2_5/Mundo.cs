@@ -47,10 +47,10 @@ namespace gcgcg
     protected override void OnLoad(EventArgs e)
     {
       base.OnLoad(e);
-      camera.xmin = -400;
-      camera.xmax = 400;
-      camera.ymin = -400; 
-      camera.ymax = 400;
+      camera.xmin = -600;
+      camera.xmax = 600;
+      camera.ymin = -600; 
+      camera.ymax = 600;
 
       Console.WriteLine(" --- Ajuda / Teclas: ");
       Console.WriteLine(" [  H     ] mostra teclas usadas. ");
@@ -67,14 +67,6 @@ namespace gcgcg
       linhaHorizontal.PrimitivaTamanho = 5;
       objetosLista.Add(linhaHorizontal);
       
-      var pontoA = new Ponto4D(-200, 200);
-      var pontoB = new Ponto4D(200, 200);
-      var pontoC = new Ponto4D(-200, -200);
-      var pontoD = new Ponto4D(200, -200);
-      
-      var exercico04 = new Exercicio04(objetoId, null, Utilitario.ObterPrimitivaAtual(), pontoA, pontoB,  pontoC, pontoD);
-      exercico04.ObjetoCor = new Cor(255, 0, 0);
-      objetosLista.Add(exercico04);
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
       obj_SegReta = new Privado_SegReta(objetoId, null, new Ponto4D(50, 150), new Ponto4D(150, 250));
