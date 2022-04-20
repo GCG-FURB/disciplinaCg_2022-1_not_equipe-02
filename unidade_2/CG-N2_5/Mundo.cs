@@ -148,6 +148,30 @@ namespace gcgcg
         var exercicio = (Exercicio04)objetosLista[2];
         exercicio.PrimitivaTipo = Utilitario.ObterPrimitivaAtual();
       }
+      else if (e.Key == Key.Q)
+      { 
+        //mover para esquerda palito
+      }
+      else if (e.Key == Key.W)
+      {
+        //mover para direita palito
+      }
+      else if (e.Key == Key.A)
+      {
+        //diminuir raio do palito
+      }
+      else if (e.Key == Key.S)
+      {
+        //aumentar raio do palito
+      }
+      else if (e.Key == Key.Z)
+      {
+        //diminuir angulo para girar palito
+      }
+      else if (e.Key == Key.X)
+      {
+        //aumentar angulo para girar palito
+      }
       else if (e.Key == Key.O)
       {
         bBoxDesenhar = !bBoxDesenhar;
