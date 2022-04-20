@@ -144,9 +144,9 @@ namespace gcgcg
       }
       else if (e.Key == Key.Space)
       {
-        Utilitario.ModificarPrimitivaEscolhida();
-        var exercicio = (Exercicio04)objetosLista[2];
-        exercicio.PrimitivaTipo = Utilitario.ObterPrimitivaAtual();
+        // Utilitario.ModificarPrimitivaEscolhida();
+        // var exercicio = (Exercicio04)objetosLista[2];
+        // exercicio.PrimitivaTipo = Utilitario.ObterPrimitivaAtual();
       }
       else if (e.Key == Key.Q)
       { 
