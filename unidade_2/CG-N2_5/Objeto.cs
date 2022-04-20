@@ -8,7 +8,7 @@ using CG_Biblioteca;
 
 namespace gcgcg
 {
-  internal abstract class Objeto
+  public abstract class Objeto
   {
     protected char rotulo;
     private Cor objetoCor = new Cor(255, 255, 255, 255);
