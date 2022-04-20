@@ -62,10 +62,15 @@ namespace gcgcg
       linhaVertical.PrimitivaTamanho = 5;
       objetosLista.Add(linhaVertical);
       
-      var linhaHorizontal = new SegReta(objetoId, null,  new Ponto4D(0), new Ponto4D(200));
+      var linhaHorizontal = new SegReta(Utilitario.charProximo(objetoId), null,  new Ponto4D(0), new Ponto4D(200));
       linhaHorizontal.ObjetoCor = new Cor(255, 0, 0);
       linhaHorizontal.PrimitivaTamanho = 5;
       objetosLista.Add(linhaHorizontal);
+
+      var senhorPalito = new SegReta(Utilitario.charProximo(objetoId), null, new Ponto4D(), Matematica.GerarPtosCirculo(45, 100));
+      senhorPalito.PrimitivaTamanho = 5;
+      senhorPalito.ObjetoCor = new Cor(0, 0, 0);
+      objetosLista.Add(senhorPalito);
       
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
