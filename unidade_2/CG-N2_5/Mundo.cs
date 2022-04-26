@@ -9,6 +9,7 @@ using System;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
+using System.Linq;
 using OpenTK.Input;
 using CG_Biblioteca;
 
@@ -17,7 +18,8 @@ namespace gcgcg
   class Mundo : GameWindow
   {
     private static Mundo instanciaMundo = null;
-
+    private static readonly char RotuloSenhorPalito = Utilitario.charProximo((char)999);
+    
     private Mundo(int width, int height) : base(width, height) { }
 
     public static Mundo GetInstance(int width, int height)
@@ -67,7 +69,8 @@ namespace gcgcg
       linhaHorizontal.PrimitivaTamanho = 5;
       objetosLista.Add(linhaHorizontal);
 
-      var senhorPalito = new SegReta(Utilitario.charProximo(objetoId), null, new Ponto4D(), Matematica.GerarPtosCirculo(45, 100));
+      
+      var senhorPalito = new SegReta(RotuloSenhorPalito, null, new Ponto4D(), (anguloPontoB: 45, raioPontoB: 100));
       senhorPalito.PrimitivaTamanho = 5;
       senhorPalito.ObjetoCor = new Cor(0, 0, 0);
       objetosLista.Add(senhorPalito);
@@ -146,28 +149,34 @@ namespace gcgcg
         // exercicio.PrimitivaTipo = Utilitario.ObterPrimitivaAtual();
       }
       else if (e.Key == Key.Q)
-      { 
-        //mover para esquerda palito
+      {
+        var senhorPalito = ObterPalito();
+        senhorPalito.MoverParaEsquerda(unidadesParaMover: 1);
       }
       else if (e.Key == Key.W)
       {
-        //mover para direita palito
+        var senhorPalito = ObterPalito();
+        senhorPalito.MoverParaDireita(unidadesParaMover: 1);
       }
       else if (e.Key == Key.A)
       {
-        //diminuir raio do palito
+        var senhorPalito = ObterPalito();
+        senhorPalito.DiminuirRaioPontoB();
       }
       else if (e.Key == Key.S)
       {
-        //aumentar raio do palito
+        var senhorPalito = ObterPalito();
+        senhorPalito.AumentarRaioPontoB();
       }
       else if (e.Key == Key.Z)
       {
-        //diminuir angulo para girar palito
+        var senhorPalito = ObterPalito();
+        senhorPalito.DiminuirAnguloPontoB();
       }
       else if (e.Key == Key.X)
       {
-        //aumentar angulo para girar palito
+        var senhorPalito = ObterPalito();
+        senhorPalito.AumentarAnguloPontoB();
       }
       else if (e.Key == Key.O)
       {
@@ -194,6 +203,19 @@ namespace gcgcg
       }
     }
 
+    private SegReta ObterPalito()
+    {
+      foreach (var obj in objetosLista)
+      {
+        var segReta = (SegReta)obj;
+        if (segReta != null && segReta.Rotulo == RotuloSenhorPalito)
+        {
+          return segReta;
+        }
+      }
+
+      throw new ArgumentNullException("Palito não encontrado");
+    }
 #if CG_Gizmo
     private void Sru3D()
     {
@@ -210,7 +232,7 @@ namespace gcgcg
       GL.Vertex3(0, 0, 0); GL.Vertex3(0, 0, 200);
       GL.End();
     }
-#endif    
+#endif
   }
   class Program
   {

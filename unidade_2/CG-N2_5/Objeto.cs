@@ -46,5 +46,7 @@ namespace gcgcg
     {
       this.objetosLista.Remove(filho);
     }
+
+    public char ObterRotulo => rotulo;
   }
 }
