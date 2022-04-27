@@ -2,13 +2,14 @@
   Autor: Dalton Solano dos Reis
 **/
 
-#define CG_Gizmo
+// #define CG_Gizmo
 // #define CG_Privado
 
 using System;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
+using System.Linq;
 using OpenTK.Input;
 using CG_Biblioteca;
 
@@ -17,7 +18,8 @@ namespace gcgcg
   class Mundo : GameWindow
   {
     private static Mundo instanciaMundo = null;
-
+    private static readonly char RotuloSenhorPalito = Utilitario.charProximo((char)999);
+    
     private Mundo(int width, int height) : base(width, height) { }
 
     public static Mundo GetInstance(int width, int height)
@@ -25,6 +27,7 @@ namespace gcgcg
       if (instanciaMundo == null)
         instanciaMundo = new Mundo(width, height);
       return instanciaMundo;
+      
     }
 
     private CameraOrtho camera = new CameraOrtho();
@@ -35,6 +38,9 @@ namespace gcgcg
     int mouseX, mouseY;   //TODO: achar método MouseDown para não ter variável Global
     private bool mouseMoverPto = false;
     private Retangulo obj_Retangulo;
+
+    
+    
 #if CG_Privado
     private Privado_SegReta obj_SegReta;
     private Privado_Circulo obj_Circulo;
@@ -43,17 +49,15 @@ namespace gcgcg
     protected override void OnLoad(EventArgs e)
     {
       base.OnLoad(e);
-      camera.xmin = 0; camera.xmax = 600; camera.ymin = 0; camera.ymax = 600;
+      camera.xmin = -600;
+      camera.xmax = 600;
+      camera.ymin = -600; 
+      camera.ymax = 600;
 
       Console.WriteLine(" --- Ajuda / Teclas: ");
       Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
       objetoId = Utilitario.charProximo(objetoId);
-      obj_Retangulo = new Retangulo(objetoId, null, new Ponto4D(50, 50, 0), new Ponto4D(150, 150, 0));
-      obj_Retangulo.ObjetoCor.CorR = 255; obj_Retangulo.ObjetoCor.CorG = 0; obj_Retangulo.ObjetoCor.CorB = 255;
-      objetosLista.Add(obj_Retangulo);
-      objetoSelecionado = obj_Retangulo;
-
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
       obj_SegReta = new Privado_SegReta(objetoId, null, new Ponto4D(50, 150), new Ponto4D(150, 250));
@@ -100,18 +104,75 @@ namespace gcgcg
         Exit();
       else if (e.Key == Key.E)
       {
-        Console.WriteLine("--- Objetos / Pontos: ");
-        for (var i = 0; i < objetosLista.Count; i++)
-        {
-          Console.WriteLine(objetosLista[i]);
-        }
+        camera.PanEsquerda();
+      }
+      else if (e.Key == Key.D)
+      {
+        camera.PanDireita();
+      }else if (e.Key == Key.C)
+      {
+        camera.PanCima();
+      }
+      else if(e.Key == Key.B)
+      {
+        camera.PanBaixo();
+      }
+      else if (e.Key == Key.I)
+      {
+        camera.ZoomIn(); 
       }
       else if (e.Key == Key.O)
+      {
+        camera.ZoomOut();
+      }
+      else if (e.Key == Key.Space)
+      {
+        // Utilitario.ModificarPrimitivaEscolhida();
+        // var exercicio = (Exercicio04)objetosLista[2];
+        // exercicio.PrimitivaTipo = Utilitario.ObterPrimitivaAtual();
+      }
+      else if (e.Key == Key.Q)
+      {
+        var senhorPalito = ObterPalito();
+        senhorPalito.MoverParaEsquerda(unidadesParaMover: 1);
+      }
+      else if (e.Key == Key.W)
+      {
+        var senhorPalito = ObterPalito();
+        senhorPalito.MoverParaDireita(unidadesParaMover: 1);
+      }
+      else if (e.Key == Key.A)
+      {
+        var senhorPalito = ObterPalito();
+        senhorPalito.DiminuirRaioPontoB();
+      }
+      else if (e.Key == Key.S)
+      {
+        var senhorPalito = ObterPalito();
+        senhorPalito.AumentarRaioPontoB();
+      }
+      else if (e.Key == Key.Z)
+      {
+        var senhorPalito = ObterPalito();
+        senhorPalito.DiminuirAnguloPontoB();
+      }
+      else if (e.Key == Key.X)
+      {
+        var senhorPalito = ObterPalito();
+        senhorPalito.AumentarAnguloPontoB();
+      }
+      else if (e.Key == Key.O)
+      {
         bBoxDesenhar = !bBoxDesenhar;
+      }
       else if (e.Key == Key.V)
-        mouseMoverPto = !mouseMoverPto;   //TODO: falta atualizar a BBox do objeto
+      {
+        mouseMoverPto = !mouseMoverPto; 
+      }
       else
+      {
         Console.WriteLine(" __ Tecla não implementada.");
+      }
     }
 
     //TODO: não está considerando o NDC
@@ -125,6 +186,19 @@ namespace gcgcg
       }
     }
 
+    private SegReta ObterPalito()
+    {
+      foreach (var obj in objetosLista)
+      {
+        var segReta = (SegReta)obj;
+        if (segReta != null && segReta.Rotulo == RotuloSenhorPalito)
+        {
+          return segReta;
+        }
+      }
+
+      throw new ArgumentNullException("Palito não encontrado");
+    }
 #if CG_Gizmo
     private void Sru3D()
     {
@@ -141,7 +215,7 @@ namespace gcgcg
       GL.Vertex3(0, 0, 0); GL.Vertex3(0, 0, 200);
       GL.End();
     }
-#endif    
+#endif
   }
   class Program
   {
