@@ -32,6 +32,49 @@ namespace gcgcg
             PontoB = Matematica.GerarPtosCirculo(ComposicaoPontoB.AnguloPontoB, ComposicaoPontoB.RaioPontoB);
         }
 
+        public void MoverPontoAParaEsquerda(uint unidadesParaMover)
+        {
+            var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(-unidadesParaMover);
+            PontoA += pontoParaMoverUmaUnidadeParaEsquerda;
+        }
+        public void MoverPontoAParaDireita(uint unidadesParaMover)
+        {
+            var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(unidadesParaMover);
+            PontoA += pontoParaMoverUmaUnidadeParaEsquerda;
+        }
+        public void MoverPontoAParaCima(uint unidadesParaMover)
+        {
+            var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(0, unidadesParaMover);
+            PontoA += pontoParaMoverUmaUnidadeParaEsquerda;
+        }
+        public void MoverPontoAParaBaixo(uint unidadesParaMover)
+        {
+            var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(0, -unidadesParaMover);
+            PontoA += pontoParaMoverUmaUnidadeParaEsquerda;
+        }
+        
+        
+        public void MoverPontoBParaEsquerda(uint unidadesParaMover)
+        {
+            var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(-unidadesParaMover);
+            PontoB += pontoParaMoverUmaUnidadeParaEsquerda;
+        }
+        public void MoverPontoBParaDireita(uint unidadesParaMover)
+        {
+            var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(unidadesParaMover);
+            PontoB += pontoParaMoverUmaUnidadeParaEsquerda;
+        }
+        public void MoverPontoBParaCima(uint unidadesParaMover)
+        {
+            var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(0, unidadesParaMover);
+            PontoB += pontoParaMoverUmaUnidadeParaEsquerda;
+        }
+        public void MoverPontoBParaBaixo(uint unidadesParaMover)
+        {
+            var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(0, -unidadesParaMover);
+            PontoB += pontoParaMoverUmaUnidadeParaEsquerda;
+        }
+        
         public void MoverParaEsquerda(uint unidadesParaMover)
         {
             var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(-unidadesParaMover);

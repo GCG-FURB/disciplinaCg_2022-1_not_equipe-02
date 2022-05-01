@@ -26,5 +26,31 @@ namespace gcgcg
         {
             DesenharGeometria();
         }
+        
+        
+        public void MoverParaEsquerda(uint unidadesParaMover)
+        {
+            var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(-unidadesParaMover);
+            Ponto4D += pontoParaMoverUmaUnidadeParaEsquerda;
+        }
+        
+        public void MoverParaDireita(uint unidadesParaMover)
+        {
+            var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(unidadesParaMover);
+            Ponto4D += pontoParaMoverUmaUnidadeParaEsquerda;
+        }
+        
+        public void MoverParaCima(uint unidadesParaMover)
+        {
+            var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(0, unidadesParaMover);
+            Ponto4D += pontoParaMoverUmaUnidadeParaEsquerda;
+        }
+        
+        public void MoverParaBaixo(uint unidadesParaMover)
+        {
+            var pontoParaMoverUmaUnidadeParaEsquerda = new Ponto4D(0, -unidadesParaMover);
+            Ponto4D += pontoParaMoverUmaUnidadeParaEsquerda;
+        }
+        
     }
 }

@@ -11,6 +11,7 @@ namespace gcgcg
   public abstract class Objeto
   {
     protected char rotulo;
+    public char Rotulo { get; private set; }
     private Cor objetoCor = new Cor(255, 255, 255, 255);
     public Cor ObjetoCor { get => objetoCor; set => objetoCor = value; }
     private PrimitiveType primitivaTipo = PrimitiveType.LineLoop;
@@ -24,6 +25,7 @@ namespace gcgcg
     public Objeto(char rotulo, Objeto paiRef)
     {
       this.rotulo = rotulo;
+      Rotulo = rotulo;
     }
 
     public void Desenhar()

@@ -38,6 +38,7 @@ namespace gcgcg
     int mouseX, mouseY;   //TODO: achar método MouseDown para não ter variável Global
     private bool mouseMoverPto = false;
     private Retangulo obj_Retangulo;
+    private char PontoControleSelecionado = (char)100;
 
     
     
@@ -69,40 +70,41 @@ namespace gcgcg
       linhaHorizontalGizmo.PrimitivaTamanho = 5;
       objetosLista.Add(linhaHorizontalGizmo);
       
-      var linhaEsquerda = new SegReta(Utilitario.charProximo(objetoId), null, new Ponto4D(-100, -100), new Ponto4D(-100, 100));
+      var linhaEsquerda = new SegReta((char)1000, null, new Ponto4D(-100, -100), new Ponto4D(-100, 100));
       linhaEsquerda.ObjetoCor = new Cor(0, 255, 255);
       objetosLista.Add(linhaEsquerda);
       
-      var linhaDireita = new SegReta(Utilitario.charProximo(objetoId), null, new Ponto4D(100, 100), new Ponto4D(100, -100));
+      var linhaDireita = new SegReta((char)2000, null, new Ponto4D(100, 100), new Ponto4D(100, -100));
       linhaDireita.ObjetoCor = new Cor(0, 255, 255);
       objetosLista.Add(linhaDireita);
       
-      var linhaDeLigacao = new SegReta(Utilitario.charProximo(objetoId), null, linhaEsquerda.PontoB, linhaDireita.PontoA);
+      var linhaDeLigacao = new SegReta((char)5000, null, linhaEsquerda.PontoB, linhaDireita.PontoA);
       linhaDeLigacao.ObjetoCor = new Cor(0, 255, 255);
       objetosLista.Add(linhaDeLigacao);
       
-      var pontoControleLinhaEsquerdaInferior = new Ponto(objetoId, null, linhaEsquerda.PontoA);
-      pontoControleLinhaEsquerdaInferior.ObjetoCor = new Cor(0, 0, 0);
+      var pontoControleLinhaEsquerdaInferior = new Ponto((char)100, null, linhaEsquerda.PontoA);
+      pontoControleLinhaEsquerdaInferior.ObjetoCor = new Cor(255, 0, 0);
       pontoControleLinhaEsquerdaInferior.PrimitivaTamanho = 10;
       objetosLista.Add(pontoControleLinhaEsquerdaInferior);
       
-      var pontoControleLinhaEsquerdaSuperior = new Ponto(objetoId, null, linhaEsquerda.PontoB);
+      var pontoControleLinhaEsquerdaSuperior = new Ponto((char)200, null, linhaEsquerda.PontoB);
       pontoControleLinhaEsquerdaSuperior.ObjetoCor = new Cor(0, 0, 0);
       pontoControleLinhaEsquerdaSuperior.PrimitivaTamanho = 10;
       objetosLista.Add(pontoControleLinhaEsquerdaSuperior);
       
-      var pontoControleLinhaDireitaInferior = new Ponto(objetoId, null, linhaDireita.PontoB);
+      var pontoControleLinhaDireitaInferior = new Ponto((char)300, null, linhaDireita.PontoA);
       pontoControleLinhaDireitaInferior.ObjetoCor = new Cor(0, 0, 0);
       pontoControleLinhaDireitaInferior.PrimitivaTamanho = 10;
       objetosLista.Add(pontoControleLinhaDireitaInferior);
       
-      var pontoControleLinhaDireitaSuperior = new Ponto(objetoId, null, linhaDireita.PontoA);
+      var pontoControleLinhaDireitaSuperior = new Ponto((char)400, null, linhaDireita.PontoB);
       pontoControleLinhaDireitaSuperior.ObjetoCor = new Cor(0, 0, 0);
       pontoControleLinhaDireitaSuperior.PrimitivaTamanho = 10;
       objetosLista.Add(pontoControleLinhaDireitaSuperior);
 
       var spline = new Spline(objetoId, null, linhaEsquerda, linhaDeLigacao, linhaDireita);
       spline.ObjetoCor = new Cor(255, 255,0);
+      spline.PrimitivaTamanho = 4;
       objetosLista.Add(spline);
       
 #if CG_Privado
@@ -151,18 +153,124 @@ namespace gcgcg
         Exit();
       else if (e.Key == Key.E)
       {
-        camera.PanEsquerda();
+        // camera.PanEsquerda();
+        
+        var segReta = ObterSegRetaCorrespontendeAoPontoControleSelecionado();
+        var pontoDeControleSelecionado = (Ponto)objetosLista.FirstOrDefault(w => w.Rotulo == PontoControleSelecionado);
+        pontoDeControleSelecionado?.MoverParaEsquerda(1);
+        
+        SegReta segRetaLigacao;
+        switch (PontoControleSelecionado)
+        { 
+          case (char)100:
+            segReta.MoverPontoAParaEsquerda(1);
+            break;
+          case (char)200:
+            segReta.MoverPontoBParaEsquerda(1);
+            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
+            segRetaLigacao?.MoverPontoAParaEsquerda(1);
+            break;
+          case (char)300:
+            segReta.MoverPontoAParaEsquerda(1);
+            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
+            segRetaLigacao?.MoverPontoBParaEsquerda(1);
+            break;
+          case (char)400:
+            segReta.MoverPontoBParaEsquerda(1);
+            break;
+          default: throw new NullReferenceException();
+        }
+        
       }
       else if (e.Key == Key.D)
       {
-        camera.PanDireita();
+        // camera.PanDireita();
+        
+        var segReta = ObterSegRetaCorrespontendeAoPontoControleSelecionado();
+        var pontoDeControleSelecionado = (Ponto)objetosLista.FirstOrDefault(w => w.Rotulo == PontoControleSelecionado);
+        pontoDeControleSelecionado?.MoverParaDireita(1);
+        
+        SegReta segRetaLigacao;
+        switch (PontoControleSelecionado)
+        { 
+          case (char)100:
+            segReta.MoverPontoAParaDireita(1);
+            break;
+          case (char)200:
+            segReta.MoverPontoBParaDireita(1);
+            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
+            segRetaLigacao?.MoverPontoAParaDireita(1);
+            break;
+          case (char)300:
+            segReta.MoverPontoAParaDireita(1);
+            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
+            segRetaLigacao?.MoverPontoBParaDireita(1);
+            break;
+          case (char)400:
+            segReta.MoverPontoBParaDireita(1);
+            break;
+          default: throw new NullReferenceException();
+        }
+        
       }else if (e.Key == Key.C)
       {
-        camera.PanCima();
+        // camera.PanCima();
+
+        var segReta = ObterSegRetaCorrespontendeAoPontoControleSelecionado();
+        var pontoDeControleSelecionado = (Ponto)objetosLista.FirstOrDefault(w => w.Rotulo == PontoControleSelecionado);
+        pontoDeControleSelecionado?.MoverParaCima(1);
+        
+        SegReta segRetaLigacao;
+        switch (PontoControleSelecionado)
+        { 
+          case (char)100:
+            segReta.MoverPontoAParaCima(1);
+            break;
+          case (char)200:
+            segReta.MoverPontoBParaCima(1);
+            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
+            segRetaLigacao?.MoverPontoAParaCima(1);
+            break;
+          case (char)300:
+            segReta.MoverPontoAParaCima(1);
+            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
+            segRetaLigacao?.MoverPontoBParaCima(1);
+            break;
+          case (char)400:
+            segReta.MoverPontoBParaCima(1);
+            break;
+          default: throw new NullReferenceException();
+        }
       }
       else if(e.Key == Key.B)
       {
-        camera.PanBaixo();
+        // camera.PanBaixo();
+        
+        var segReta = ObterSegRetaCorrespontendeAoPontoControleSelecionado();
+        var pontoDeControleSelecionado = (Ponto)objetosLista.FirstOrDefault(w => w.Rotulo == PontoControleSelecionado);
+        pontoDeControleSelecionado?.MoverParaBaixo(1);
+        
+        SegReta segRetaLigacao;
+        switch (PontoControleSelecionado)
+        { 
+          case (char)100:
+            segReta.MoverPontoAParaBaixo(1);
+            break;
+          case (char)200:
+            segReta.MoverPontoBParaBaixo(1);
+            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
+            segRetaLigacao?.MoverPontoAParaBaixo(1);
+            break;
+          case (char)300:
+            segReta.MoverPontoAParaBaixo(1);
+            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
+            segRetaLigacao?.MoverPontoBParaBaixo(1);
+            break;
+          case (char)400:
+            segReta.MoverPontoBParaBaixo(1);
+            break;
+          default: throw new NullReferenceException();
+        }
       }
       else if (e.Key == Key.I)
       {
@@ -216,6 +324,22 @@ namespace gcgcg
       {
         mouseMoverPto = !mouseMoverPto; 
       }
+      else if (e.Key == Key.Number1)
+      {
+        SelecionarPontoControle((char)100);
+      }
+      else if (e.Key == Key.Number2)
+      {
+        SelecionarPontoControle((char)200);
+      }
+      else if (e.Key == Key.Number3)
+      {
+        SelecionarPontoControle((char)300);
+      }
+      else if (e.Key == Key.Number4)
+      {
+        SelecionarPontoControle((char)400);
+      }
       else
       {
         Console.WriteLine(" __ Tecla não implementada.");
@@ -233,6 +357,20 @@ namespace gcgcg
       }
     }
 
+    private SegReta ObterSegRetaCorrespontendeAoPontoControleSelecionado()
+    {
+      switch (PontoControleSelecionado)
+      {
+        case (char)100:
+        case (char)200:
+          return (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)1000);
+        case (char)300:
+        case (char)400:
+          return (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)2000);
+        default: throw new NullReferenceException();
+      }
+    }
+
     private SegReta ObterPalito()
     {
       foreach (var obj in objetosLista)
@@ -246,6 +384,24 @@ namespace gcgcg
 
       throw new ArgumentNullException("Palito não encontrado");
     }
+
+    private void SelecionarPontoControle(char rotulo)
+    {
+      var pontoControle = (Ponto)objetosLista.FirstOrDefault(w => w.Rotulo == rotulo);
+      pontoControle.ObjetoCor = new Cor(255, 0, 0);
+      PontoControleSelecionado = pontoControle.Rotulo;
+
+      var pontosDeControleParaDesabilitarCorVermelha = new List<char>{ (char)100, (char)200, (char)300, (char)400 };
+      pontosDeControleParaDesabilitarCorVermelha.Remove(rotulo);
+      
+      pontosDeControleParaDesabilitarCorVermelha.ForEach(DesmarcarSelecaoPontoControle);
+    }
+    private void DesmarcarSelecaoPontoControle(char rotulo)
+    {
+      var pontoControle = (Ponto)objetosLista.FirstOrDefault(w => w.Rotulo == rotulo);
+      pontoControle.ObjetoCor = new Cor(0, 0, 0);
+    }
+    
 #if CG_Gizmo
     private void Sru3D()
     {
