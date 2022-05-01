@@ -82,24 +82,28 @@ namespace gcgcg
       objetosLista.Add(linhaDeLigacao);
       
       var pontoControleLinhaEsquerdaInferior = new Ponto(objetoId, null, linhaEsquerda.PontoA);
-      pontoControleLinhaEsquerdaInferior.ObjetoCor = new Cor(255, 0, 0);
+      pontoControleLinhaEsquerdaInferior.ObjetoCor = new Cor(0, 0, 0);
       pontoControleLinhaEsquerdaInferior.PrimitivaTamanho = 10;
       objetosLista.Add(pontoControleLinhaEsquerdaInferior);
       
       var pontoControleLinhaEsquerdaSuperior = new Ponto(objetoId, null, linhaEsquerda.PontoB);
-      pontoControleLinhaEsquerdaSuperior.ObjetoCor = new Cor(255, 0, 0);
+      pontoControleLinhaEsquerdaSuperior.ObjetoCor = new Cor(0, 0, 0);
       pontoControleLinhaEsquerdaSuperior.PrimitivaTamanho = 10;
       objetosLista.Add(pontoControleLinhaEsquerdaSuperior);
       
       var pontoControleLinhaDireitaInferior = new Ponto(objetoId, null, linhaDireita.PontoB);
-      pontoControleLinhaDireitaInferior.ObjetoCor = new Cor(255, 0, 0);
+      pontoControleLinhaDireitaInferior.ObjetoCor = new Cor(0, 0, 0);
       pontoControleLinhaDireitaInferior.PrimitivaTamanho = 10;
       objetosLista.Add(pontoControleLinhaDireitaInferior);
       
       var pontoControleLinhaDireitaSuperior = new Ponto(objetoId, null, linhaDireita.PontoA);
-      pontoControleLinhaDireitaSuperior.ObjetoCor = new Cor(255, 0, 0);
+      pontoControleLinhaDireitaSuperior.ObjetoCor = new Cor(0, 0, 0);
       pontoControleLinhaDireitaSuperior.PrimitivaTamanho = 10;
       objetosLista.Add(pontoControleLinhaDireitaSuperior);
+
+      var spline = new Spline(objetoId, null, linhaEsquerda, linhaDeLigacao, linhaDireita);
+      spline.ObjetoCor = new Cor(255, 255,0);
+      objetosLista.Add(spline);
       
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);

@@ -3,7 +3,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace gcgcg
 {
-    public class Ponto : Objeto
+    internal class Ponto : ObjetoGeometria
     {
         public Ponto4D Ponto4D { get; private set; }
         
@@ -20,6 +20,11 @@ namespace gcgcg
             GL.Vertex2(Ponto4D.X, Ponto4D.Y);
             
             GL.End();
+        }
+
+        protected override void DesenharObjeto()
+        {
+            DesenharGeometria();
         }
     }
 }
