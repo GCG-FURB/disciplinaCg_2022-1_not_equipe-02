@@ -8,8 +8,8 @@ namespace gcgcg
     internal class SegReta : Objeto
     {
         public char Rotulo { get; private set; }
-        private Ponto4D PontoA;
-        private Ponto4D PontoB;
+        public Ponto4D PontoA { get; private set; }
+        public Ponto4D PontoB { get; private set; }
         private (double AnguloPontoB, double RaioPontoB) ComposicaoPontoB;
         
         

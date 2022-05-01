@@ -49,15 +49,58 @@ namespace gcgcg
     protected override void OnLoad(EventArgs e)
     {
       base.OnLoad(e);
-      camera.xmin = -600;
-      camera.xmax = 600;
-      camera.ymin = -600; 
-      camera.ymax = 600;
+      camera.xmin = -400;
+      camera.xmax = 400;
+      camera.ymin = -400; 
+      camera.ymax = 400;
 
       Console.WriteLine(" --- Ajuda / Teclas: ");
       Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
       objetoId = Utilitario.charProximo(objetoId);
+      
+      var linhaVerticalGizmo = new Linha(objetoId, null,  new Ponto4D(), new Ponto4D(0, 200));
+      linhaVerticalGizmo.ObjetoCor = new Cor(0, 150, 0);
+      linhaVerticalGizmo.PrimitivaTamanho = 5;
+      objetosLista.Add(linhaVerticalGizmo);
+      
+      var linhaHorizontalGizmo = new Linha(objetoId, null,  new Ponto4D(), new Ponto4D(200));
+      linhaHorizontalGizmo.ObjetoCor = new Cor(255, 0, 0);
+      linhaHorizontalGizmo.PrimitivaTamanho = 5;
+      objetosLista.Add(linhaHorizontalGizmo);
+      
+      var linhaEsquerda = new SegReta(Utilitario.charProximo(objetoId), null, new Ponto4D(-100, -100), new Ponto4D(-100, 100));
+      linhaEsquerda.ObjetoCor = new Cor(0, 255, 255);
+      objetosLista.Add(linhaEsquerda);
+      
+      var linhaDireita = new SegReta(Utilitario.charProximo(objetoId), null, new Ponto4D(100, 100), new Ponto4D(100, -100));
+      linhaDireita.ObjetoCor = new Cor(0, 255, 255);
+      objetosLista.Add(linhaDireita);
+      
+      var linhaDeLigacao = new SegReta(Utilitario.charProximo(objetoId), null, linhaEsquerda.PontoB, linhaDireita.PontoA);
+      linhaDeLigacao.ObjetoCor = new Cor(0, 255, 255);
+      objetosLista.Add(linhaDeLigacao);
+      
+      var pontoControleLinhaEsquerdaInferior = new Ponto(objetoId, null, linhaEsquerda.PontoA);
+      pontoControleLinhaEsquerdaInferior.ObjetoCor = new Cor(255, 0, 0);
+      pontoControleLinhaEsquerdaInferior.PrimitivaTamanho = 10;
+      objetosLista.Add(pontoControleLinhaEsquerdaInferior);
+      
+      var pontoControleLinhaEsquerdaSuperior = new Ponto(objetoId, null, linhaEsquerda.PontoB);
+      pontoControleLinhaEsquerdaSuperior.ObjetoCor = new Cor(255, 0, 0);
+      pontoControleLinhaEsquerdaSuperior.PrimitivaTamanho = 10;
+      objetosLista.Add(pontoControleLinhaEsquerdaSuperior);
+      
+      var pontoControleLinhaDireitaInferior = new Ponto(objetoId, null, linhaDireita.PontoB);
+      pontoControleLinhaDireitaInferior.ObjetoCor = new Cor(255, 0, 0);
+      pontoControleLinhaDireitaInferior.PrimitivaTamanho = 10;
+      objetosLista.Add(pontoControleLinhaDireitaInferior);
+      
+      var pontoControleLinhaDireitaSuperior = new Ponto(objetoId, null, linhaDireita.PontoA);
+      pontoControleLinhaDireitaSuperior.ObjetoCor = new Cor(255, 0, 0);
+      pontoControleLinhaDireitaSuperior.PrimitivaTamanho = 10;
+      objetosLista.Add(pontoControleLinhaDireitaSuperior);
+      
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
       obj_SegReta = new Privado_SegReta(objetoId, null, new Ponto4D(50, 150), new Ponto4D(150, 250));
