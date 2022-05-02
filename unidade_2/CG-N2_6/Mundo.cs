@@ -62,49 +62,52 @@ namespace gcgcg
       
       var linhaVerticalGizmo = new Linha(objetoId, null,  new Ponto4D(), new Ponto4D(0, 200));
       linhaVerticalGizmo.ObjetoCor = new Cor(0, 150, 0);
-      linhaVerticalGizmo.PrimitivaTamanho = 5;
+      linhaVerticalGizmo.PrimitivaTamanho = 2;
       objetosLista.Add(linhaVerticalGizmo);
       
       var linhaHorizontalGizmo = new Linha(objetoId, null,  new Ponto4D(), new Ponto4D(200));
       linhaHorizontalGizmo.ObjetoCor = new Cor(255, 0, 0);
-      linhaHorizontalGizmo.PrimitivaTamanho = 5;
+      linhaHorizontalGizmo.PrimitivaTamanho = 2;
       objetosLista.Add(linhaHorizontalGizmo);
       
       var linhaEsquerda = new SegReta((char)1000, null, new Ponto4D(-100, -100), new Ponto4D(-100, 100));
       linhaEsquerda.ObjetoCor = new Cor(0, 255, 255);
+      linhaEsquerda.PrimitivaTamanho = 2;
       objetosLista.Add(linhaEsquerda);
       
       var linhaDireita = new SegReta((char)2000, null, new Ponto4D(100, 100), new Ponto4D(100, -100));
       linhaDireita.ObjetoCor = new Cor(0, 255, 255);
+      linhaDireita.PrimitivaTamanho = 2;
       objetosLista.Add(linhaDireita);
       
       var linhaDeLigacao = new SegReta((char)5000, null, linhaEsquerda.PontoB, linhaDireita.PontoA);
       linhaDeLigacao.ObjetoCor = new Cor(0, 255, 255);
+      linhaDeLigacao.PrimitivaTamanho = 2;
       objetosLista.Add(linhaDeLigacao);
       
       var pontoControleLinhaEsquerdaInferior = new Ponto((char)100, null, linhaEsquerda.PontoA);
       pontoControleLinhaEsquerdaInferior.ObjetoCor = new Cor(255, 0, 0);
-      pontoControleLinhaEsquerdaInferior.PrimitivaTamanho = 10;
+      pontoControleLinhaEsquerdaInferior.PrimitivaTamanho = 8;
       objetosLista.Add(pontoControleLinhaEsquerdaInferior);
       
       var pontoControleLinhaEsquerdaSuperior = new Ponto((char)200, null, linhaEsquerda.PontoB);
       pontoControleLinhaEsquerdaSuperior.ObjetoCor = new Cor(0, 0, 0);
-      pontoControleLinhaEsquerdaSuperior.PrimitivaTamanho = 10;
+      pontoControleLinhaEsquerdaSuperior.PrimitivaTamanho = 8;
       objetosLista.Add(pontoControleLinhaEsquerdaSuperior);
       
       var pontoControleLinhaDireitaInferior = new Ponto((char)300, null, linhaDireita.PontoA);
       pontoControleLinhaDireitaInferior.ObjetoCor = new Cor(0, 0, 0);
-      pontoControleLinhaDireitaInferior.PrimitivaTamanho = 10;
+      pontoControleLinhaDireitaInferior.PrimitivaTamanho = 8;
       objetosLista.Add(pontoControleLinhaDireitaInferior);
       
       var pontoControleLinhaDireitaSuperior = new Ponto((char)400, null, linhaDireita.PontoB);
       pontoControleLinhaDireitaSuperior.ObjetoCor = new Cor(0, 0, 0);
-      pontoControleLinhaDireitaSuperior.PrimitivaTamanho = 10;
+      pontoControleLinhaDireitaSuperior.PrimitivaTamanho = 8;
       objetosLista.Add(pontoControleLinhaDireitaSuperior);
 
       var spline = new Spline(objetoId, null, linhaEsquerda, linhaDeLigacao, linhaDireita);
       spline.ObjetoCor = new Cor(255, 255,0);
-      spline.PrimitivaTamanho = 4;
+      spline.PrimitivaTamanho = 2;
       objetosLista.Add(spline);
       
 #if CG_Privado

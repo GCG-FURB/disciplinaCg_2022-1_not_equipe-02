@@ -17,7 +17,6 @@ namespace gcgcg
         {
             Rotulo = rotulo;
             PrimitivaTipo = PrimitiveType.Lines;
-            PrimitivaTamanho = 5;
             PontoA = pontoA;
             PontoB = pontoB;
         }

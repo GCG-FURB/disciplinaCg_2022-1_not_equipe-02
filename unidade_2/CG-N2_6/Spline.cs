@@ -20,10 +20,10 @@ namespace gcgcg
         protected override void DesenharGeometria()
         {
             // 2 pontos por cada segReta - 1 seg reta esquerda, 1 direita, 1 de ligação
-            var quantidadeDePontos = 6d;
+            var quantidadeDePontos = 100d;
             var incremento = 1d / quantidadeDePontos;
             var pontoReferencia = LinhaEsquerda.PontoA;
-            for (double t = 0; t <= 1; t+= incremento )
+            for (double t = incremento; t <= 1; t+= incremento )
             {
                 var p1p2 = Calcular(LinhaEsquerda.PontoA, LinhaLigacao.PontoA, t);
                 var p2p3 = Calcular(LinhaLigacao.PontoA, LinhaDireita.PontoA, t);
