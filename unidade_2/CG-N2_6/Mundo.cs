@@ -105,7 +105,7 @@ namespace gcgcg
       pontoControleLinhaDireitaSuperior.PrimitivaTamanho = 8;
       objetosLista.Add(pontoControleLinhaDireitaSuperior);
 
-      var spline = new Spline(objetoId, null, linhaEsquerda, linhaDeLigacao, linhaDireita);
+      var spline = new Spline((char)8900, null, linhaEsquerda, linhaDeLigacao, linhaDireita);
       spline.ObjetoCor = new Cor(255, 255,0);
       spline.PrimitivaTamanho = 2;
       objetosLista.Add(spline);
@@ -342,6 +342,16 @@ namespace gcgcg
       else if (e.Key == Key.Number4)
       {
         SelecionarPontoControle((char)400);
+      }
+      else if (e.Key == Key.Plus)
+      {
+        var spline = (Spline)objetosLista.FirstOrDefault(w => w.Rotulo == (char)8900);
+        spline.AumentarQuantidadePontos();
+      }
+      else if (e.Key == Key.Minus)
+      {
+        var spline = (Spline)objetosLista.FirstOrDefault(w => w.Rotulo == (char)8900);
+        spline.DiminuirQuantidadePontos();
       }
       else
       {

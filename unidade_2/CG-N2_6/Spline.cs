@@ -8,6 +8,7 @@ namespace gcgcg
         public SegReta LinhaEsquerda { get; private set; }
         public SegReta LinhaLigacao { get; private set; }
         public SegReta LinhaDireita { get; private set; }
+        public int QuantidadePontos { get; private set; }
 
         public Spline(char rotulo, Objeto paiRef, SegReta linhaEsquerda, SegReta linhaLigacao, SegReta linhaDireita) : base(rotulo, paiRef)
         {
@@ -15,15 +16,14 @@ namespace gcgcg
             LinhaEsquerda = linhaEsquerda;
             LinhaLigacao = linhaLigacao;
             LinhaDireita = linhaDireita;
+            QuantidadePontos = 100;
         }
 
         protected override void DesenharGeometria()
         {
-            // 2 pontos por cada segReta - 1 seg reta esquerda, 1 direita, 1 de ligação
-            var quantidadeDePontos = 100d;
-            var incremento = 1d / quantidadeDePontos;
+            var incremento = 1d / QuantidadePontos;
             var pontoReferencia = LinhaEsquerda.PontoA;
-            for (double t = incremento; t <= 1; t+= incremento )
+            for (double t = incremento; t <= 1.00000000001; t+= incremento)
             {
                 var p1p2 = Calcular(LinhaEsquerda.PontoA, LinhaLigacao.PontoA, t);
                 var p2p3 = Calcular(LinhaLigacao.PontoA, LinhaDireita.PontoA, t);
@@ -44,6 +44,21 @@ namespace gcgcg
             }
         }
 
+        public void AumentarQuantidadePontos()
+        {
+            if (QuantidadePontos < 100)
+            {
+                QuantidadePontos++;
+            }  
+        } 
+        public void DiminuirQuantidadePontos() 
+        {
+            if (QuantidadePontos > 0)
+            {
+                QuantidadePontos--;
+            }
+        }
+        
         private Ponto4D Calcular(Ponto4D pontoA, Ponto4D pontoB, double t)
         {
             var ponto4dParaDesenharSpline = new Ponto4D();
