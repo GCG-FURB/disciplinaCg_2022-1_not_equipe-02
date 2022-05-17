@@ -55,7 +55,11 @@ namespace gcgcg
         {
             if (QuantidadePontos > 0)
             {
-                QuantidadePontos--;
+                var proximoValor = QuantidadePontos - 1;
+                if (proximoValor > 0)
+                {
+                    QuantidadePontos = proximoValor;
+                }
             }
         }
         
