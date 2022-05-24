@@ -15,101 +15,82 @@ using CG_Biblioteca;
 
 namespace gcgcg
 {
-  class Mundo : GameWindow
-  {
-    private static Mundo instanciaMundo = null;
-    private static readonly char RotuloSenhorPalito = Utilitario.charProximo((char)999);
-    
-    private Mundo(int width, int height) : base(width, height) { }
-
-    public static Mundo GetInstance(int width, int height)
+    class Mundo : GameWindow
     {
-      if (instanciaMundo == null)
-        instanciaMundo = new Mundo(width, height);
-      return instanciaMundo;
-      
-    }
+        private static Mundo instanciaMundo = null;
 
-    private CameraOrtho camera = new CameraOrtho();
-    protected List<Objeto> objetosLista = new List<Objeto>();
-    private ObjetoGeometria objetoSelecionado = null;
-    private char objetoId = '@';
-    private bool bBoxDesenhar = false;
-    int mouseX, mouseY;   //TODO: achar método MouseDown para não ter variável Global
-    private bool mouseMoverPto = false;
-    private Retangulo obj_Retangulo;
-    private char PontoControleSelecionado = (char)100;
+        private Mundo(int width, int height) : base(width, height)
+        {
+        }
 
-    
-    
+        public static Mundo GetInstance(int width, int height)
+        {
+            if (instanciaMundo == null)
+                instanciaMundo = new Mundo(width, height);
+            return instanciaMundo;
+        }
+
+        private CameraOrtho camera = new CameraOrtho();
+        protected List<Objeto> objetosLista = new List<Objeto>();
+        private Objeto objetoSelecionado = null;
+        private char objetoId = '@';
+        private bool bBoxDesenhar = true;
+
+        private Circulo circuloFora;
+        private Circulo circuloInterno;
+        private Ponto pontoInterno;
+
+        private int? mouseX, mouseY;
+        private bool mousePressed;
+
 #if CG_Privado
     private Privado_SegReta obj_SegReta;
     private Privado_Circulo obj_Circulo;
 #endif
 
-    protected override void OnLoad(EventArgs e)
-    {
-      base.OnLoad(e);
-      camera.xmin = -400;
-      camera.xmax = 400;
-      camera.ymin = -400; 
-      camera.ymax = 400;
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            camera.xmin = -50;
+            camera.xmax = 750;
+            camera.ymin = -50;
+            camera.ymax = 750;
 
-      Console.WriteLine(" --- Ajuda / Teclas: ");
-      Console.WriteLine(" [  H     ] mostra teclas usadas. ");
+            Console.WriteLine(" --- Ajuda / Teclas: ");
+            Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
-      objetoId = Utilitario.charProximo(objetoId);
-      
-      var linhaVerticalGizmo = new Linha(objetoId, null,  new Ponto4D(), new Ponto4D(0, 200));
-      linhaVerticalGizmo.ObjetoCor = new Cor(0, 150, 0);
-      linhaVerticalGizmo.PrimitivaTamanho = 2;
-      objetosLista.Add(linhaVerticalGizmo);
-      
-      var linhaHorizontalGizmo = new Linha(objetoId, null,  new Ponto4D(), new Ponto4D(200));
-      linhaHorizontalGizmo.ObjetoCor = new Cor(255, 0, 0);
-      linhaHorizontalGizmo.PrimitivaTamanho = 2;
-      objetosLista.Add(linhaHorizontalGizmo);
-      
-      var linhaEsquerda = new SegReta((char)1000, null, new Ponto4D(-100, -100), new Ponto4D(-100, 100));
-      linhaEsquerda.ObjetoCor = new Cor(0, 255, 255);
-      linhaEsquerda.PrimitivaTamanho = 2;
-      objetosLista.Add(linhaEsquerda);
-      
-      var linhaDireita = new SegReta((char)2000, null, new Ponto4D(100, 100), new Ponto4D(100, -100));
-      linhaDireita.ObjetoCor = new Cor(0, 255, 255);
-      linhaDireita.PrimitivaTamanho = 2;
-      objetosLista.Add(linhaDireita);
-      
-      var linhaDeLigacao = new SegReta((char)5000, null, linhaEsquerda.PontoB, linhaDireita.PontoA);
-      linhaDeLigacao.ObjetoCor = new Cor(0, 255, 255);
-      linhaDeLigacao.PrimitivaTamanho = 2;
-      objetosLista.Add(linhaDeLigacao);
-      
-      var pontoControleLinhaEsquerdaInferior = new Ponto((char)100, null, linhaEsquerda.PontoA);
-      pontoControleLinhaEsquerdaInferior.ObjetoCor = new Cor(255, 0, 0);
-      pontoControleLinhaEsquerdaInferior.PrimitivaTamanho = 8;
-      objetosLista.Add(pontoControleLinhaEsquerdaInferior);
-      
-      var pontoControleLinhaEsquerdaSuperior = new Ponto((char)200, null, linhaEsquerda.PontoB);
-      pontoControleLinhaEsquerdaSuperior.ObjetoCor = new Cor(0, 0, 0);
-      pontoControleLinhaEsquerdaSuperior.PrimitivaTamanho = 8;
-      objetosLista.Add(pontoControleLinhaEsquerdaSuperior);
-      
-      var pontoControleLinhaDireitaInferior = new Ponto((char)300, null, linhaDireita.PontoA);
-      pontoControleLinhaDireitaInferior.ObjetoCor = new Cor(0, 0, 0);
-      pontoControleLinhaDireitaInferior.PrimitivaTamanho = 8;
-      objetosLista.Add(pontoControleLinhaDireitaInferior);
-      
-      var pontoControleLinhaDireitaSuperior = new Ponto((char)400, null, linhaDireita.PontoB);
-      pontoControleLinhaDireitaSuperior.ObjetoCor = new Cor(0, 0, 0);
-      pontoControleLinhaDireitaSuperior.PrimitivaTamanho = 8;
-      objetosLista.Add(pontoControleLinhaDireitaSuperior);
+            objetoId = Utilitario.charProximo(objetoId);
 
-      var spline = new Spline((char)8900, null, linhaEsquerda, linhaDeLigacao, linhaDireita);
-      spline.ObjetoCor = new Cor(255, 255,0);
-      spline.PrimitivaTamanho = 2;
-      objetosLista.Add(spline);
-      
+            var linhaVerticalGizmo = new Linha(objetoId, null, new Ponto4D(), new Ponto4D(0, 200));
+            linhaVerticalGizmo.ObjetoCor = new Cor(0, 150, 0);
+            linhaVerticalGizmo.PrimitivaTamanho = 2;
+            objetosLista.Add(linhaVerticalGizmo);
+
+            objetoId = Utilitario.charProximo(objetoId);
+
+            var linhaHorizontalGizmo = new Linha(objetoId, null, new Ponto4D(), new Ponto4D(200));
+            linhaHorizontalGizmo.ObjetoCor = new Cor(255, 0, 0);
+            linhaHorizontalGizmo.PrimitivaTamanho = 2;
+            objetosLista.Add(linhaHorizontalGizmo);
+
+            objetoId = Utilitario.charProximo(objetoId);
+
+            circuloFora = new Circulo(objetoId, null, 360, 200, new Ponto4D(350, 350));
+            circuloFora.ObjetoCor = new Cor(0, 0, 0);
+            objetosLista.Add(circuloFora);
+
+            objetoId = Utilitario.charProximo(objetoId);
+
+            circuloInterno = new Circulo(objetoId, null, 180, 75, new Ponto4D(350, 350));
+            circuloInterno.ObjetoCor = new Cor(0, 0, 0);
+            objetosLista.Add(circuloInterno);
+
+            objetoId = Utilitario.charProximo(objetoId);
+
+            pontoInterno = new Ponto(objetoId, null, new Ponto4D(350, 350));
+            circuloInterno.ObjetoCor = new Cor(0, 0, 0);
+            objetosLista.Add(pontoInterno);
+
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
       obj_SegReta = new Privado_SegReta(objetoId, null, new Ponto4D(50, 150), new Ponto4D(150, 250));
@@ -123,309 +104,108 @@ namespace gcgcg
       objetosLista.Add(obj_Circulo);
       objetoSelecionado = obj_Circulo;
 #endif
-      GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-    }
-    protected override void OnUpdateFrame(FrameEventArgs e)
-    {
-      base.OnUpdateFrame(e);
-      GL.MatrixMode(MatrixMode.Projection);
-      GL.LoadIdentity();
-      GL.Ortho(camera.xmin, camera.xmax, camera.ymin, camera.ymax, camera.zmin, camera.zmax);
-    }
-    protected override void OnRenderFrame(FrameEventArgs e)
-    {
-      base.OnRenderFrame(e);
-      GL.Clear(ClearBufferMask.ColorBufferBit);
-      GL.MatrixMode(MatrixMode.Modelview);
-      GL.LoadIdentity();
-#if CG_Gizmo      
+            GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+        }
+
+        protected override void OnUpdateFrame(FrameEventArgs e)
+        {
+            base.OnUpdateFrame(e);
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            GL.Ortho(camera.xmin, camera.xmax, camera.ymin, camera.ymax, camera.zmin, camera.zmax);
+        }
+
+        protected override void OnRenderFrame(FrameEventArgs e)
+        {
+            base.OnRenderFrame(e);
+            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.LoadIdentity();
+#if CG_Gizmo
       Sru3D();
 #endif
-      for (var i = 0; i < objetosLista.Count; i++)
-        objetosLista[i].Desenhar();
-      if (bBoxDesenhar && (objetoSelecionado != null))
-        objetoSelecionado.BBox.Desenhar();
-      this.SwapBuffers();
-    }
+            for (var i = 0; i < objetosLista.Count; i++)
+                objetosLista[i].Desenhar();
+            if (bBoxDesenhar && (objetoSelecionado != null))
+                objetoSelecionado.BBox.Desenhar();
 
-    protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
-    {
-      if (e.Key == Key.H)
-        Utilitario.AjudaTeclado();
-      else if (e.Key == Key.Escape)
-        Exit();
-      else if (e.Key == Key.E)
-      {
-        // camera.PanEsquerda();
-        
-        var segReta = ObterSegRetaCorrespontendeAoPontoControleSelecionado();
-        var pontoDeControleSelecionado = (Ponto)objetosLista.FirstOrDefault(w => w.Rotulo == PontoControleSelecionado);
-        pontoDeControleSelecionado?.MoverParaEsquerda(1);
-        
-        SegReta segRetaLigacao;
-        switch (PontoControleSelecionado)
-        { 
-          case (char)100:
-            segReta.MoverPontoAParaEsquerda(1);
-            break;
-          case (char)200:
-            segReta.MoverPontoBParaEsquerda(1);
-            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
-            segRetaLigacao?.MoverPontoAParaEsquerda(1);
-            break;
-          case (char)300:
-            segReta.MoverPontoAParaEsquerda(1);
-            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
-            segRetaLigacao?.MoverPontoBParaEsquerda(1);
-            break;
-          case (char)400:
-            segReta.MoverPontoBParaEsquerda(1);
-            break;
-          default: throw new NullReferenceException();
+            circuloFora.BBox.Desenhar();
+
+            this.SwapBuffers();
         }
-        
-      }
-      else if (e.Key == Key.D)
-      {
-        // camera.PanDireita();
-        
-        var segReta = ObterSegRetaCorrespontendeAoPontoControleSelecionado();
-        var pontoDeControleSelecionado = (Ponto)objetosLista.FirstOrDefault(w => w.Rotulo == PontoControleSelecionado);
-        pontoDeControleSelecionado?.MoverParaDireita(1);
-        
-        SegReta segRetaLigacao;
-        switch (PontoControleSelecionado)
-        { 
-          case (char)100:
-            segReta.MoverPontoAParaDireita(1);
-            break;
-          case (char)200:
-            segReta.MoverPontoBParaDireita(1);
-            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
-            segRetaLigacao?.MoverPontoAParaDireita(1);
-            break;
-          case (char)300:
-            segReta.MoverPontoAParaDireita(1);
-            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
-            segRetaLigacao?.MoverPontoBParaDireita(1);
-            break;
-          case (char)400:
-            segReta.MoverPontoBParaDireita(1);
-            break;
-          default: throw new NullReferenceException();
-        }
-        
-      }else if (e.Key == Key.C)
-      {
-        // camera.PanCima();
 
-        var segReta = ObterSegRetaCorrespontendeAoPontoControleSelecionado();
-        var pontoDeControleSelecionado = (Ponto)objetosLista.FirstOrDefault(w => w.Rotulo == PontoControleSelecionado);
-        pontoDeControleSelecionado?.MoverParaCima(1);
-        
-        SegReta segRetaLigacao;
-        switch (PontoControleSelecionado)
-        { 
-          case (char)100:
-            segReta.MoverPontoAParaCima(1);
-            break;
-          case (char)200:
-            segReta.MoverPontoBParaCima(1);
-            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
-            segRetaLigacao?.MoverPontoAParaCima(1);
-            break;
-          case (char)300:
-            segReta.MoverPontoAParaCima(1);
-            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
-            segRetaLigacao?.MoverPontoBParaCima(1);
-            break;
-          case (char)400:
-            segReta.MoverPontoBParaCima(1);
-            break;
-          default: throw new NullReferenceException();
-        }
-      }
-      else if(e.Key == Key.B)
-      {
-        // camera.PanBaixo();
-        
-        var segReta = ObterSegRetaCorrespontendeAoPontoControleSelecionado();
-        var pontoDeControleSelecionado = (Ponto)objetosLista.FirstOrDefault(w => w.Rotulo == PontoControleSelecionado);
-        pontoDeControleSelecionado?.MoverParaBaixo(1);
-        
-        SegReta segRetaLigacao;
-        switch (PontoControleSelecionado)
-        { 
-          case (char)100:
-            segReta.MoverPontoAParaBaixo(1);
-            break;
-          case (char)200:
-            segReta.MoverPontoBParaBaixo(1);
-            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
-            segRetaLigacao?.MoverPontoAParaBaixo(1);
-            break;
-          case (char)300:
-            segReta.MoverPontoAParaBaixo(1);
-            segRetaLigacao = (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)5000);
-            segRetaLigacao?.MoverPontoBParaBaixo(1);
-            break;
-          case (char)400:
-            segReta.MoverPontoBParaBaixo(1);
-            break;
-          default: throw new NullReferenceException();
-        }
-      }
-      else if (e.Key == Key.I)
-      {
-        camera.ZoomIn(); 
-      }
-      else if (e.Key == Key.O)
-      {
-        camera.ZoomOut();
-      }
-      else if (e.Key == Key.Space)
-      {
-        // Utilitario.ModificarPrimitivaEscolhida();
-        // var exercicio = (Exercicio04)objetosLista[2];
-        // exercicio.PrimitivaTipo = Utilitario.ObterPrimitivaAtual();
-      }
-      else if (e.Key == Key.Q)
-      {
-        var senhorPalito = ObterPalito();
-        senhorPalito.MoverParaEsquerda(unidadesParaMover: 1);
-      }
-      else if (e.Key == Key.W)
-      {
-        var senhorPalito = ObterPalito();
-        senhorPalito.MoverParaDireita(unidadesParaMover: 1);
-      }
-      else if (e.Key == Key.A)
-      {
-        var senhorPalito = ObterPalito();
-        senhorPalito.DiminuirRaioPontoB();
-      }
-      else if (e.Key == Key.S)
-      {
-        var senhorPalito = ObterPalito();
-        senhorPalito.AumentarRaioPontoB();
-      }
-      else if (e.Key == Key.Z)
-      {
-        var senhorPalito = ObterPalito();
-        senhorPalito.DiminuirAnguloPontoB();
-      }
-      else if (e.Key == Key.X)
-      {
-        var senhorPalito = ObterPalito();
-        senhorPalito.AumentarAnguloPontoB();
-      }
-      else if (e.Key == Key.R)
-      {
-        Resetar();
-      }
-      else if (e.Key == Key.O)
-      {
-        bBoxDesenhar = !bBoxDesenhar;
-      }
-      else if (e.Key == Key.V)
-      {
-        mouseMoverPto = !mouseMoverPto; 
-      }
-      else if (e.Key == Key.Number1)
-      {
-        SelecionarPontoControle((char)100);
-      }
-      else if (e.Key == Key.Number2)
-      {
-        SelecionarPontoControle((char)200);
-      }
-      else if (e.Key == Key.Number3)
-      {
-        SelecionarPontoControle((char)300);
-      }
-      else if (e.Key == Key.Number4)
-      {
-        SelecionarPontoControle((char)400);
-      }
-      else if (e.Key == Key.Plus)
-      {
-        var spline = (Spline)objetosLista.FirstOrDefault(w => w.Rotulo == (char)8900);
-        spline.AumentarQuantidadePontos();
-      }
-      else if (e.Key == Key.Minus)
-      {
-        var spline = (Spline)objetosLista.FirstOrDefault(w => w.Rotulo == (char)8900);
-        spline.DiminuirQuantidadePontos();
-      }
-      else
-      {
-        Console.WriteLine(" __ Tecla não implementada.");
-      }
-    }
-
-    
-
-    //TODO: não está considerando o NDC
-    protected override void OnMouseMove(MouseMoveEventArgs e)
-    {
-      mouseX = e.Position.X; mouseY = 600 - e.Position.Y; // Inverti eixo Y
-      if (mouseMoverPto && (objetoSelecionado != null))
-      {
-        objetoSelecionado.PontosUltimo().X = mouseX;
-        objetoSelecionado.PontosUltimo().Y = mouseY;
-      }
-    }
-
-    private SegReta ObterSegRetaCorrespontendeAoPontoControleSelecionado()
-    {
-      switch (PontoControleSelecionado)
-      {
-        case (char)100:
-        case (char)200:
-          return (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)1000);
-        case (char)300:
-        case (char)400:
-          return (SegReta)objetosLista.FirstOrDefault(w => w.Rotulo == (char)2000);
-        default: throw new NullReferenceException();
-      }
-    }
-
-    private SegReta ObterPalito()
-    {
-      foreach (var obj in objetosLista)
-      {
-        var segReta = (SegReta)obj;
-        if (segReta != null && segReta.Rotulo == RotuloSenhorPalito)
+        protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
         {
-          return segReta;
+            Console.WriteLine(" __ Tecla não implementada.");
         }
-      }
 
-      throw new ArgumentNullException("Palito não encontrado");
-    }
+        //TODO: não está considerando o NDC
+        protected override void OnMouseMove(MouseMoveEventArgs e)
+        {
+            mousePressed = e.Mouse.LeftButton == ButtonState.Pressed;
+            if (mousePressed)
+            {
+                if (mouseX != null)
+                {
+                    var diffX = e.Position.X - mouseX ?? 0;
+                    var diffY = e.Position.Y - mouseY ?? 0;
+                    if (diffX != 0 || diffY != 0)
+                    {
+                        OnMouseDrag(e, diffX, diffY * -1);
+                    }
+                }
 
-    private void SelecionarPontoControle(char rotulo)
-    {
-      var pontoControle = (Ponto)objetosLista.FirstOrDefault(w => w.Rotulo == rotulo);
-      pontoControle.ObjetoCor = new Cor(255, 0, 0);
-      PontoControleSelecionado = pontoControle.Rotulo;
+                mouseX = e.Position.X;
+                mouseY = e.Position.Y;
+            }
+            else
+            {
+                mouseX = null;
+                mouseX = null;
+                Resetar();
+            }
+        }
 
-      var pontosDeControleParaDesabilitarCorVermelha = new List<char>{ (char)100, (char)200, (char)300, (char)400 };
-      pontosDeControleParaDesabilitarCorVermelha.Remove(rotulo);
-      
-      pontosDeControleParaDesabilitarCorVermelha.ForEach(DesmarcarSelecaoPontoControle);
-    }
-    private void DesmarcarSelecaoPontoControle(char rotulo)
-    {
-      var pontoControle = (Ponto)objetosLista.FirstOrDefault(w => w.Rotulo == rotulo);
-      pontoControle.ObjetoCor = new Cor(0, 0, 0);
-    }
-    
-    private void Resetar()
-    {
-      
-    }
-    
+        private void OnMouseDrag(MouseMoveEventArgs e, int x, int y)
+        {
+            if (isPossibleToDrag(x, y))
+            {
+                circuloInterno.Centro.X += x;
+                circuloInterno.Centro.Y += y;
+
+                pontoInterno.Ponto4D.X = circuloInterno.Centro.X;
+                pontoInterno.Ponto4D.Y = circuloInterno.Centro.Y;
+            }
+        }
+
+        private bool isPossibleToDrag(int x, int y)
+        {
+            var bbox = circuloFora.BBox;
+            var ponto = pontoInterno.Ponto4D;
+            if (ponto.X + x < bbox.obterMaiorX && ponto.X + x > bbox.obterMenorX
+                && ponto.Y + y < bbox.obterMaiorY && ponto.Y + y > bbox.obterMenorY)
+            {
+                return true;
+            }
+
+            var pontoCentro = circuloFora.Centro;
+            var distancia = Math.Sqrt(Math.Pow(pontoCentro.X - ponto.X - x, 2) + Math.Pow(pontoCentro.Y - ponto.Y - y, 2));
+            if (distancia < 200) // menor que o raio
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void Resetar()
+        {
+            circuloInterno.Centro.X = 350;
+            circuloInterno.Centro.Y = 350;
+            pontoInterno.Ponto4D.X = circuloInterno.Centro.X;
+            pontoInterno.Ponto4D.Y = circuloInterno.Centro.Y;
+        }
+
 #if CG_Gizmo
     private void Sru3D()
     {
@@ -443,14 +223,15 @@ namespace gcgcg
       GL.End();
     }
 #endif
-  }
-  class Program
-  {
-    static void Main(string[] args)
-    {
-      Mundo window = Mundo.GetInstance(600, 600);
-      window.Title = "CG_N2";
-      window.Run(1.0 / 60.0);
     }
-  }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Mundo window = Mundo.GetInstance(600, 600);
+            window.Title = "CG_N2";
+            window.Run(1.0 / 60.0);
+        }
+    }
 }
