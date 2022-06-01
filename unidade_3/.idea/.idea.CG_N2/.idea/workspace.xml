@@ -7,8 +7,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0fca74e1-dfa8-4324-a5bc-fa753b5d2db3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    <list default="true" id="0fca74e1-dfa8-4324-a5bc-fa753b5d2db3" name="Changes" comment="setup unidade 3 baseado no exercício da unidade 2 da spline :D">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +69,7 @@
       <workItem from="1652996614696" duration="193000" />
       <workItem from="1653244894952" duration="660000" />
       <workItem from="1653256246424" duration="606000" />
-      <workItem from="1654043407124" duration="437000" />
+      <workItem from="1654043407124" duration="791000" />
     </task>
     <task id="LOCAL-00001" summary="configuração csproj na bbox XD">
       <created>1652833506113</created>
@@ -78,7 +78,14 @@
       <option name="project" value="LOCAL" />
       <updated>1652833506113</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="setup unidade 3 baseado no exercício da unidade 2 da spline :D">
+      <created>1654044026487</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1654044026487</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -100,6 +107,7 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="configuração csproj na bbox XD" />
-    <option name="LAST_COMMIT_MESSAGE" value="configuração csproj na bbox XD" />
+    <MESSAGE value="setup unidade 3 baseado no exercício da unidade 2 da spline :D" />
+    <option name="LAST_COMMIT_MESSAGE" value="setup unidade 3 baseado no exercício da unidade 2 da spline :D" />
   </component>
 </project>
