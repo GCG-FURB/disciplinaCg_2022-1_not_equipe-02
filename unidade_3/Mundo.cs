@@ -18,15 +18,17 @@ namespace gcgcg
   {
     private static Mundo instanciaMundo = null;
     private static readonly char RotuloSenhorPalito = Utilitario.charProximo((char)999);
-    
-    private Mundo(int width, int height) : base(width, height) { }
+
+    private Mundo(int width, int height) : base(width, height)
+    {
+    }
 
     public static Mundo GetInstance(int width, int height)
     {
       if (instanciaMundo == null)
         instanciaMundo = new Mundo(width, height);
       return instanciaMundo;
-      
+
     }
 
     private CameraOrtho camera = new CameraOrtho();
@@ -34,13 +36,12 @@ namespace gcgcg
     private ObjetoGeometria objetoSelecionado = null;
     private char objetoId = '@';
     private bool bBoxDesenhar = false;
-    int mouseX, mouseY;   //TODO: achar método MouseDown para não ter variável Global
+    int mouseX, mouseY; //TODO: achar método MouseDown para não ter variável Global
     private bool mouseMoverPto = false;
-    private Retangulo obj_Retangulo;
-    private char PontoControleSelecionado = (char)100;
+    
+    private Poligono poligonoSendoDesenhado;
+    private bool estaSendoDesenhadoPoligono = false;
 
-    
-    
 #if CG_Privado
     private Privado_SegReta obj_SegReta;
     private Privado_Circulo obj_Circulo;
@@ -49,32 +50,17 @@ namespace gcgcg
     protected override void OnLoad(EventArgs e)
     {
       base.OnLoad(e);
-      camera.xmin = -400;
-      camera.xmax = 400;
-      camera.ymin = -400; 
-      camera.ymax = 400;
+      camera.xmin = 0;
+      camera.xmax = 600;
+      camera.ymin = 0; 
+      camera.ymax = 600;
 
       Console.WriteLine(" --- Ajuda / Teclas: ");
       Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
       objetoId = Utilitario.charProximo(objetoId);
-      
-      var linhaVerticalGizmo = new SegReta(objetoId, null,  new Ponto4D(), new Ponto4D(0, 200));
-      linhaVerticalGizmo.ObjetoCor = new Cor(0, 150, 0);
-      linhaVerticalGizmo.PrimitivaTamanho = 2;
-      objetosLista.Add(linhaVerticalGizmo);
-      
-      var linhaHorizontalGizmo = new SegReta(objetoId, null,  new Ponto4D(), new Ponto4D(200));
-      linhaHorizontalGizmo.ObjetoCor = new Cor(255, 0, 0);
-      linhaHorizontalGizmo.PrimitivaTamanho = 2;
-      objetosLista.Add(linhaHorizontalGizmo);
-
-      objetoId = Utilitario.charProximo(objetoId);
-      var poligono = new Poligono(objetoId, null);
-      poligono.PontosAdicionar(new Ponto4D(10, 50));
-      poligono.PontosAdicionar(new Ponto4D(-10, -50));
-      poligono.PrimitivaTamanho = 5;
-      objetosLista.Add(poligono);
+      poligonoSendoDesenhado = new Poligono(objetoId, null);
+      objetosLista.Add(poligonoSendoDesenhado);
       
       
 #if CG_Privado
@@ -115,7 +101,7 @@ namespace gcgcg
       this.SwapBuffers();
     }
 
-    protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
+    protected override void OnKeyDown(KeyboardKeyEventArgs e)
     {
       if (e.Key == Key.H)
         Utilitario.AjudaTeclado();
@@ -137,6 +123,20 @@ namespace gcgcg
       {
         mouseMoverPto = !mouseMoverPto; 
       }
+      else if (e.Key == Key.Space)
+      {
+        estaSendoDesenhadoPoligono = true;
+        
+        var mouseXMomento = this.mouseX;
+        var mouseYMomento = this.mouseY;
+        
+        poligonoSendoDesenhado.PontosAdicionar(new Ponto4D(mouseXMomento, mouseYMomento));
+        poligonoSendoDesenhado.PontosAdicionar(new Ponto4D(mouseXMomento, mouseYMomento));
+      }
+      else if (e.Key == Key.Enter)
+      {
+        NovoPoligono();
+      }
       else
       {
         Console.WriteLine(" __ Tecla não implementada.");
@@ -146,12 +146,28 @@ namespace gcgcg
     //TODO: não está considerando o NDC
     protected override void OnMouseMove(MouseMoveEventArgs e)
     {
-      mouseX = e.Position.X; mouseY = 600 - e.Position.Y; // Inverti eixo Y
-      if (mouseMoverPto && (objetoSelecionado != null))
+      mouseX = e.Position.X;
+      mouseY = 600 - e.Position.Y; // Inverti eixo Y
+      // if (mouseMoverPto && (objetoSelecionado != null))
+      // {
+      //   objetoSelecionado.PontosUltimo().X = mouseX;
+      //   objetoSelecionado.PontosUltimo().Y = mouseY;
+      // }
+
+      if (estaSendoDesenhadoPoligono)
       {
-        objetoSelecionado.PontosUltimo().X = mouseX;
-        objetoSelecionado.PontosUltimo().Y = mouseY;
+        poligonoSendoDesenhado.ModificarCoordenadaUltimoPonto(mouseX, mouseY);
       }
+    }
+
+    public void NovoPoligono()
+    {
+      estaSendoDesenhadoPoligono = false;
+      poligonoSendoDesenhado.PontosRemoverUltimo();
+      poligonoSendoDesenhado.PontosRemoverUltimo();
+      
+      poligonoSendoDesenhado = new Poligono(Utilitario.charProximo(poligonoSendoDesenhado.Rotulo), null);
+      objetosLista.Add(poligonoSendoDesenhado);
     }
     
     
