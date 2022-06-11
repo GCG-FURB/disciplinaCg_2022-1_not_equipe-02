@@ -150,6 +150,14 @@ namespace gcgcg
       {
         objetoSelecionado?.AtribuirTranslacao(10, 0, 0);
       }
+      else if (e.Key == Key.Up)
+      {
+        objetoSelecionado?.AtribuirTranslacao(0, 10, 0);
+      }
+      else if (e.Key == Key.Down)
+      {
+        objetoSelecionado?.AtribuirTranslacao(0, -10, 0);
+      }
       else
       {
         Console.WriteLine(" __ Tecla não implementada.");
