@@ -142,6 +142,14 @@ namespace gcgcg
       {
         DesenharNovoPoligono();
       }
+      else if (e.Key == Key.Left)
+      { 
+        objetoSelecionado?.AtribuirTranslacao(-10, 0, 0);
+      }
+      else if (e.Key == Key.Right)
+      {
+        objetoSelecionado?.AtribuirTranslacao(10, 0, 0);
+      }
       else
       {
         Console.WriteLine(" __ Tecla não implementada.");
@@ -149,7 +157,6 @@ namespace gcgcg
     }
 
     //TODO: não está considerando o NDC
-
     protected override void OnMouseDown(MouseButtonEventArgs e)
     {
       if (e.Button == MouseButton.Left)
