@@ -29,5 +29,39 @@ namespace gcgcg
             PontosUltimo().X = mouseX;
             PontosUltimo().Y = mouseY;
         }
+
+        public bool VerificarSeCliqueFoiDentro(Ponto4D pontoClique)
+        {
+            var pontos = pontosLista;
+            int paridade = 0;
+            for (int i = 0; i < pontos.Count; i++)
+            {
+                var proximoIndexComparacao = i + 1;
+                if (proximoIndexComparacao == pontos.Count)
+                {
+                    proximoIndexComparacao = 0;
+                }
+                
+                var primeiroPontoComparacao = pontos[i];
+                var segundoPontoComparacao = pontos[proximoIndexComparacao];
+
+                var ti = Matematica.InterseccaoScanLine(pontoClique.Y, primeiroPontoComparacao.Y, segundoPontoComparacao.Y);
+                if (ti >= 0 && ti <= 1)
+                {
+                    var xi = Matematica.CalculaXiScanLine(primeiroPontoComparacao.X, segundoPontoComparacao.X, ti);
+                    if (xi > pontoClique.X)
+                    {
+                        paridade++;
+                    }
+                }
+            }
+
+            if (paridade % 2 == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

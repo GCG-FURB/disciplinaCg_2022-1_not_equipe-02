@@ -5,6 +5,7 @@
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using CG_Biblioteca;
+using OpenTK;
 
 namespace gcgcg
 {

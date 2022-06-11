@@ -9,6 +9,7 @@ using System;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
+using System.Linq;
 using OpenTK.Input;
 using CG_Biblioteca;
 
@@ -41,6 +42,7 @@ namespace gcgcg
     
     private Poligono poligonoSendoDesenhado;
     private bool estaSendoDesenhadoPoligono = false;
+    private bool ehPrimeiroPontoNoPoligono = true;
 
 #if CG_Privado
     private Privado_SegReta obj_SegReta;
@@ -61,7 +63,6 @@ namespace gcgcg
       objetoId = Utilitario.charProximo(objetoId);
       poligonoSendoDesenhado = new Poligono(objetoId, null);
       objetosLista.Add(poligonoSendoDesenhado);
-      
       
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
@@ -131,11 +132,15 @@ namespace gcgcg
         var mouseYMomento = this.mouseY;
         
         poligonoSendoDesenhado.PontosAdicionar(new Ponto4D(mouseXMomento, mouseYMomento));
-        poligonoSendoDesenhado.PontosAdicionar(new Ponto4D(mouseXMomento, mouseYMomento));
+        if (ehPrimeiroPontoNoPoligono)
+        {
+          poligonoSendoDesenhado.PontosAdicionar(new Ponto4D(mouseXMomento, mouseYMomento));
+          ehPrimeiroPontoNoPoligono = false;
+        }
       }
       else if (e.Key == Key.Enter)
       {
-        NovoPoligono();
+        DesenharNovoPoligono();
       }
       else
       {
@@ -144,15 +149,25 @@ namespace gcgcg
     }
 
     //TODO: não está considerando o NDC
+
+    protected override void OnMouseDown(MouseButtonEventArgs e)
+    {
+      if (e.Button == MouseButton.Left)
+      {
+        VerificarSeCliqueFoiDentroDeUmPoligono(e.X, 600 - e.Y);
+      }
+    }
+
+    protected override void OnResize(EventArgs e)
+    {
+      base.OnResize(e);
+      GL.Viewport(0, 0, 600, 600);
+    }
+
     protected override void OnMouseMove(MouseMoveEventArgs e)
     {
-      mouseX = e.Position.X;
-      mouseY = 600 - e.Position.Y; // Inverti eixo Y
-      // if (mouseMoverPto && (objetoSelecionado != null))
-      // {
-      //   objetoSelecionado.PontosUltimo().X = mouseX;
-      //   objetoSelecionado.PontosUltimo().Y = mouseY;
-      // }
+      mouseX = e.X;
+      mouseY = 600 - e.Y; // Inverti eixo Y
 
       if (estaSendoDesenhadoPoligono)
       {
@@ -160,14 +175,26 @@ namespace gcgcg
       }
     }
 
-    public void NovoPoligono()
+    public void DesenharNovoPoligono()
     {
       estaSendoDesenhadoPoligono = false;
       poligonoSendoDesenhado.PontosRemoverUltimo();
-      poligonoSendoDesenhado.PontosRemoverUltimo();
-      
+      ehPrimeiroPontoNoPoligono = true;
       poligonoSendoDesenhado = new Poligono(Utilitario.charProximo(poligonoSendoDesenhado.Rotulo), null);
       objetosLista.Add(poligonoSendoDesenhado);
+    }
+
+    public void VerificarSeCliqueFoiDentroDeUmPoligono(int xClique, int yClique)
+    {
+      var pontoClique = new Ponto4D(xClique, yClique);
+      var poligonos = objetosLista.Where(w => typeof(Poligono) == w.GetType());
+
+      foreach (Poligono poligono in poligonos.Where(w => w.Rotulo != poligonoSendoDesenhado.Rotulo))
+      {
+        var estaDentro = poligono.VerificarSeCliqueFoiDentro(pontoClique);
+        Console.WriteLine(estaDentro ? "clique dentro" : "clique fora");
+        objetoSelecionado = poligono;
+      }
     }
     
     
@@ -193,6 +220,8 @@ namespace gcgcg
   {
     static void Main(string[] args)
     {
+      ToolkitOptions.Default.EnableHighResolution = false;
+
       Mundo window = Mundo.GetInstance(600, 600);
       window.Title = "CG_N3";
       window.Run(1.0 / 60.0);
