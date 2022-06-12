@@ -22,7 +22,9 @@ namespace gcgcg
     private BBox bBox = new BBox();
     public BBox BBox { get => bBox; set => bBox = value; }
     private List<Objeto> objetosLista = new List<Objeto>();
-    private Transformacao4D Transformacao4D =  new Transformacao4D();
+
+    private Transformacao4D MatrizTransformacaoTemporaria = new Transformacao4D();
+    private Transformacao4D MatrizTransformacao =  new Transformacao4D();
 
     public Objeto(char rotulo, Objeto paiRef)
     {
@@ -32,8 +34,8 @@ namespace gcgcg
 
     public void Desenhar()
     {
-      GL.PushMatrix();
-      GL.MultMatrix(Transformacao4D.ObterDados());
+      GL.PushMatrix();                                    // N3-Exe12: grafo de cena
+      GL.MultMatrix(MatrizTransformacao.ObterDados());
       GL.Color3(objetoCor.CorR, objetoCor.CorG, objetoCor.CorB);
       GL.LineWidth(primitivaTamanho);
       GL.PointSize(primitivaTamanho);
@@ -42,6 +44,7 @@ namespace gcgcg
       {
         objetosLista[i].Desenhar();
       }
+      GL.PopMatrix();  
     }
     protected abstract void DesenharGeometria();
     public void FilhoAdicionar(Objeto filho)
@@ -55,10 +58,44 @@ namespace gcgcg
 
     public void AtribuirTranslacao(double tx, double ty, double tz)
     {
-      var novaTransformacao = new Transformacao4D();
-      novaTransformacao.AtribuirTranslacao(tx, ty, tz);
-      
-      Transformacao4D = Transformacao4D.MultiplicarMatriz(novaTransformacao);
+      MatrizTransformacaoTemporaria.AtribuirTranslacao(tx, ty, tz);
+      MatrizTransformacao = MatrizTransformacao.MultiplicarMatriz(MatrizTransformacaoTemporaria);
+      MatrizTransformacaoTemporaria.AtribuirIdentidade();
+    }
+
+    public void AtribuirRotacao(EixoRotacao eixoRotacao, double angulo)
+    {
+      var matrizTemporariaRotacionada = AplicarRotacaoMatrizTemporaria(eixoRotacao, angulo);
+      MatrizTransformacao = MatrizTransformacao.MultiplicarMatriz(matrizTemporariaRotacionada);
+      matrizTemporariaRotacionada.AtribuirIdentidade();
+    }
+
+    public void AtribuirEscala(double sX, double sY,  double sZ)
+    {
+      MatrizTransformacaoTemporaria.AtribuirEscala(sX, sY, sZ);
+      MatrizTransformacao = MatrizTransformacao.MultiplicarMatriz(MatrizTransformacaoTemporaria);
+      MatrizTransformacaoTemporaria.AtribuirIdentidade();
+    }
+
+    private Transformacao4D AplicarRotacaoMatrizTemporaria(EixoRotacao eixoRotacao, double angulo)
+    {
+      var matrizTemporaria = MatrizTransformacaoTemporaria;
+      switch (eixoRotacao)
+      {
+        case EixoRotacao.X:
+          matrizTemporaria.AtribuirRotacaoX(Transformacao4D.DEG_TO_RAD * angulo);
+          break;
+        
+        case EixoRotacao.Y:
+          matrizTemporaria.AtribuirRotacaoY(Transformacao4D.DEG_TO_RAD * angulo);
+          break;
+        
+        case EixoRotacao.Z:
+          matrizTemporaria.AtribuirRotacaoZ(Transformacao4D.DEG_TO_RAD * angulo);
+          break;
+      }
+
+      return matrizTemporaria;
     }
   }
 }

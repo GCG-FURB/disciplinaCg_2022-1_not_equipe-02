@@ -158,6 +158,18 @@ namespace gcgcg
       {
         objetoSelecionado?.AtribuirTranslacao(0, -10, 0);
       }
+      else if (e.Key == Key.X)
+      {
+        objetoSelecionado?.AtribuirRotacao(EixoRotacao.X, 358);
+      }
+      else if (e.Key == Key.PageUp)
+      {
+        objetoSelecionado?.AtribuirEscala(2,0,0);
+      }
+      else if (e.Key == Key.PageDown)
+      {
+        objetoSelecionado?.AtribuirEscala(-2,0,0);
+      }
       else
       {
         Console.WriteLine(" __ Tecla não implementada.");
@@ -194,10 +206,14 @@ namespace gcgcg
     {
       estaSendoDesenhadoPoligono = false;
       poligonoSendoDesenhado.PontosRemoverUltimo();
+      
       ehPrimeiroPontoNoPoligono = true;
       poligonoSendoDesenhado = new Poligono(Utilitario.charProximo(poligonoSendoDesenhado.Rotulo), null);
-      objetosLista.Add(poligonoSendoDesenhado);
+
+      AdicionarObjetoAoMundoOuComoFilhoDoObjetoSelecionado(poligonoSendoDesenhado);
     }
+
+    
 
     public void VerificarSeCliqueFoiDentroDeUmPoligono(int xClique, int yClique)
     {
@@ -212,6 +228,16 @@ namespace gcgcg
       }
     }
     
+    private void AdicionarObjetoAoMundoOuComoFilhoDoObjetoSelecionado(Objeto objeto)
+    {
+      if (objetoSelecionado == null)
+      {
+        objetosLista.Add(objeto);
+        return;
+      }
+      
+      objetoSelecionado.FilhoAdicionar(objeto);
+    }
     
 #if CG_Gizmo
     private void Sru3D()
