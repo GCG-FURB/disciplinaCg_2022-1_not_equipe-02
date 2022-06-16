@@ -263,7 +263,6 @@ namespace gcgcg
         var retornoValidacaoEstaDentro = poligono.VerificarSeCoordenadaEstaDentro(pontoClique);
         if (retornoValidacaoEstaDentro.EstaDentro)
         {
-          Console.WriteLine("dentro");
           objetoSelecionado = retornoValidacaoEstaDentro.poligonoSelecionado;
           break;
         }
