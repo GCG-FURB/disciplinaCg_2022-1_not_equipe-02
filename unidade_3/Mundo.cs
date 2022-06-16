@@ -43,7 +43,7 @@ namespace gcgcg
     private Poligono poligonoSendoDesenhado;
     private bool estaSendoDesenhadoPoligono = false;
     private bool ehPrimeiroPontoNoPoligono = true;
-    private bool estaSendoAlteradoPontoPoligono = false;
+    private bool estaSendoAlteradoPontoPoligonoPelaTeclaV = false;
 
     private (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ResultadoCalculoDistanciaVertice;
 
@@ -141,6 +141,10 @@ namespace gcgcg
       {
         IniciarDesenhoNovoPoligono();
       }
+      else if (e.Key == Key.A)
+      {
+        SelecionarPoligonoAPartirPosicaoMouse(mouseX, mouseY);
+      }
       else if (e.Key == Key.Left)
       { 
         objetoSelecionado?.AtribuirTranslacao(-10, 0, 0);
@@ -173,7 +177,7 @@ namespace gcgcg
       else if (e.Key == Key.V)
       {
         ResultadoCalculoDistanciaVertice = ObterVerticeMaisProximoMouse(mouseX, mouseY);
-        estaSendoAlteradoPontoPoligono = true;
+        estaSendoAlteradoPontoPoligonoPelaTeclaV = true;
       }
       else
       {
@@ -184,10 +188,6 @@ namespace gcgcg
     //TODO: não está considerando o NDC
     protected override void OnMouseDown(MouseButtonEventArgs e)
     {
-      if (e.Button == MouseButton.Left)
-      {
-        VerificarSeCliqueFoiDentroDeUmPoligono(e.X, 600 - e.Y);
-      }
     }
 
     protected override void OnResize(EventArgs e)
@@ -209,7 +209,7 @@ namespace gcgcg
         return;
       }
 
-      if (estaSendoAlteradoPontoPoligono)
+      if (estaSendoAlteradoPontoPoligonoPelaTeclaV)
       {
         ResultadoCalculoDistanciaVertice.poligonoMenorDistancia.PontosAlterar(coordenadaMouseAtual, ResultadoCalculoDistanciaVertice.indexPontoMenorDistancia);
       }
@@ -217,6 +217,12 @@ namespace gcgcg
 
     public void IniciarDesenhoNovoPoligono()
     {
+      if (estaSendoAlteradoPontoPoligonoPelaTeclaV)
+      {
+        estaSendoAlteradoPontoPoligonoPelaTeclaV = false;
+        return;
+      }
+      
       if (!estaSendoDesenhadoPoligono)
       {
         return;
@@ -231,18 +237,20 @@ namespace gcgcg
       AdicionarObjetoAoMundoOuComoFilhoDoObjetoSelecionado(poligonoSendoDesenhado);
     }
 
-    
-
-    public void VerificarSeCliqueFoiDentroDeUmPoligono(int xClique, int yClique)
+    private void SelecionarPoligonoAPartirPosicaoMouse(double posicaoXMouse, double posicaoYMouse)
     {
-      var pontoClique = new Ponto4D(xClique, yClique);
+      var pontoClique = new Ponto4D(posicaoXMouse, posicaoYMouse);
       var poligonos = objetosLista.Where(w => typeof(Poligono) == w.GetType());
 
       foreach (Poligono poligono in poligonos.Where(w => w.Rotulo != poligonoSendoDesenhado.Rotulo))
       {
         var estaDentro = poligono.VerificarSeCliqueFoiDentro(pontoClique);
-        Console.WriteLine(estaDentro ? "clique dentro" : "clique fora");
-        objetoSelecionado = poligono;
+        if (estaDentro)
+        {
+          objetoSelecionado = poligono;
+          break;
+        }
+        
       }
     }
     
