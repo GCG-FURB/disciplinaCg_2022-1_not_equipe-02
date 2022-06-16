@@ -9,7 +9,6 @@ namespace gcgcg
         public Poligono(char rotulo, Objeto paiRef) : base(rotulo, paiRef)
         {
             PrimitivaTipo = PrimitiveType.LineLoop;
-            PrimitivaTamanho = 3;
             ObjetoCor = new Cor(255, 255, 255);
         }
 

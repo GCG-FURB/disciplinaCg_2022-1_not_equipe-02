@@ -137,6 +137,27 @@ namespace gcgcg
       {
         SelecionarPoligonoAPartirPosicaoMouse(mouseX, mouseY);
       }
+      else if (e.Key == Key.R)
+      {
+        if (objetoSelecionado != null)
+        {
+          objetoSelecionado.ObjetoCor = new Cor(255, 0, 0);
+        }
+      }
+      else if (e.Key == Key.G)
+      {
+        if (objetoSelecionado != null)
+        {
+          objetoSelecionado.ObjetoCor = new Cor(0, 250, 0);
+        }
+      }
+      else if (e.Key == Key.B)
+      {
+        if (objetoSelecionado != null)
+        {
+          objetoSelecionado.ObjetoCor = new Cor(0, 0 , 255);
+        }
+      }
       else if (e.Key == Key.Left)
       { 
         objetoSelecionado?.AtribuirTranslacao(-10, 0, 0);
