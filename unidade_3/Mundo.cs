@@ -139,7 +139,7 @@ namespace gcgcg
       }
       else if (e.Key == Key.Enter)
       {
-        DesenharNovoPoligono();
+        IniciarDesenhoNovoPoligono();
       }
       else if (e.Key == Key.Left)
       { 
@@ -215,8 +215,13 @@ namespace gcgcg
       }
     }
 
-    public void DesenharNovoPoligono()
+    public void IniciarDesenhoNovoPoligono()
     {
+      if (!estaSendoDesenhadoPoligono)
+      {
+        return;
+      }
+      
       estaSendoDesenhadoPoligono = false;
       poligonoSendoDesenhado.PontosRemoverUltimo();
       
