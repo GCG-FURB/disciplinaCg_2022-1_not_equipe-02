@@ -235,6 +235,11 @@ namespace gcgcg
       {
         objetoSelecionado.ImprimirMatrizTransformacao();
       }
+      else if (e.Key == Key.D)
+      {
+        var resultadoCalculoDistancia = ObterVerticeMaisProximoMouse(mouseX, mouseY);
+        resultadoCalculoDistancia.poligonoMenorDistancia.PontosRemover(resultadoCalculoDistancia.indexPontoMenorDistancia);
+      }
       else
       {
         Console.WriteLine(" __ Tecla não implementada.");

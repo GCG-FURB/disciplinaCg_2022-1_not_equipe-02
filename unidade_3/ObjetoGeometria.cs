@@ -48,6 +48,11 @@ namespace gcgcg
       pontosLista[posicao] = pto;
     }
 
+    public void PontosRemover(int index)
+    {
+      pontosLista.RemoveAt(index);
+    }
+
     public (bool EstaDentro, ObjetoGeometria poligonoSelecionado) VerificarSeCoordenadaEstaDentro(Ponto4D coordenada)
     {
       var pontos = pontosLista;
