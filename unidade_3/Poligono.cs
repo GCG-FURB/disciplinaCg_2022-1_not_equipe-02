@@ -1,4 +1,5 @@
-﻿using CG_Biblioteca;
+﻿using System.Collections.ObjectModel;
+using CG_Biblioteca;
 using OpenTK.Graphics.OpenGL;
 
 namespace gcgcg
@@ -24,7 +25,7 @@ namespace gcgcg
             GL.End();
         }
 
-        public void ModificarCoordenadaUltimoPonto(int mouseX, int mouseY)
+        public void ModificarCoordenadaUltimoPonto(double mouseX, double mouseY)
         {
             PontosUltimo().X = mouseX;
             PontosUltimo().Y = mouseY;
@@ -63,5 +64,7 @@ namespace gcgcg
 
             return true;
         }
+
+        public ReadOnlyCollection<Ponto4D> ObterPontos() => pontosLista.AsReadOnly();
     }
 }

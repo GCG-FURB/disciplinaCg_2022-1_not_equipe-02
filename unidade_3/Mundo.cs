@@ -43,6 +43,9 @@ namespace gcgcg
     private Poligono poligonoSendoDesenhado;
     private bool estaSendoDesenhadoPoligono = false;
     private bool ehPrimeiroPontoNoPoligono = true;
+    private bool estaSendoAlteradoPontoPoligono = false;
+
+    private (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ResultadoCalculoDistanciaVertice;
 
 #if CG_Privado
     private Privado_SegReta obj_SegReta;
@@ -120,10 +123,6 @@ namespace gcgcg
       {
         bBoxDesenhar = !bBoxDesenhar;
       }
-      else if (e.Key == Key.V)
-      {
-        mouseMoverPto = !mouseMoverPto; 
-      }
       else if (e.Key == Key.Space)
       {
         estaSendoDesenhadoPoligono = true;
@@ -164,11 +163,17 @@ namespace gcgcg
       }
       else if (e.Key == Key.PageUp)
       {
-        objetoSelecionado?.AtribuirEscala(2,0,0);
+        
+        objetoSelecionado?.AtribuirEscala(2,2,2);
       }
       else if (e.Key == Key.PageDown)
       {
         objetoSelecionado?.AtribuirEscala(-2,0,0);
+      }
+      else if (e.Key == Key.V)
+      {
+        ResultadoCalculoDistanciaVertice = ObterVerticeMaisProximoMouse(mouseX, mouseY);
+        estaSendoAlteradoPontoPoligono = true;
       }
       else
       {
@@ -196,9 +201,17 @@ namespace gcgcg
       mouseX = e.X;
       mouseY = 600 - e.Y; // Inverti eixo Y
 
+      var coordenadaMouseAtual = new Ponto4D(mouseX, mouseY);
+      
       if (estaSendoDesenhadoPoligono)
       {
-        poligonoSendoDesenhado.ModificarCoordenadaUltimoPonto(mouseX, mouseY);
+        poligonoSendoDesenhado.ModificarCoordenadaUltimoPonto(coordenadaMouseAtual.X, coordenadaMouseAtual.Y);
+        return;
+      }
+
+      if (estaSendoAlteradoPontoPoligono)
+      {
+        ResultadoCalculoDistanciaVertice.poligonoMenorDistancia.PontosAlterar(coordenadaMouseAtual, ResultadoCalculoDistanciaVertice.indexPontoMenorDistancia);
       }
     }
 
@@ -238,6 +251,32 @@ namespace gcgcg
       
       objetoSelecionado.FilhoAdicionar(objeto);
     }
+    
+    private (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ObterVerticeMaisProximoMouse(int mouseX, int mouseY)
+    {
+      var pontoCoordenadaMouse = new Ponto4D(mouseX, mouseY);
+      (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ResultadoCalculoDistancia = (double.MaxValue, new Poligono((char)100, null), new Ponto4D(), 0);
+      
+      var poligonos = objetosLista.Where(w => typeof(Poligono) == w.GetType());
+      
+      foreach (Poligono poligono in poligonos.Where(w => w.Rotulo != poligonoSendoDesenhado.Rotulo))
+      {
+        var pontosPoligono = poligono.ObterPontos();
+        for (var i = 0; i < pontosPoligono.Count; i++)
+        {
+          var distancia = Matematica.Distancia(pontoCoordenadaMouse, pontosPoligono[i]);
+          if (distancia <= ResultadoCalculoDistancia.menorDistancia)
+          {
+            ResultadoCalculoDistancia.menorDistancia = distancia;
+            ResultadoCalculoDistancia.poligonoMenorDistancia = poligono;
+            ResultadoCalculoDistancia.coordenadaMenorDistancia = pontosPoligono[i];
+            ResultadoCalculoDistancia.indexPontoMenorDistancia = i;
+          }
+        }
+      }
+      return ResultadoCalculoDistancia;
+    }
+    
     
 #if CG_Gizmo
     private void Sru3D()

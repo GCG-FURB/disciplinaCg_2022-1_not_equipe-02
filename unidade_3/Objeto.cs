@@ -34,7 +34,7 @@ namespace gcgcg
 
     public void Desenhar()
     {
-      GL.PushMatrix();                                    // N3-Exe12: grafo de cena
+      GL.PushMatrix();                                    
       GL.MultMatrix(MatrizTransformacao.ObterDados());
       GL.Color3(objetoCor.CorR, objetoCor.CorG, objetoCor.CorB);
       GL.LineWidth(primitivaTamanho);

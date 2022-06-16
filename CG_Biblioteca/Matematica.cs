@@ -36,6 +36,10 @@ namespace CG_Biblioteca
     {
       return (x1 + (x2 - x1) * ti);
     }
-    
+
+    public static double Distancia(Ponto4D pontoA, Ponto4D pontoB)
+    {
+      return Math.Sqrt((Math.Pow(pontoA.X - pontoB.X, 2) + Math.Pow(pontoA.Y - pontoB.Y, 2)));
+    }
   }
 }
