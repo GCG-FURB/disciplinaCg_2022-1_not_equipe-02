@@ -266,9 +266,6 @@ namespace gcgcg
           objetoSelecionado = retornoValidacaoEstaDentro.poligonoSelecionado;
           break;
         }
-        
-        
-        
       }
     }
     
