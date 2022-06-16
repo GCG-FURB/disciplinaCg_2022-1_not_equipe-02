@@ -162,6 +162,11 @@ namespace gcgcg
       {
         SelecionarPoligonoAPartirPosicaoMouse(mouseX, mouseY);
       }
+      else if (e.Key == Key.S)
+      {
+        var poligonoSelecionado = (Poligono)objetoSelecionado;
+        poligonoSelecionado?.AlternarPrimitivaTipoEntreLineStripELineLoop();
+      }
       else if (e.Key == Key.R)
       {
         if (objetoSelecionado != null)

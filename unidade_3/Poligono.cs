@@ -65,5 +65,20 @@ namespace gcgcg
         }
 
         public ReadOnlyCollection<Ponto4D> ObterPontos() => pontosLista.AsReadOnly();
+
+        public void AlternarPrimitivaTipoEntreLineStripELineLoop()
+        {
+            if (PrimitivaTipo == PrimitiveType.LineLoop)
+            {
+                PrimitivaTipo = PrimitiveType.LineStrip;
+                return;
+            }
+            
+            if (PrimitivaTipo == PrimitiveType.LineStrip)
+            {
+                PrimitivaTipo = PrimitiveType.LineLoop;
+                return;
+            }
+        }
     }
 }
