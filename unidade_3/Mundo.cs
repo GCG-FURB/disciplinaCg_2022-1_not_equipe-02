@@ -286,39 +286,9 @@ namespace gcgcg
       (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ResultadoCalculoDistancia = (double.MaxValue, null, new Ponto4D(), 0);
       
       var poligonos = objetosLista.Where(w => typeof(Poligono) == w.GetType());
-      
       foreach (Poligono poligono in poligonos)
       {
-        var pontosPoligono = poligono.ObterPontos();
-        for (var i = 0; i < pontosPoligono.Count; i++)
-        {
-          var distancia = Matematica.Distancia(pontoCoordenadaMouse, pontosPoligono[i]);
-          if (distancia <= ResultadoCalculoDistancia.menorDistancia)
-          {
-            ResultadoCalculoDistancia.menorDistancia = distancia;
-            ResultadoCalculoDistancia.poligonoMenorDistancia = poligono;
-            ResultadoCalculoDistancia.coordenadaMenorDistancia = pontosPoligono[i];
-            ResultadoCalculoDistancia.indexPontoMenorDistancia = i;
-          }
-        }
-
-        var objetosFilhos = poligono.ObterObjetosFilhos();
-        foreach (Poligono poligonoFilho in objetosFilhos)
-        {
-          var pontosDoPoligonoFilho = poligonoFilho.ObterPontos();
-          for (var i = 0; i < pontosDoPoligonoFilho.Count; i++)
-          {
-            var distancia = Matematica.Distancia(pontoCoordenadaMouse, pontosDoPoligonoFilho[i]);
-            if (distancia <= ResultadoCalculoDistancia.menorDistancia)
-            {
-              ResultadoCalculoDistancia.menorDistancia = distancia;
-              ResultadoCalculoDistancia.poligonoMenorDistancia = poligonoFilho;
-              ResultadoCalculoDistancia.coordenadaMenorDistancia = pontosPoligono[i];
-              ResultadoCalculoDistancia.indexPontoMenorDistancia = i;
-            }
-          }
-        }
-       
+        ResultadoCalculoDistancia = poligono.ObterVerticeMaisProximo(pontoCoordenadaMouse, ResultadoCalculoDistancia);
       }
       return ResultadoCalculoDistancia;
     }

@@ -91,6 +91,35 @@ namespace gcgcg
       return (false, null);
     }
     
+    public (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ObterVerticeMaisProximo(Ponto4D pontoCoordenadaMouse, (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) resultadoCalculo)
+    {
+       
+       var pontosPoligono = pontosLista;
+       for (var i = 0; i < pontosPoligono.Count; i++)
+       {
+         var distancia = Matematica.Distancia(pontoCoordenadaMouse, pontosPoligono[i]);
+         if (distancia <= resultadoCalculo.menorDistancia)
+         {
+           resultadoCalculo.menorDistancia = distancia;
+           resultadoCalculo.poligonoMenorDistancia = this as Poligono;
+           resultadoCalculo.coordenadaMenorDistancia = pontosPoligono[i];
+           resultadoCalculo.indexPontoMenorDistancia = i;
+         }
+       }
+      
+       var objetosFilhos = ObterObjetosFilhos();
+       foreach (Poligono poligonoFilho in objetosFilhos)
+       {
+         if (poligonoFilho != null)
+         {
+           resultadoCalculo = poligonoFilho.ObterVerticeMaisProximo(pontoCoordenadaMouse, resultadoCalculo);
+         }
+       }
+
+       return resultadoCalculo;
+    }
+    
+    
     public override string ToString()
     {
       string retorno;
