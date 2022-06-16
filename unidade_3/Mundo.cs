@@ -301,6 +301,24 @@ namespace gcgcg
             ResultadoCalculoDistancia.indexPontoMenorDistancia = i;
           }
         }
+
+        var objetosFilhos = poligono.ObterObjetosFilhos();
+        foreach (Poligono poligonoFilho in objetosFilhos)
+        {
+          var pontosDoPoligonoFilho = poligonoFilho.ObterPontos();
+          for (var i = 0; i < pontosDoPoligonoFilho.Count; i++)
+          {
+            var distancia = Matematica.Distancia(pontoCoordenadaMouse, pontosDoPoligonoFilho[i]);
+            if (distancia <= ResultadoCalculoDistancia.menorDistancia)
+            {
+              ResultadoCalculoDistancia.menorDistancia = distancia;
+              ResultadoCalculoDistancia.poligonoMenorDistancia = poligonoFilho;
+              ResultadoCalculoDistancia.coordenadaMenorDistancia = pontosPoligono[i];
+              ResultadoCalculoDistancia.indexPontoMenorDistancia = i;
+            }
+          }
+        }
+       
       }
       return ResultadoCalculoDistancia;
     }
