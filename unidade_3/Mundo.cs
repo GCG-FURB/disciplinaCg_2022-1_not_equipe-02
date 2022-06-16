@@ -222,6 +222,15 @@ namespace gcgcg
         ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo = ObterVerticeMaisProximoMouse(mouseX, mouseY);
         estaSendoAlteradoPontoPoligonoPelaTeclaV = true;
       }
+      else if (e.Key == Key.C)
+      {
+        objetosLista?.Remove(objetoSelecionado);
+        objetoSelecionado = null;
+
+        objetoId = Utilitario.charProximo(objetoId);
+        poligonoSendoDesenhado = new Poligono(objetoId, null);
+        objetosLista.Add(poligonoSendoDesenhado);
+      }
       else
       {
         Console.WriteLine(" __ Tecla não implementada.");
