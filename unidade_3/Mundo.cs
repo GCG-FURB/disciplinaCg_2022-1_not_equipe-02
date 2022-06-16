@@ -45,7 +45,7 @@ namespace gcgcg
     private bool ehPrimeiroPontoNoPoligono = true;
     private bool estaSendoAlteradoPontoPoligonoPelaTeclaV = false;
 
-    private (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ResultadoCalculoDistanciaVertice;
+    private (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo;
 
 #if CG_Privado
     private Privado_SegReta obj_SegReta;
@@ -104,8 +104,33 @@ namespace gcgcg
         objetoSelecionado.BBox.Desenhar();
       this.SwapBuffers();
     }
+   
+    protected override void OnResize(EventArgs e)
+    {
+      base.OnResize(e);
+      GL.Viewport(0, 0, 600, 600);
+    }
 
-    protected override void OnKeyDown(KeyboardKeyEventArgs e)
+    protected override void OnMouseMove(MouseMoveEventArgs e)
+    {
+      mouseX = e.X;
+      mouseY = 600 - e.Y; // Inverti eixo Y
+
+      var coordenadaMouseAtual = new Ponto4D(mouseX, mouseY);
+      
+      if (estaSendoDesenhadoPoligono)
+      {
+        poligonoSendoDesenhado.ModificarCoordenadaUltimoPonto(coordenadaMouseAtual.X, coordenadaMouseAtual.Y);
+        return;
+      }
+
+      if (estaSendoAlteradoPontoPoligonoPelaTeclaV)
+      {
+        ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo.poligonoMenorDistancia.PontosAlterar(coordenadaMouseAtual, ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo.indexPontoMenorDistancia);
+      }
+    }
+
+     protected override void OnKeyDown(KeyboardKeyEventArgs e)
     {
       if (e.Key == Key.H)
         Utilitario.AjudaTeclado();
@@ -189,7 +214,7 @@ namespace gcgcg
       }
       else if (e.Key == Key.V)
       {
-        ResultadoCalculoDistanciaVertice = ObterVerticeMaisProximoMouse(mouseX, mouseY);
+        ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo = ObterVerticeMaisProximoMouse(mouseX, mouseY);
         estaSendoAlteradoPontoPoligonoPelaTeclaV = true;
       }
       else
@@ -197,38 +222,8 @@ namespace gcgcg
         Console.WriteLine(" __ Tecla não implementada.");
       }
     }
-
-    //TODO: não está considerando o NDC
-    protected override void OnMouseDown(MouseButtonEventArgs e)
-    {
-    }
-
-    protected override void OnResize(EventArgs e)
-    {
-      base.OnResize(e);
-      GL.Viewport(0, 0, 600, 600);
-    }
-
-    protected override void OnMouseMove(MouseMoveEventArgs e)
-    {
-      mouseX = e.X;
-      mouseY = 600 - e.Y; // Inverti eixo Y
-
-      var coordenadaMouseAtual = new Ponto4D(mouseX, mouseY);
-      
-      if (estaSendoDesenhadoPoligono)
-      {
-        poligonoSendoDesenhado.ModificarCoordenadaUltimoPonto(coordenadaMouseAtual.X, coordenadaMouseAtual.Y);
-        return;
-      }
-
-      if (estaSendoAlteradoPontoPoligonoPelaTeclaV)
-      {
-        ResultadoCalculoDistanciaVertice.poligonoMenorDistancia.PontosAlterar(coordenadaMouseAtual, ResultadoCalculoDistanciaVertice.indexPontoMenorDistancia);
-      }
-    }
-
-    public void IniciarDesenhoNovoPoligono()
+    
+    private void IniciarDesenhoNovoPoligono()
     {
       if (estaSendoAlteradoPontoPoligonoPelaTeclaV)
       {
@@ -260,6 +255,7 @@ namespace gcgcg
         var estaDentro = poligono.VerificarSeCoordenadaEstaDentro(pontoClique);
         if (estaDentro)
         {
+          Console.WriteLine("dentro");
           objetoSelecionado = poligono;
           break;
         }
