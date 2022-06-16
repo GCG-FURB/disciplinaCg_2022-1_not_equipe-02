@@ -257,7 +257,7 @@ namespace gcgcg
 
       foreach (Poligono poligono in poligonos.Where(w => w.Rotulo != poligonoSendoDesenhado.Rotulo))
       {
-        var estaDentro = poligono.VerificarSeCliqueFoiDentro(pontoClique);
+        var estaDentro = poligono.VerificarSeCoordenadaEstaDentro(pontoClique);
         if (estaDentro)
         {
           objetoSelecionado = poligono;

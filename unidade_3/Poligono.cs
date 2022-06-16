@@ -30,7 +30,7 @@ namespace gcgcg
             PontosUltimo().Y = mouseY;
         }
 
-        public bool VerificarSeCliqueFoiDentro(Ponto4D pontoClique)
+        public bool VerificarSeCoordenadaEstaDentro(Ponto4D pontoClique)
         {
             var pontos = pontosLista;
             int paridade = 0;
