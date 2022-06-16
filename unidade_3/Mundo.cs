@@ -231,6 +231,10 @@ namespace gcgcg
         poligonoSendoDesenhado = new Poligono(objetoId, null);
         objetosLista.Add(poligonoSendoDesenhado);
       }
+      else if (e.Key == Key.M)
+      {
+        objetoSelecionado.ImprimirMatrizTransformacao();
+      }
       else
       {
         Console.WriteLine(" __ Tecla não implementada.");

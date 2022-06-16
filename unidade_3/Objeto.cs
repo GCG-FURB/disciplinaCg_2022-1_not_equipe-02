@@ -2,6 +2,7 @@
   Autor: Dalton Solano dos Reis
 **/
 
+using System;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using CG_Biblioteca;
@@ -79,6 +80,7 @@ namespace gcgcg
 
     public IReadOnlyCollection<Objeto> ObterObjetosFilhos() => objetosLista.AsReadOnly();
 
+    public void ImprimirMatrizTransformacao() => Console.WriteLine(MatrizTransformacao);
     private Transformacao4D AplicarRotacaoMatrizTemporaria(EixoRotacao eixoRotacao, double angulo)
     {
       var matrizTemporaria = MatrizTransformacaoTemporaria;
