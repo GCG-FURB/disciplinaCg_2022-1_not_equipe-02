@@ -111,14 +111,6 @@ namespace gcgcg
         Utilitario.AjudaTeclado();
       else if (e.Key == Key.Escape)
         Exit();
-      else if (e.Key == Key.I)
-      {
-        camera.ZoomIn(); 
-      }
-      else if (e.Key == Key.O)
-      {
-        camera.ZoomOut();
-      }
       else if (e.Key == Key.O)
       {
         bBoxDesenhar = !bBoxDesenhar;
