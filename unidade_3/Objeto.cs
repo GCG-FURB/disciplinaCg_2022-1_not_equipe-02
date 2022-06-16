@@ -77,6 +77,8 @@ namespace gcgcg
       MatrizTransformacaoTemporaria.AtribuirIdentidade();
     }
 
+    public IReadOnlyCollection<Objeto> ObterObjetosFilhos() => objetosLista.AsReadOnly();
+
     private Transformacao4D AplicarRotacaoMatrizTemporaria(EixoRotacao eixoRotacao, double angulo)
     {
       var matrizTemporaria = MatrizTransformacaoTemporaria;

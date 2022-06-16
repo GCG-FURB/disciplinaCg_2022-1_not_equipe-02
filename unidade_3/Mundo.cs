@@ -243,11 +243,14 @@ namespace gcgcg
       
       estaSendoDesenhadoPoligono = false;
       poligonoSendoDesenhado.PontosRemoverUltimo();
+      objetoSelecionado = poligonoSendoDesenhado;
       
       ehPrimeiroPontoNoPoligono = true;
-      poligonoSendoDesenhado = new Poligono(Utilitario.charProximo(poligonoSendoDesenhado.Rotulo), null);
 
-      AdicionarObjetoAoMundoOuComoFilhoDoObjetoSelecionado(poligonoSendoDesenhado);
+      objetoId = Utilitario.charProximo(objetoId);
+      poligonoSendoDesenhado = new Poligono(objetoId, null);
+
+      AdicionarPoligonoAoMundoOuComoFilhoDoObjetoSelecionado(poligonoSendoDesenhado);
     }
 
     private void SelecionarPoligonoAPartirPosicaoMouse(double posicaoXMouse, double posicaoYMouse)
@@ -255,38 +258,40 @@ namespace gcgcg
       var pontoClique = new Ponto4D(posicaoXMouse, posicaoYMouse);
       var poligonos = objetosLista.Where(w => typeof(Poligono) == w.GetType());
 
-      foreach (Poligono poligono in poligonos.Where(w => w.Rotulo != poligonoSendoDesenhado.Rotulo))
+      foreach (Poligono poligono in poligonos)
       {
-        var estaDentro = poligono.VerificarSeCoordenadaEstaDentro(pontoClique);
-        if (estaDentro)
+        var retornoValidacaoEstaDentro = poligono.VerificarSeCoordenadaEstaDentro(pontoClique);
+        if (retornoValidacaoEstaDentro.EstaDentro)
         {
           Console.WriteLine("dentro");
-          objetoSelecionado = poligono;
+          objetoSelecionado = retornoValidacaoEstaDentro.poligonoSelecionado;
           break;
         }
+        
+        
         
       }
     }
     
-    private void AdicionarObjetoAoMundoOuComoFilhoDoObjetoSelecionado(Objeto objeto)
+    private void AdicionarPoligonoAoMundoOuComoFilhoDoObjetoSelecionado(Poligono poligono)
     {
       if (objetoSelecionado == null)
       {
-        objetosLista.Add(objeto);
+        objetosLista.Add(poligono);
         return;
       }
       
-      objetoSelecionado.FilhoAdicionar(objeto);
+      objetoSelecionado.FilhoAdicionar(poligono);
     }
     
     private (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ObterVerticeMaisProximoMouse(int mouseX, int mouseY)
     {
       var pontoCoordenadaMouse = new Ponto4D(mouseX, mouseY);
-      (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ResultadoCalculoDistancia = (double.MaxValue, new Poligono((char)100, null), new Ponto4D(), 0);
+      (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ResultadoCalculoDistancia = (double.MaxValue, null, new Ponto4D(), 0);
       
       var poligonos = objetosLista.Where(w => typeof(Poligono) == w.GetType());
       
-      foreach (Poligono poligono in poligonos.Where(w => w.Rotulo != poligonoSendoDesenhado.Rotulo))
+      foreach (Poligono poligono in poligonos)
       {
         var pontosPoligono = poligono.ObterPontos();
         for (var i = 0; i < pontosPoligono.Count; i++)
