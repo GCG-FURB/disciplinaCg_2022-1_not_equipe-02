@@ -80,6 +80,8 @@ namespace gcgcg
 
     public IReadOnlyCollection<Objeto> ObterObjetosFilhos() => objetosLista.AsReadOnly();
 
+    public void AtribuirMatrizIdentidade() => MatrizTransformacao.AtribuirIdentidade();
+    
     public void ImprimirMatrizTransformacao() => Console.WriteLine(MatrizTransformacao);
     private Transformacao4D AplicarRotacaoMatrizTemporaria(EixoRotacao eixoRotacao, double angulo)
     {

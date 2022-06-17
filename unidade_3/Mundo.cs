@@ -233,7 +233,11 @@ namespace gcgcg
       }
       else if (e.Key == Key.M)
       {
-        objetoSelecionado.ImprimirMatrizTransformacao();
+        objetoSelecionado?.ImprimirMatrizTransformacao();
+      }
+      else if (e.Key == Key.I)
+      {
+        objetoSelecionado?.AtribuirMatrizIdentidade();
       }
       else if (e.Key == Key.D)
       {
