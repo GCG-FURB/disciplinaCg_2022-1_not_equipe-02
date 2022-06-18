@@ -205,18 +205,21 @@ namespace gcgcg
       {
         objetoSelecionado?.AtribuirTranslacao(0, -10, 0);
       }
-      else if (e.Key == Key.X)
-      {
-        objetoSelecionado?.AtribuirRotacao(EixoRotacao.X, 358);
-      }
       else if (e.Key == Key.PageUp)
       {
-        
         objetoSelecionado?.AtribuirEscala(2,2,2);
       }
       else if (e.Key == Key.PageDown)
       {
-        objetoSelecionado?.AtribuirEscala(-2,0,0);
+        objetoSelecionado?.AtribuirEscala(0.5,0.5,0.5);
+      }
+      else if(e.Key == Key.Home)
+      {
+        objetoSelecionado?.EscalaBBox(2, 2, 2);
+      }
+      else if(e.Key == Key.End)
+      {
+        objetoSelecionado?.EscalaBBox(0.5, 0.5, 0.5);
       }
       else if (e.Key == Key.V)
       {
@@ -225,7 +228,7 @@ namespace gcgcg
       }
       else if (e.Key == Key.C)
       {
-        objetosLista?.Remove(objetoSelecionado);
+        RemoverObjetoPorRotulo(objetoSelecionado.Rotulo);
         objetoSelecionado = null;
 
         objetoId = Utilitario.charProximo(objetoId);
@@ -245,9 +248,21 @@ namespace gcgcg
         var resultadoCalculoDistancia = ObterVerticeMaisProximoMouse(mouseX, mouseY);
         resultadoCalculoDistancia.poligonoMenorDistancia.PontosRemover(resultadoCalculoDistancia.indexPontoMenorDistancia);
       }
+      else if (e.Key == Key.Number1)
+      {
+        objetoSelecionado.AtribuirRotacao(EixoRotacao.Z, 5);
+      }
+      else if (e.Key == Key.Number2)
+      {
+        objetoSelecionado.AtribuirRotacao(EixoRotacao.Z, -5);
+      }
       else if (e.Key == Key.Number3)
       {
         objetoSelecionado?.RotacaoZBBox(1);
+      }
+      else if (e.Key == Key.Number4)
+      {
+        objetoSelecionado?.RotacaoZBBox(-1);
       }
       else
       {
@@ -318,6 +333,20 @@ namespace gcgcg
         ResultadoCalculoDistancia = poligono.ObterVerticeMaisProximo(pontoCoordenadaMouse, ResultadoCalculoDistancia);
       }
       return ResultadoCalculoDistancia;
+    }
+
+    private void RemoverObjetoPorRotulo(char rotulo)
+    {
+      foreach (var objeto in objetosLista)
+      {
+        if (objeto.Rotulo == rotulo)
+        {
+          objetosLista.Remove(objeto);
+          return;
+        }
+        objeto.FilhoRemoverRecursivo(rotulo);
+      }
+      
     }
     
     
