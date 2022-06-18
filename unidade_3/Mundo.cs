@@ -300,15 +300,22 @@ namespace gcgcg
       var pontoClique = new Ponto4D(posicaoXMouse, posicaoYMouse);
       var poligonos = objetosLista.Where(w => typeof(Poligono) == w.GetType());
 
+      var conseguiuAcharUmPoligono = false;
       foreach (Poligono poligono in poligonos)
       {
         var retornoValidacaoEstaDentro = poligono.VerificarSeCoordenadaEstaDentro(pontoClique);
         if (retornoValidacaoEstaDentro.EstaDentro)
         {
           objetoSelecionado = retornoValidacaoEstaDentro.poligonoSelecionado;
+          conseguiuAcharUmPoligono = true;
           break;
         }
       }
+
+      if (conseguiuAcharUmPoligono)
+        return;
+      
+      objetoSelecionado = null;
     }
     
     private void AdicionarPoligonoAoMundoOuComoFilhoDoObjetoSelecionado(Poligono poligono)
