@@ -127,6 +127,7 @@ namespace gcgcg
       if (estaSendoAlteradoPontoPoligonoPelaTeclaV)
       {
         ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo.poligonoMenorDistancia.PontosAlterar(coordenadaMouseAtual, ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo.indexPontoMenorDistancia);
+        ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo.poligonoMenorDistancia.BBox.Atualizar(coordenadaMouseAtual);
       }
     }
 
@@ -243,6 +244,10 @@ namespace gcgcg
       {
         var resultadoCalculoDistancia = ObterVerticeMaisProximoMouse(mouseX, mouseY);
         resultadoCalculoDistancia.poligonoMenorDistancia.PontosRemover(resultadoCalculoDistancia.indexPontoMenorDistancia);
+      }
+      else if (e.Key == Key.Number3)
+      {
+        objetoSelecionado?.RotacaoZBBox(1);
       }
       else
       {

@@ -83,6 +83,28 @@ namespace gcgcg
     public void AtribuirMatrizIdentidade() => MatrizTransformacao.AtribuirIdentidade();
     
     public void ImprimirMatrizTransformacao() => Console.WriteLine(MatrizTransformacao);
+    
+    public void RotacaoZBBox(double angulo)
+    {
+      // MatrizTransformacao.AtribuirIdentidade();
+      var matrizTmpRotacao = new Transformacao4D();
+      var matrizTmpTranslacao = new Transformacao4D();
+      var matrizTmpTranslacaoInversa = new Transformacao4D();
+      
+      Ponto4D pontoPivo = bBox.obterCentro;
+      
+      matrizTmpTranslacao.AtribuirTranslacao(-pontoPivo.X, -pontoPivo.Y, -pontoPivo.Z); // Inverter sinal
+      MatrizTransformacao = matrizTmpTranslacao.MultiplicarMatriz(MatrizTransformacao);
+
+      matrizTmpRotacao = AplicarRotacaoMatrizTemporaria(EixoRotacao.Z, angulo);
+      MatrizTransformacao = matrizTmpRotacao.MultiplicarMatriz(MatrizTransformacao);
+
+      matrizTmpTranslacaoInversa.AtribuirTranslacao(pontoPivo.X, pontoPivo.Y, pontoPivo.Z);
+      MatrizTransformacao = matrizTmpTranslacaoInversa.MultiplicarMatriz(MatrizTransformacao);
+
+      MatrizTransformacao = MatrizTransformacao.MultiplicarMatriz(MatrizTransformacao);
+    }
+    
     private Transformacao4D AplicarRotacaoMatrizTemporaria(EixoRotacao eixoRotacao, double angulo)
     {
       var matrizTemporaria = MatrizTransformacaoTemporaria;
