@@ -53,7 +53,7 @@ namespace gcgcg
       pontosLista.RemoveAt(index);
     }
 
-    public (bool EstaDentro, ObjetoGeometria poligonoSelecionado) VerificarSeCoordenadaEstaDentro(Ponto4D coordenada)
+    public (bool EstaDentro, ObjetoGeometria poligonoSelecionado) VerificarSeCoordenadaEstaDentroPorScanline(Ponto4D coordenada)
     {
       var pontos = pontosLista;
       int paridade = 0;
@@ -86,7 +86,7 @@ namespace gcgcg
 
       foreach (ObjetoGeometria objetoGeometria in ObterObjetosFilhos())
       {
-        var verificacaoEstaDentroDeUmFilho = objetoGeometria.VerificarSeCoordenadaEstaDentro(coordenada);
+        var verificacaoEstaDentroDeUmFilho = objetoGeometria.VerificarSeCoordenadaEstaDentroPorScanline(coordenada);
         if (verificacaoEstaDentroDeUmFilho.EstaDentro)
         {
           return (true, verificacaoEstaDentroDeUmFilho.poligonoSelecionado);

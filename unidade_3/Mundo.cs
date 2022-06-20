@@ -303,7 +303,7 @@ namespace gcgcg
       var conseguiuAcharUmPoligono = false;
       foreach (Poligono poligono in poligonos)
       {
-        var retornoValidacaoEstaDentro = poligono.VerificarSeCoordenadaEstaDentro(pontoClique);
+        var retornoValidacaoEstaDentro = poligono.VerificarSeCoordenadaEstaDentroPorScanline(pontoClique);
         if (retornoValidacaoEstaDentro.EstaDentro)
         {
           objetoSelecionado = retornoValidacaoEstaDentro.poligonoSelecionado;
