@@ -142,7 +142,6 @@ namespace gcgcg
       matrizTmpTranslacao.AtribuirTranslacao(-pontoPivo.X, -pontoPivo.Y, -pontoPivo.Z); // Inverter sinal
       matrizGlobal = matrizTmpTranslacao.MultiplicarMatriz(matrizGlobal);
 
-      // RotacaoEixo(EixoRotacao.Z, angulo);
       matrizTmpRotacao.AtribuirEscala(sX, sY, sZ);
       matrizGlobal = matrizTmpRotacao.MultiplicarMatriz(matrizGlobal);
 

@@ -127,7 +127,18 @@ namespace gcgcg
       if (estaSendoAlteradoPontoPoligonoPelaTeclaV)
       {
         ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo.poligonoMenorDistancia.PontosAlterar(coordenadaMouseAtual, ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo.indexPontoMenorDistancia);
-        ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo.poligonoMenorDistancia.BBox.Atualizar(coordenadaMouseAtual);
+        var pontosDoPoligono = ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo.poligonoMenorDistancia.ObterPontos();
+        for (int i = 0; i < pontosDoPoligono.Count; i++)
+        {
+          if (i == 0)
+          {
+            ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo.poligonoMenorDistancia.BBox.Atribuir(pontosDoPoligono[i]);
+          }
+          else
+          {
+            ResultadoCalculoDistanciaParaMovimentarVerticeMaisProximo.poligonoMenorDistancia.BBox.Atualizar(pontosDoPoligono[i]);
+          }
+        }
       }
     }
 
@@ -303,7 +314,7 @@ namespace gcgcg
       var conseguiuAcharUmPoligono = false;
       foreach (Poligono poligono in poligonos)
       {
-        var retornoValidacaoEstaDentro = poligono.VerificarSeCoordenadaEstaDentroPorScanline(pontoClique);
+        var retornoValidacaoEstaDentro = poligono.VerificarSeCoordenadaEstaDentro(pontoClique);
         if (retornoValidacaoEstaDentro.EstaDentro)
         {
           objetoSelecionado = retornoValidacaoEstaDentro.poligonoSelecionado;

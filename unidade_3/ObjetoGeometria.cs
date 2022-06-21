@@ -53,49 +53,29 @@ namespace gcgcg
       pontosLista.RemoveAt(index);
     }
 
-    public (bool EstaDentro, ObjetoGeometria poligonoSelecionado) VerificarSeCoordenadaEstaDentroPorScanline(Ponto4D coordenada)
+    public (bool EstaDentro, ObjetoGeometria poligonoSelecionado) VerificarSeCoordenadaEstaDentro(Ponto4D coordenada)
     {
-      var pontos = pontosLista;
-      int paridade = 0;
-      for (int i = 0; i < pontos.Count; i++)
+      var estaDentroBBox = VerificarSeCoordenadaEstaDentroBBox(coordenada);
+      if (estaDentroBBox)
       {
-        var proximoIndexComparacao = i + 1;
-        if (proximoIndexComparacao == pontos.Count)
+        if (ExecutarScanline(coordenada))
         {
-          proximoIndexComparacao = 0;
-        }
-                
-        var primeiroPontoComparacao = pontos[i];
-        var segundoPontoComparacao = pontos[proximoIndexComparacao];
-
-        var ti = Matematica.InterseccaoScanLine(coordenada.Y, primeiroPontoComparacao.Y, segundoPontoComparacao.Y);
-        if (ti >= 0 && ti <= 1)
-        {
-          var xi = Matematica.CalculaXiScanLine(primeiroPontoComparacao.X, segundoPontoComparacao.X, ti);
-          if (xi > coordenada.X)
-          {
-            paridade++;
-          }
-        }
-      }
-
-      if (paridade % 2 > 0)
-      {
-        return (true, this);
-      }
-
-      foreach (ObjetoGeometria objetoGeometria in ObterObjetosFilhos())
-      {
-        var verificacaoEstaDentroDeUmFilho = objetoGeometria.VerificarSeCoordenadaEstaDentroPorScanline(coordenada);
-        if (verificacaoEstaDentroDeUmFilho.EstaDentro)
-        {
-          return (true, verificacaoEstaDentroDeUmFilho.poligonoSelecionado);
+          return (true, this);
         }
       }
       
+      foreach (ObjetoGeometria objetoGeometria in ObterObjetosFilhos())
+      {
+        var verificacaoEstaDentroDeUmFilho = objetoGeometria.VerificarSeCoordenadaEstaDentro(coordenada);
+        if (verificacaoEstaDentroDeUmFilho.EstaDentro)
+        {
+          return verificacaoEstaDentroDeUmFilho;
+        }
+      }
+
       return (false, null);
     }
-    
+
     public (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ObterVerticeMaisProximo(Ponto4D pontoCoordenadaMouse, (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) resultadoCalculo)
     {
        
@@ -124,7 +104,6 @@ namespace gcgcg
        return resultadoCalculo;
     }
     
-    
     public override string ToString()
     {
       string retorno;
@@ -134,6 +113,56 @@ namespace gcgcg
         retorno += "P" + i + "[" + pontosLista[i].X + "," + pontosLista[i].Y + "," + pontosLista[i].Z + "," + pontosLista[i].W + "]" + "\n";
       }
       return (retorno);
+    }
+    
+    private bool VerificarSeCoordenadaEstaDentroBBox(Ponto4D coordenada)
+    {
+      return EstaDentroBBoxCoordenadaX(coordenada) && EstaDentroBBoxCoordenadaY(coordenada);
+    }
+
+    private bool EstaDentroBBoxCoordenadaX(Ponto4D coordenadaParaValidar)
+    {
+      var menorXBBox = BBox.obterMenorX;
+      var maiorXBBox = BBox.obterMaiorX;
+
+      return coordenadaParaValidar.X >= menorXBBox && coordenadaParaValidar.X <= maiorXBBox;
+    }
+
+    private bool EstaDentroBBoxCoordenadaY(Ponto4D coordenadaParaValidar)
+    {
+      var menorYBBox = BBox.obterMenorY;
+      var maiorYBBox = BBox.obterMaiorY;
+
+      return coordenadaParaValidar.Y >= menorYBBox && coordenadaParaValidar.Y <= maiorYBBox;
+    }
+
+    private bool ExecutarScanline(Ponto4D coordenada)
+    {
+      var pontos = pontosLista;
+      int paridade = 0;
+      for (int i = 0; i < pontos.Count; i++)
+      {
+        var proximoIndexComparacao = i + 1;
+        if (proximoIndexComparacao == pontos.Count)
+        {
+          proximoIndexComparacao = 0;
+        }
+                
+        var primeiroPontoComparacao = pontos[i];
+        var segundoPontoComparacao = pontos[proximoIndexComparacao];
+
+        var ti = Matematica.InterseccaoScanLine(coordenada.Y, primeiroPontoComparacao.Y, segundoPontoComparacao.Y);
+        if (ti >= 0 && ti <= 1)
+        {
+          var xi = Matematica.CalculaXiScanLine(primeiroPontoComparacao.X, segundoPontoComparacao.X, ti);
+          if (xi > coordenada.X)
+          {
+            paridade++;
+          }
+        }
+      }
+
+      return (paridade % 2 > 0);
     }
   }
 }
