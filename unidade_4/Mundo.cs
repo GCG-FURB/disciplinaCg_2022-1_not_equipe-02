@@ -37,13 +37,27 @@ namespace gcgcg
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            camera.Eye = new Vector3(200, 200, 200);
-            camera.At = new Vector3(0, 0, 0);
+            camera.Eye = new Vector3(
+                (float)Utilitario.MetrosEmPixels(-5.0),
+                (float)Utilitario.MetrosEmPixels(1.5),
+                (float)Utilitario.MetrosEmPixels(1.25)
+            );
+            camera.At = new Vector3(
+                (float)Utilitario.MetrosEmPixels(0.0),
+                (float)Utilitario.MetrosEmPixels(1.5),
+                (float)Utilitario.MetrosEmPixels(1.25)
+            );
+
             camera.Aspect = Width / (float)Height;
             camera.Fovy = (float)Math.PI / 4;
             camera.Far = 2000;
 
-            objetosLista.Add(new Cancha(new Ponto4D(10)));
+            objetosLista.Add(new Cancha(
+                new Ponto4D(),
+                Utilitario.MetrosEmPixels(2.5),
+                Utilitario.MetrosEmPixels(23.0),
+                Utilitario.MetrosEmPixels(1.0)
+            ));
 
             Console.WriteLine(" --- Ajuda / Teclas: ");
             Console.WriteLine(" [  H     ] mostra teclas usadas. ");
@@ -54,18 +68,17 @@ namespace gcgcg
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
-            GL.Viewport(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height);
-            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(camera.Fovy, camera.Aspect, camera.Near, camera.Far);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref projection);
+            DefinirProjecaoCamera();
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            Matrix4 modelview = Matrix4.LookAt(camera.Eye, camera.At, camera.Up);
             GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadIdentity();
+            GL.LoadMatrix(ref modelview);
 
             Sru3D();
 
@@ -82,7 +95,7 @@ namespace gcgcg
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            GL.Viewport(0, 0, Width, Height);
+            DefinirProjecaoCamera();
         }
 
         protected override void OnMouseMove(MouseMoveEventArgs e)
@@ -101,6 +114,14 @@ namespace gcgcg
             {
                 Console.WriteLine(" __ Tecla não implementada.");
             }
+        }
+
+        private void DefinirProjecaoCamera()
+        {
+            GL.Viewport(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height);
+            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(camera.Fovy, camera.Aspect, camera.Near, camera.Far);
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadMatrix(ref projection);
         }
 
         private void Sru3D()
