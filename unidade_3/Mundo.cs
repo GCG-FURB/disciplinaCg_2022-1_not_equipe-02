@@ -239,6 +239,11 @@ namespace gcgcg
       }
       else if (e.Key == Key.C)
       {
+        if (objetoSelecionado == null)
+        {
+          return;
+        }
+        
         RemoverObjetoPorRotulo(objetoSelecionado.Rotulo);
         objetoSelecionado = null;
 
