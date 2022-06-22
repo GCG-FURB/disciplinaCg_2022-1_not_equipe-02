@@ -161,7 +161,7 @@ namespace gcgcg
             else
             {
                 mouseX = null;
-                mouseX = null;
+                mouseY = null;
                 Resetar();
             }
         }
