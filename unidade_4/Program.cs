@@ -121,11 +121,11 @@ namespace Mundo
   }
   class Program
   {
-    // static void Main(string[] args)
-    // {
-    //   GameWindow window = new Mundo(600, 600);
-    //   window.Title = "camera";
-    //   window.Run(1.0 / 60.0);
-    // }
+    static void Main2(string[] args)
+    {
+      GameWindow window = new Mundo(600, 600);
+      window.Title = "camera";
+      window.Run(1.0 / 60.0);
+    }
   }
 }

@@ -81,5 +81,9 @@ namespace gcgcg
     }
 
     public static PrimitiveType ObterPrimitivaAtual() => _primitivasGeometricasParaAlteracao[indexPrimitivaEscolhida];
+
+    public static double MetrosEmPixels(double metros) => CentimetrosEmPixels(metros * 100);
+
+    public static double CentimetrosEmPixels(double centimetros) => centimetros;
   }
 }
