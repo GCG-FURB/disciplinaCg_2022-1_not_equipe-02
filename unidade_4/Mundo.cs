@@ -49,7 +49,6 @@ namespace gcgcg
             );
 
             camera.Aspect = Width / (float)Height;
-            camera.Fovy = (float)Math.PI / 4;
             camera.Far = 2000;
 
             objetosLista.Add(new Cancha(

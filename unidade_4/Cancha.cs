@@ -23,6 +23,7 @@ namespace CG_N3
             FilhoAdicionar(new MuroCancha(PontoInicial, Altura, Comprimento, -20));
             FilhoAdicionar(new MuroCancha(PontoInicial + new Ponto4D(0, 0, Largura), Altura, Comprimento, 20));
             FilhoAdicionar(new ChaoCancha(PontoInicial, Largura, Comprimento));
+            FilhoAdicionar(new FundoCancha(PontoInicial + new Ponto4D(Comprimento), Largura, Altura));
         }
 
         protected override void DesenharGeometria()
@@ -82,6 +83,33 @@ namespace CG_N3
             PontosAdicionar(ponto + new Ponto4D(0, 0, largura));
             PontosAdicionar(ponto + new Ponto4D(comprimento, 0, largura));
             PontosAdicionar(ponto + new Ponto4D(comprimento));
+        }
+
+        protected override void DesenharObjeto()
+        {
+            GL.Begin(PrimitivaTipo);
+
+            foreach (var ponto in pontosLista)
+            {
+                GL.Vertex3(ponto.X, ponto.Y, ponto.Z);
+            }
+
+            GL.End();
+        }
+    }
+
+    class FundoCancha : ObjetoGeometria
+    {
+        public FundoCancha(Ponto4D ponto, double largura, double altura) : base('c', null)
+        {
+            PrimitivaTipo = PrimitiveType.Quads;
+            ObjetoCor = new Cor(255, 0, 255);
+            PrimitivaTamanho = 1;
+
+            PontosAdicionar(ponto);
+            PontosAdicionar(ponto + new Ponto4D(0, 0, largura));
+            PontosAdicionar(ponto + new Ponto4D(0, altura, largura));
+            PontosAdicionar(ponto + new Ponto4D(0, altura));
         }
 
         protected override void DesenharObjeto()
