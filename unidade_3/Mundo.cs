@@ -63,10 +63,6 @@ namespace gcgcg
       Console.WriteLine(" --- Ajuda / Teclas: ");
       Console.WriteLine(" [  H     ] mostra teclas usadas. ");
 
-      objetoId = Utilitario.charProximo(objetoId);
-      poligonoSendoDesenhado = new Poligono(objetoId, null);
-      objetosLista.Add(poligonoSendoDesenhado);
-      
 #if CG_Privado
       objetoId = Utilitario.charProximo(objetoId);
       obj_SegReta = new Privado_SegReta(objetoId, null, new Ponto4D(50, 150), new Ponto4D(150, 250));
@@ -154,10 +150,20 @@ namespace gcgcg
       }
       else if (e.Key == Key.Space)
       {
-        estaSendoDesenhadoPoligono = true;
         
         var mouseXMomento = this.mouseX;
         var mouseYMomento = this.mouseY;
+        
+        estaSendoDesenhadoPoligono = true;
+        
+        if (poligonoSendoDesenhado == null)
+        {
+          ehPrimeiroPontoNoPoligono = true;
+          objetoId = Utilitario.charProximo(objetoId);
+          poligonoSendoDesenhado = new Poligono(objetoId, null);
+
+          AdicionarPoligonoAoMundoOuComoFilhoDoObjetoSelecionado(poligonoSendoDesenhado);
+        }
         
         poligonoSendoDesenhado.PontosAdicionar(new Ponto4D(mouseXMomento, mouseYMomento));
         if (ehPrimeiroPontoNoPoligono)
@@ -246,10 +252,7 @@ namespace gcgcg
         
         RemoverObjetoPorRotulo(objetoSelecionado.Rotulo);
         objetoSelecionado = null;
-
-        objetoId = Utilitario.charProximo(objetoId);
-        poligonoSendoDesenhado = new Poligono(objetoId, null);
-        objetosLista.Add(poligonoSendoDesenhado);
+        poligonoSendoDesenhado = null;
       }
       else if (e.Key == Key.M)
       {
@@ -302,13 +305,7 @@ namespace gcgcg
       estaSendoDesenhadoPoligono = false;
       poligonoSendoDesenhado.PontosRemoverUltimo();
       objetoSelecionado = poligonoSendoDesenhado;
-      
-      ehPrimeiroPontoNoPoligono = true;
-
-      objetoId = Utilitario.charProximo(objetoId);
-      poligonoSendoDesenhado = new Poligono(objetoId, null);
-
-      AdicionarPoligonoAoMundoOuComoFilhoDoObjetoSelecionado(poligonoSendoDesenhado);
+      poligonoSendoDesenhado = null;
     }
 
     private void SelecionarPoligonoAPartirPosicaoMouse(double posicaoXMouse, double posicaoYMouse)
