@@ -103,7 +103,7 @@ namespace CG_N3
         public FundoCancha(Ponto4D ponto, double largura, double altura) : base('c', null)
         {
             PrimitivaTipo = PrimitiveType.Quads;
-            ObjetoCor = new Cor(255, 0, 255);
+            ObjetoCor = new Cor(255, 0, 0);
             PrimitivaTamanho = 1;
 
             PontosAdicionar(ponto);

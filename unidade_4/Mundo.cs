@@ -49,7 +49,7 @@ namespace gcgcg
             );
 
             camera.Aspect = Width / (float)Height;
-            camera.Far = 2000;
+            camera.Far = 3000;
 
             objetosLista.Add(new Cancha(
                 new Ponto4D(),
@@ -57,6 +57,10 @@ namespace gcgcg
                 Utilitario.MetrosEmPixels(23.0),
                 Utilitario.MetrosEmPixels(1.0)
             ));
+
+            var esfera = new Esfera(10);
+            esfera.ObjetoCor = new Cor(255, 0, 0);
+            objetosLista.Add(esfera);
 
             Console.WriteLine(" --- Ajuda / Teclas: ");
             Console.WriteLine(" [  H     ] mostra teclas usadas. ");
