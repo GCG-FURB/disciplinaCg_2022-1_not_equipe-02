@@ -1,7 +1,4 @@
-using System;
-using System.Numerics;
 using CG_Biblioteca;
-using CG_N4;
 
 namespace CG_N4
 {
@@ -10,11 +7,11 @@ namespace CG_N4
         private const int MenorBBox = -1;
         private const int MaiorBBox = 1;
         private const int DentroBBox = 0;
-        
+
         public ColisorBBox(Objeto objeto) : this(objeto, 0)
         {
         }
-        
+
         protected ColisorBBox(Objeto objeto, int prioridade) : base(objeto, prioridade)
         {
         }
