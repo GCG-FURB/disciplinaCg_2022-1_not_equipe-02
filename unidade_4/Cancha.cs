@@ -1,5 +1,4 @@
 using CG_Biblioteca;
-using CG_N4;
 using OpenTK.Graphics.OpenGL;
 
 namespace CG_N4
@@ -44,7 +43,7 @@ namespace CG_N4
             PrimitivaTipo = PrimitiveType.Quads;
             ObjetoCor = new Cor(0);
             PrimitivaTamanho = 1;
-            Colisor = new ColisorBBox(this);
+            Colisor = new ColisorCubo(this);
 
             Altura = altura;
             Comprimento = comprimento;
@@ -132,7 +131,7 @@ namespace CG_N4
             PrimitivaTipo = PrimitiveType.Quads;
             ObjetoCor = new Cor(255, 0, 0);
             PrimitivaTamanho = 1;
-            Colisor = new ColisorBBox(this);
+            Colisor = new ColisorCubo(this);
 
             PontosAdicionar(ponto);
             PontosAdicionar(ponto + new Ponto4D(0, 0, largura));

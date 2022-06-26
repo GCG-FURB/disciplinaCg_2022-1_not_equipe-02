@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using CG_Biblioteca;
 
 namespace CG_N4
@@ -9,9 +8,8 @@ namespace CG_N4
     {
         public readonly Objeto Objeto;
         public readonly List<Objeto> Colisoes = new List<Objeto>();
-        public readonly int Prioridade;
 
-        protected Colisor(Objeto objeto, int prioridade)
+        protected Colisor(Objeto objeto)
         {
             if (objeto == null)
             {
@@ -19,7 +17,6 @@ namespace CG_N4
             }
 
             Objeto = objeto;
-            Prioridade = prioridade;
         }
 
         public bool ExisteColisao(Objeto objeto)
@@ -28,12 +25,28 @@ namespace CG_N4
             {
                 return false;
             }
-            return ProcessarColisao(objeto);
+
+            if (!ExisteColisaoBBox(objeto))
+            {
+                return false;
+            }
+
+            return ProcessarColisaoPrecisa(objeto);
         }
 
-        protected abstract bool ProcessarColisao(Objeto objeto);
+        protected abstract bool ProcessarColisaoPrecisa(Objeto outro);
 
         public abstract Ponto4D GetPontoMaisProximo(Ponto4D origem);
+        
+        protected bool ExisteColisaoBBox(Objeto objeto)
+        {
+            BBox a = Objeto.BBox;
+            BBox b = objeto.BBox;
+            // Intersecção
+            return (a.obterMenorX <= b.obterMaiorX && a.obterMaiorX >= b.obterMenorX) // 
+                   && a.obterMenorY <= b.obterMaiorY && a.obterMaiorY >= b.obterMenorY //
+                   && a.obterMenorZ <= b.obterMaiorZ && a.obterMaiorZ >= b.obterMenorZ;
+        }
 
     }
 }

@@ -236,13 +236,11 @@ namespace CG_N4
         {
             if (a.Colisor != null && b.Colisor != null)
             {
-                Objeto maiorPrioridade = a.Colisor.Prioridade > b.Colisor.Prioridade ? a : b;
-                Objeto menorPrioridade = a.Colisor.Prioridade <= b.Colisor.Prioridade ? a : b;
-                if (maiorPrioridade.Colisor.ExisteColisao(menorPrioridade))
+                if (a.Colisor.ExisteColisao(b))
                 {
                     a.OnColisao(b);
                     b.OnColisao(a);
-                    
+
                     a.Colisor.Colisoes.Add(b);
                     b.Colisor.Colisoes.Add(a);
                 }

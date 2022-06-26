@@ -1,38 +1,28 @@
-using System;
 using CG_Biblioteca;
 using OpenTK;
 
 namespace CG_N4
 {
-    public class ColisorEsfera : ColisorBBox
+    public class ColisorEsfera : Colisor
     {
         private readonly float Raio;
 
         public ColisorEsfera(Esfera esfera) : this(objeto: esfera, raio: esfera.Raio)
         {
-            
         }
-        
-        public ColisorEsfera(Objeto objeto, float raio) : base(objeto, 1)
+
+        public ColisorEsfera(Objeto objeto, float raio) : base(objeto)
         {
             Raio = raio;
         }
 
-        protected override bool ProcessarColisao(Objeto objeto)
+        protected override bool ProcessarColisaoPrecisa(Objeto outro)
         {
-            if (base.ProcessarColisao(objeto))
-            {
-                Ponto4D centro = Objeto.BBox.obterCentro;
-
-                Ponto4D pontoMaisProximo = objeto.Colisor.GetPontoMaisProximo(centro);
-                double distancia = Matematica.Distancia(centro, pontoMaisProximo);
-                Console.WriteLine(GetType() + " - " + Objeto.GetType()+ "[" + Objeto.Rotulo + "] -> " + objeto.GetType() + "[" + objeto.Rotulo + "] -  Distância: " + distancia + " - " + (distancia <= Raio ? "Colisão por raio" : "Sem colisão por raio"));
-                return distancia <= Raio;
-            }
-
-            Console.WriteLine(GetType() + " - " + Objeto.GetType()+ "[" + Objeto.Rotulo + "] -> " + objeto.GetType() + "[" + objeto.Rotulo + "] -  Sem colisão por BBOX");
-
-            return false;
+            Ponto4D centro = Objeto.BBox.obterCentro;
+            Ponto4D pontoMaisProximo = outro.Colisor.GetPontoMaisProximo(centro);
+            double distancia = Matematica.Distancia(centro, pontoMaisProximo);
+            // Console.WriteLine(GetType() + " - " + Objeto.GetType()+ "[" + Objeto.Rotulo + "] -> " + objeto.GetType() + "[" + objeto.Rotulo + "] -  Distância: " + distancia + " - " + (distancia <= Raio ? "Colisão por raio" : "Sem colisão por raio"));
+            return distancia <= Raio;
         }
 
         public override Ponto4D GetPontoMaisProximo(Ponto4D pontoOrigem)

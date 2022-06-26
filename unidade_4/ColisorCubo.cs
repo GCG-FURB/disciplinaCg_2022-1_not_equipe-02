@@ -2,28 +2,28 @@ using CG_Biblioteca;
 
 namespace CG_N4
 {
-    public class ColisorBBox : Colisor
+    public class ColisorCubo : Colisor
     {
         private const int MenorBBox = -1;
         private const int MaiorBBox = 1;
         private const int DentroBBox = 0;
 
-        public ColisorBBox(Objeto objeto) : this(objeto, 0)
+        public ColisorCubo(Objeto objeto) : base(objeto)
         {
         }
 
-        protected ColisorBBox(Objeto objeto, int prioridade) : base(objeto, prioridade)
+        protected override bool ProcessarColisaoPrecisa(Objeto outro)
         {
-        }
+            // se é colisor de Cubo também, a BBox já é o suficiente!
+            if (outro.Colisor.GetType().IsInstanceOfType(GetType()))
+            {
+                return true;
+            }
 
-        protected override bool ProcessarColisao(Objeto objeto)
-        {
-            BBox a = Objeto.BBox;
-            BBox b = objeto.BBox;
-            // Intersecção
-            return (a.obterMenorX <= b.obterMaiorX && a.obterMaiorX >= b.obterMenorX) // 
-                   && a.obterMenorY <= b.obterMaiorY && a.obterMaiorY >= b.obterMenorY //
-                   && a.obterMenorZ <= b.obterMaiorZ && a.obterMaiorZ >= b.obterMenorZ;
+            BBox bbox = Objeto.BBox;
+            Ponto4D ponto = outro.Colisor.GetPontoMaisProximo(bbox.obterCentro);
+            return (bbox.obterMenorX <= ponto.X && bbox.obterMaiorX >= ponto.X)
+                   && (bbox.obterMenorY <= ponto.Y && bbox.obterMaiorY >= ponto.Y);
         }
 
         public override Ponto4D GetPontoMaisProximo(Ponto4D origem)

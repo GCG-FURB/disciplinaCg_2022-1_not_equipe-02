@@ -22,7 +22,7 @@ namespace CG_N4
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             // 10cm/s
-            float velocidade = (float)Utilitario.CentimetrosEmPixels(10);
+            float velocidade = (float)Utilitario.CentimetrosEmPixels(40);
 
             // qual a distância percorrida desde o último frame 
             float delta = (float)e.Time * velocidade;
