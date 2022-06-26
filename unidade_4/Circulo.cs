@@ -1,7 +1,7 @@
 using CG_Biblioteca;
 using OpenTK.Graphics.OpenGL;
 
-namespace gcgcg
+namespace CG_N4
 {
     internal class Circulo : Objeto
     {

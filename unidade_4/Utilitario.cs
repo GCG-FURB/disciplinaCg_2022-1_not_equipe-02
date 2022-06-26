@@ -5,7 +5,7 @@
 using System;
 using OpenTK.Graphics.OpenGL;
 
-namespace gcgcg
+namespace CG_N4
 {
   public abstract class Utilitario
   {

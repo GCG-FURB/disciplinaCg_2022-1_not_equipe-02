@@ -1,7 +1,7 @@
 ﻿using CG_Biblioteca;
 using OpenTK.Graphics.OpenGL;
 
-namespace gcgcg
+namespace CG_N4
 {
     internal class SegReta : ObjetoGeometria
     {
@@ -10,17 +10,6 @@ namespace gcgcg
             PrimitivaTipo = PrimitiveType.Lines;
             PontosAdicionar(pontoA);
             PontosAdicionar(pontoB);
-        }
-
-        protected override void DesenharObjeto()
-        {
-            GL.Begin(PrimitivaTipo);
-            foreach (var ponto in pontosLista)
-            {
-                GL.Vertex3(ponto.X, ponto.Y, ponto.Z);
-            }
-
-            GL.End();
         }
     }
 }

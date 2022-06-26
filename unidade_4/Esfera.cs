@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
-using gcgcg;
+using CG_Biblioteca;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace CG_N3
+namespace CG_N4
 {
     public class Esfera : Objeto
     {
@@ -14,11 +15,11 @@ namespace CG_N3
         private List<float> Vertices = new List<float>();
         private List<float> Normals = new List<float>();
         private List<float> TexCoords = new List<float>();
-        private List<float> InterleavedVertices = new List<float>();
-        private List<uint> Indices = new List<uint>();
-        private List<uint> LineIndices = new List<uint>();
 
-        public Esfera(float raio, uint stackCount = 72, uint sectorCount = 32) : base(Utilitario.charProximo(), null)
+        private float[] InterleavedVertices = Array.Empty<float>();
+        private uint[] Indices = Array.Empty<uint>();
+
+        public Esfera(float raio, uint stackCount = 32, uint sectorCount = 32) : base(Utilitario.charProximo(), null)
         {
             Set(raio, stackCount, sectorCount);
         }
@@ -30,12 +31,18 @@ namespace CG_N3
             StackCount = stacks;
 
             BuildVertices();
+
+            BBox.Atribuir(new Ponto4D(-radius, -radius, -radius));
+            BBox.Atualizar(new Ponto4D(radius, radius, radius));
+            BBox.ProcessarCentro();
         }
 
         private void BuildVertices()
         {
             // clear memory of prev arrays
             ClearArrays();
+
+            List<uint> indices = new List<uint>((int)(StackCount * SectorCount * 3 * 2));
 
             float x, y, z, xy; // vertex position
             float nx, ny, nz, lengthInv = 1.0f / Radius; // normal
@@ -91,24 +98,17 @@ namespace CG_N3
                     // 2 triangles per sector excluding 1st and last stacks
                     if (i != 0)
                     {
-                        AddIndices(k1, k2, k1 + 1); // k1---k2---k1+1
+                        AddIndices(indices, k1, k2, k1 + 1); // k1---k2---k1+1
                     }
 
                     if (i != (StackCount - 1))
                     {
-                        AddIndices(k1 + 1, k2, k2 + 1); // k1+1---k2---k2+1
-                    }
-
-                    // vertical lines for all stacks
-                    LineIndices.Add(k1);
-                    LineIndices.Add(k2);
-                    if (i != 0) // horizontal lines except 1st stack
-                    {
-                        LineIndices.Add(k1);
-                        LineIndices.Add(k1 + 1);
+                        AddIndices(indices, k1 + 1, k2, k2 + 1); // k1+1---k2---k2+1
                     }
                 }
             }
+
+            Indices = indices.ToArray();
 
             // generate interleaved vertex array as well
             BuildInterleavedVertices();
@@ -116,28 +116,28 @@ namespace CG_N3
 
         private void BuildInterleavedVertices()
         {
-            InterleavedVertices.Clear();
-
-            for(int i = 0, j = 0; i < Vertices.Count; i += 3, j += 2)
+            int x = 0;
+            InterleavedVertices = new float[Vertices.Count * 8];
+            for (int i = 0, j = 0; i < Vertices.Count; i += 3, j += 2)
             {
-                InterleavedVertices.Add(Vertices[i]);
-                InterleavedVertices.Add(Vertices[i+1]);
-                InterleavedVertices.Add(Vertices[i+2]);
+                InterleavedVertices[x++] = Vertices[i];
+                InterleavedVertices[x++] = Vertices[i + 1];
+                InterleavedVertices[x++] = Vertices[i + 2];
 
-                InterleavedVertices.Add(Normals[i]);
-                InterleavedVertices.Add(Normals[i+1]);
-                InterleavedVertices.Add(Normals[i+2]);
+                InterleavedVertices[x++] = Normals[i];
+                InterleavedVertices[x++] = Normals[i + 1];
+                InterleavedVertices[x++] = Normals[i + 2];
 
-                InterleavedVertices.Add(TexCoords[j]);
-                InterleavedVertices.Add(TexCoords[j+1]);
+                InterleavedVertices[x++] = TexCoords[j];
+                InterleavedVertices[x++] = TexCoords[j + 1];
             }
         }
 
-        private void AddIndices(uint i1, uint i2, uint i3)
+        private void AddIndices(List<uint> indices, uint i1, uint i2, uint i3)
         {
-            Indices.Add(i1);
-            Indices.Add(i2);
-            Indices.Add(i3);
+            indices.Add(i1);
+            indices.Add(i2);
+            indices.Add(i3);
         }
 
         private void AddVertex(float x, float y, float z)
@@ -165,9 +165,7 @@ namespace CG_N3
             Vertices.Clear();
             Normals.Clear();
             TexCoords.Clear();
-
-            Indices.Clear();
-            LineIndices.Clear();
+            Indices = Array.Empty<uint>();
         }
 
         protected override void DesenharGeometria()
@@ -176,12 +174,11 @@ namespace CG_N3
             GL.EnableClientState(ArrayCap.NormalArray);
             GL.EnableClientState(ArrayCap.TextureCoordArray);
 
-            var floats = InterleavedVertices.ToArray();
-            GL.VertexPointer(3, VertexPointerType.Float, 32, ref floats[0]);
-            GL.NormalPointer(NormalPointerType.Float, 32, ref floats[3]);
-            GL.TexCoordPointer(2, TexCoordPointerType.Float, 32, ref floats[6]);
+            GL.VertexPointer(3, VertexPointerType.Float, 32, ref InterleavedVertices[0]);
+            GL.NormalPointer(NormalPointerType.Float, 32, ref InterleavedVertices[3]);
+            GL.TexCoordPointer(2, TexCoordPointerType.Float, 32, ref InterleavedVertices[6]);
 
-            GL.DrawElements(PrimitiveType.Triangles, Indices.Count, DrawElementsType.UnsignedInt, ref Indices.ToArray()[0]);
+            GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, ref Indices[0]);
 
             GL.DisableClientState(ArrayCap.VertexArray);
             GL.DisableClientState(ArrayCap.NormalArray);
