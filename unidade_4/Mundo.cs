@@ -58,12 +58,17 @@ namespace CG_N4
                 Utilitario.MetrosEmPixels(1.0)
             ));
 
-            var esfera = new EsferaTeste(10);
+            var esfera = new EsferaTeste(10, new Vector3(1, 0, 0));
             esfera.ObjetoCor = new Cor(255, 0, 0);
             esfera.Translacao(0, 10, 125);
             Objetos.Add(esfera);
+            
+            esfera = new EsferaTeste(10, new Vector3(0.8f, 0, 0.2f));
+            esfera.ObjetoCor = new Cor(0, 255, 0);
+            esfera.Translacao(0, 10, 125);
+            Objetos.Add(esfera);
 
-            ObjetoSelecionado = esfera;
+            // ObjetoSelecionado = esfera;
 
             Console.WriteLine(" --- Ajuda / Teclas: ");
             Console.WriteLine(" [  H     ] mostra teclas usadas. ");
