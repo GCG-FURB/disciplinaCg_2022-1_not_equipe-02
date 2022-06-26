@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 using CG_Biblioteca;
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace CG_N4
 {
     public class Esfera : Objeto
     {
-        private float Radius;
-        private uint StackCount;
-        private uint SectorCount;
+        public float Raio;
+        private uint Stacks;
+        private uint Setores;
 
         private List<float> Vertices = new List<float>();
         private List<float> Normals = new List<float>();
@@ -22,18 +21,19 @@ namespace CG_N4
         public Esfera(float raio, uint stackCount = 32, uint sectorCount = 32) : base(Utilitario.charProximo(), null)
         {
             Set(raio, stackCount, sectorCount);
+            Colisor = new ColisorEsfera(this);
         }
 
-        private void Set(float radius, uint sectors, uint stacks)
+        private void Set(float raio, uint setores, uint stacks)
         {
-            Radius = radius;
-            SectorCount = sectors;
-            StackCount = stacks;
+            Raio = raio;
+            Setores = setores;
+            Stacks = stacks;
 
             BuildVertices();
 
-            BBox.Atribuir(new Ponto4D(-radius, -radius, -radius));
-            BBox.Atualizar(new Ponto4D(radius, radius, radius));
+            BBox.Atribuir(new Ponto4D(-raio, -raio, -raio));
+            BBox.Atualizar(new Ponto4D(raio, raio, raio));
             BBox.ProcessarCentro();
         }
 
@@ -42,25 +42,25 @@ namespace CG_N4
             // clear memory of prev arrays
             ClearArrays();
 
-            List<uint> indices = new List<uint>((int)(StackCount * SectorCount * 3 * 2));
+            List<uint> indices = new List<uint>((int)(Stacks * Setores * 3 * 2));
 
             float x, y, z, xy; // vertex position
-            float nx, ny, nz, lengthInv = 1.0f / Radius; // normal
+            float nx, ny, nz, lengthInv = 1.0f / Raio; // normal
             float s, t; // texCoord
 
-            float sectorStep = (float)(2.0 * Math.PI) / SectorCount;
-            float stackStep = (float)Math.PI / StackCount;
+            float sectorStep = (float)(2.0 * Math.PI) / Setores;
+            float stackStep = (float)Math.PI / Stacks;
             float sectorAngle, stackAngle;
 
-            for (int i = 0; i <= StackCount; ++i)
+            for (int i = 0; i <= Stacks; ++i)
             {
                 stackAngle = (float)Math.PI / 2 - i * stackStep; // starting from pi/2 to -pi/2
-                xy = (float)(Radius * Math.Cos(stackAngle)); // r * cos(u)
-                z = (float)(Radius * Math.Sin(stackAngle)); // r * sin(u)
+                xy = (float)(Raio * Math.Cos(stackAngle)); // r * cos(u)
+                z = (float)(Raio * Math.Sin(stackAngle)); // r * sin(u)
 
                 // add (sectorCount+1) vertices per stack
                 // the first and last vertices have same position and normal, but different tex coords
-                for (int j = 0; j <= SectorCount; ++j)
+                for (int j = 0; j <= Setores; ++j)
                 {
                     sectorAngle = j * sectorStep; // starting from 0 to 2pi
 
@@ -76,8 +76,8 @@ namespace CG_N4
                     AddNormal(nx, ny, nz);
 
                     // vertex tex coord between [0, 1]
-                    s = (float)j / SectorCount;
-                    t = (float)i / StackCount;
+                    s = (float)j / Setores;
+                    t = (float)i / Stacks;
                     AddTexCoord(s, t);
                 }
             }
@@ -88,12 +88,12 @@ namespace CG_N4
             //  | /  |
             //  k2--k2+1
             uint k1, k2;
-            for (uint i = 0; i < StackCount; ++i)
+            for (uint i = 0; i < Stacks; ++i)
             {
-                k1 = i * (SectorCount + 1); // beginning of current stack
-                k2 = k1 + SectorCount + 1; // beginning of next stack
+                k1 = i * (Setores + 1); // beginning of current stack
+                k2 = k1 + Setores + 1; // beginning of next stack
 
-                for (uint j = 0; j < SectorCount; ++j, ++k1, ++k2)
+                for (uint j = 0; j < Setores; ++j, ++k1, ++k2)
                 {
                     // 2 triangles per sector excluding 1st and last stacks
                     if (i != 0)
@@ -101,7 +101,7 @@ namespace CG_N4
                         AddIndices(indices, k1, k2, k1 + 1); // k1---k2---k1+1
                     }
 
-                    if (i != (StackCount - 1))
+                    if (i != (Stacks - 1))
                     {
                         AddIndices(indices, k1 + 1, k2, k2 + 1); // k1+1---k2---k2+1
                     }

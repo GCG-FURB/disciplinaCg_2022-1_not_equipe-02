@@ -44,12 +44,17 @@ namespace CG_N4
             PrimitivaTipo = PrimitiveType.Quads;
             ObjetoCor = new Cor(0);
             PrimitivaTamanho = 1;
+            Colisor = new ColisorBBox(this);
 
             Altura = altura;
             Comprimento = comprimento;
             Largura = largura;
             Esquerda = esquerda;
             PontoInicial = ponto;
+            
+            BBox.Atribuir(ponto);
+            BBox.Atualizar(ponto + new Ponto4D(comprimento, altura, Esquerda ? largura * -1 : largura));
+            BBox.ProcessarCentro();
         }
 
         protected override void DesenharGeometria()
@@ -127,11 +132,16 @@ namespace CG_N4
             PrimitivaTipo = PrimitiveType.Quads;
             ObjetoCor = new Cor(255, 0, 0);
             PrimitivaTamanho = 1;
+            Colisor = new ColisorBBox(this);
 
             PontosAdicionar(ponto);
             PontosAdicionar(ponto + new Ponto4D(0, 0, largura));
             PontosAdicionar(ponto + new Ponto4D(0, altura, largura));
             PontosAdicionar(ponto + new Ponto4D(0, altura));
+            
+            BBox.Atribuir(ponto);
+            BBox.Atualizar(ponto + new Ponto4D(0, altura, largura));
+            BBox.ProcessarCentro();
         }
     }
 }

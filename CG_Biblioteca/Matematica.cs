@@ -39,7 +39,7 @@ namespace CG_Biblioteca
 
     public static double Distancia(Ponto4D pontoA, Ponto4D pontoB)
     {
-      return Math.Sqrt((Math.Pow(pontoA.X - pontoB.X, 2) + Math.Pow(pontoA.Y - pontoB.Y, 2)));
+      return Math.Sqrt((Math.Pow(pontoA.X - pontoB.X, 2) + Math.Pow(pontoA.Y - pontoB.Y, 2) + Math.Pow(pontoA.Z - pontoB.Z, 2)));
     }
   }
 }

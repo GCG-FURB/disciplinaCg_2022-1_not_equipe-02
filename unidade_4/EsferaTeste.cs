@@ -1,3 +1,4 @@
+using System;
 using OpenTK;
 
 namespace CG_N4
@@ -12,19 +13,31 @@ namespace CG_N4
             Direcao = direcao;
         }
 
+        protected override void DesenharGeometria()
+        {
+            base.DesenharGeometria();
+            BBox.Desenhar();
+        }
+
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             // 10cm/s
-            float velocidade = (float) Utilitario.CentimetrosEmPixels(10);
-            
+            float velocidade = (float)Utilitario.CentimetrosEmPixels(10);
+
             // qual a distância percorrida desde o último frame 
             float delta = (float)e.Time * velocidade;
-            
+
             // calcula o deslocamento
             Vector3 deslocamento = Direcao * delta;
-            
+
             // adiciona o deslocamento no objeto
             Translacao(deslocamento.X, deslocamento.Y, deslocamento.Z);
+        }
+
+        public override void OnColisao(Objeto outro)
+        {
+            Console.WriteLine(GetType() + "[" + Rotulo + "] - Colisão com o " + outro.GetType() + "[" + outro.Rotulo +
+                              "]");
         }
     }
 }

@@ -13,21 +13,7 @@ namespace CG_N4
 {
     class Mundo : GameWindow
     {
-        private static Mundo instanciaMundo;
-
-        private Mundo(int width, int height) : base(width, height)
-        {
-        }
-
-        public static Mundo GetInstance(int width, int height)
-        {
-            if (instanciaMundo == null)
-            {
-                instanciaMundo = new Mundo(width, height);
-            }
-
-            return instanciaMundo;
-        }
+        private static Mundo _instancia;
 
         private const float MouseSensibility = 0.05f;
         private const float CameraSpeed = 100.0f;
@@ -35,6 +21,20 @@ namespace CG_N4
         private readonly CameraPerspective Camera = new CameraPerspective();
         private List<Objeto> Objetos = new List<Objeto>();
         private Objeto ObjetoSelecionado = null;
+
+        private Mundo(int width, int height) : base(width, height)
+        {
+        }
+
+        public static Mundo GetInstance()
+        {
+            if (_instancia == null)
+            {
+                _instancia = new Mundo(1280, 720);
+            }
+
+            return _instancia;
+        }
 
         protected override void OnLoad(EventArgs e)
         {
@@ -62,7 +62,7 @@ namespace CG_N4
             esfera.ObjetoCor = new Cor(255, 0, 0);
             esfera.Translacao(0, 10, 125);
             Objetos.Add(esfera);
-            
+
             esfera = new EsferaTeste(10, new Vector3(0.8f, 0, 0.2f));
             esfera.ObjetoCor = new Cor(0, 255, 0);
             esfera.Translacao(0, 10, 125);
@@ -86,6 +86,7 @@ namespace CG_N4
                 ProcessarCameraMouse();
                 ProcessarObjetos(e);
             }
+
             MouseCG.ResetarDelta();
         }
 
@@ -128,14 +129,15 @@ namespace CG_N4
                     Point center = new Point(Width / 2, Height / 2);
                     if (e.X == center.X && e.Y == center.Y)
                     {
-                        // It's the "SetPosition" event, must be ignored!
+                        // É o evento do SetPosition, precisa ser ignorado.
                         return;
                     }
+
                     int deltaX = e.XDelta;
                     int deltaY = e.YDelta;
                     MouseCG.AtualizarDelta(deltaX, deltaY);
 
-                    // Reset cursor to center
+                    // Reseta o cursor no centro da tela
                     Point pointToScreen = PointToScreen(center);
                     OpenTK.Input.Mouse.SetPosition(pointToScreen.X, pointToScreen.Y);
                 }
@@ -196,9 +198,66 @@ namespace CG_N4
 
         private void ProcessarObjetos(FrameEventArgs e)
         {
+            ProcessarColisaoObjetos();
             foreach (Objeto objeto in Objetos)
             {
                 objeto.UpdateFrame(e);
+            }
+        }
+
+        private void ProcessarColisaoObjetos()
+        {
+            foreach (Objeto objeto in Objetos)
+            {
+                LimparColisoes(objeto);
+            }
+
+            for (int i = 0; i < Objetos.Count; i++)
+            {
+                Objeto objetoA = Objetos[i];
+                for (int x = i + 1; x < Objetos.Count; x++)
+                {
+                    Objeto objetoB = Objetos[x];
+                    ProcessarColisaoObjetos(objetoA, objetoB);
+                }
+            }
+        }
+
+        private void LimparColisoes(Objeto objeto)
+        {
+            objeto.Colisor?.Colisoes.Clear();
+            foreach (Objeto filho in objeto.GetFilhos())
+            {
+                LimparColisoes(filho);
+            }
+        }
+
+        private void ProcessarColisaoObjetos(Objeto a, Objeto b)
+        {
+            if (a.Colisor != null && b.Colisor != null)
+            {
+                Objeto maiorPrioridade = a.Colisor.Prioridade > b.Colisor.Prioridade ? a : b;
+                Objeto menorPrioridade = a.Colisor.Prioridade <= b.Colisor.Prioridade ? a : b;
+                if (maiorPrioridade.Colisor.ExisteColisao(menorPrioridade))
+                {
+                    a.OnColisao(b);
+                    b.OnColisao(a);
+                    
+                    a.Colisor.Colisoes.Add(b);
+                    b.Colisor.Colisoes.Add(a);
+                }
+            }
+
+            IReadOnlyList<Objeto> filhosA = a.GetFilhos();
+            foreach (Objeto filhoA in filhosA)
+            {
+                ProcessarColisaoObjetos(filhoA, b);
+
+                IReadOnlyList<Objeto> filhosB = b.GetFilhos();
+                foreach (Objeto filhoB in filhosB)
+                {
+                    ProcessarColisaoObjetos(filhoA, filhoB);
+                }
             }
         }
 
@@ -288,7 +347,7 @@ namespace CG_N4
         {
             ToolkitOptions.Default.EnableHighResolution = false;
 
-            Mundo window = Mundo.GetInstance(1280, 720);
+            Mundo window = Mundo.GetInstance();
             window.Title = "CG_N4";
             window.Run(1.0 / 60.0);
         }

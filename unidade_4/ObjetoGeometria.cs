@@ -58,38 +58,32 @@ namespace CG_N4
             return Pontos[Pontos.Count - 1];
         }
 
-        public void PontosAlterar(Ponto4D pto, int posicao)
-        {
-            Pontos[posicao] = pto;
-        }
-
         public void PontosRemover(int index)
         {
             Pontos.RemoveAt(index);
         }
 
-        public (bool EstaDentro, ObjetoGeometria poligonoSelecionado) VerificarSeCoordenadaEstaDentro(
-            Ponto4D coordenada)
+        public Objeto GetObjetoDentro(Ponto4D coordenada)
         {
-            var estaDentroBBox = VerificarSeCoordenadaEstaDentroBBox(coordenada);
-            if (estaDentroBBox)
-            {
-                // if (ExecutarScanline(coordenada))
-                // {
-                //   return (true, this);
-                // }
-            }
-
-            // foreach (ObjetoGeometria objetoGeometria in ObterObjetosFilhos())
+            // var estaDentroBBox = VerificarSeCoordenadaEstaDentroBBox(coordenada);
+            // if (estaDentroBBox)
             // {
-            //   var verificacaoEstaDentroDeUmFilho = objetoGeometria.VerificarSeCoordenadaEstaDentro(coordenada);
-            //   if (verificacaoEstaDentroDeUmFilho.EstaDentro)
-            //   {
-            //     return verificacaoEstaDentroDeUmFilho;
-            //   }
+            //     // if (ExecutarScanline(coordenada))
+            //     // {
+            //     //   return (true, this);
+            //     // }
             // }
+            //
+            // // foreach (ObjetoGeometria objetoGeometria in ObterObjetosFilhos())
+            // // {
+            // //   var verificacaoEstaDentroDeUmFilho = objetoGeometria.VerificarSeCoordenadaEstaDentro(coordenada);
+            // //   if (verificacaoEstaDentroDeUmFilho.EstaDentro)
+            // //   {
+            // //     return verificacaoEstaDentroDeUmFilho;
+            // //   }
+            // // }
 
-            return (false, null);
+            return null;
         }
 
         // public (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) ObterVerticeMaisProximo(Ponto4D pontoCoordenadaMouse, (double menorDistancia, Poligono poligonoMenorDistancia, Ponto4D coordenadaMenorDistancia, int indexPontoMenorDistancia) resultadoCalculo)
@@ -130,21 +124,6 @@ namespace CG_N4
             }
 
             return retorno;
-        }
-
-        private bool VerificarSeCoordenadaEstaDentroBBox(Ponto4D coordenada)
-        {
-            return EstaDentroBBoxCoordenadaX(coordenada) && EstaDentroBBoxCoordenadaY(coordenada);
-        }
-
-        private bool EstaDentroBBoxCoordenadaX(Ponto4D ponto)
-        {
-            return ponto.X >= BBox.obterMenorX && ponto.X <= BBox.obterMaiorX;
-        }
-
-        private bool EstaDentroBBoxCoordenadaY(Ponto4D ponto)
-        {
-            return ponto.Y >= BBox.obterMenorY && ponto.Y <= BBox.obterMaiorY;
         }
 
         // private bool ExecutarScanline(Ponto4D coordenada)

@@ -17,6 +17,7 @@ namespace CG_N4
         public PrimitiveType PrimitivaTipo { get; set; } = PrimitiveType.LineLoop;
         public float PrimitivaTamanho { get; set; } = 1;
         public BBox BBox { get; } = new BBox();
+        public Colisor Colisor { get; protected set; }
 
         public Object Pai { get; }
         private List<Objeto> Filhos = new List<Objeto>();
@@ -59,6 +60,11 @@ namespace CG_N4
             Filhos.Remove(filho);
         }
 
+        public IReadOnlyList<Objeto> GetFilhos()
+        {
+            return Filhos.AsReadOnly();
+        }
+
         public void ImprimirMatrizTransformacao() => Console.WriteLine(MatrizTransformacao);
 
         public void AtribuirMatrizIdentidade()
@@ -76,7 +82,7 @@ namespace CG_N4
             MatrizTransformacao.MultiplicarMatriz(tmp);
 
             Transformacao4DFactory.Offer(tmp);
-            
+
             // aplica a translaçao na BBox
             BBox.Translacao(tx, ty, tz);
         }
@@ -170,7 +176,13 @@ namespace CG_N4
 
         protected virtual void OnUpdateFrame(FrameEventArgs e)
         {
-            
+        }
+
+        public virtual void OnColisao(Objeto outro)
+        {
+            // TODO: Sentido (vetor de sentido)
+            //       Intensidade (Se o objeto colisor possui 10cm/s e são entregues 5cm/s de aceleração, o evento precisa vir com 5cm/s)
+            //       Objeto gerador da colisão
         }
     }
 }

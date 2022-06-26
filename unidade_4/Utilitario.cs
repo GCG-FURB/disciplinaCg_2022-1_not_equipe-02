@@ -26,7 +26,7 @@ namespace CG_N4
     }; 
     
     public static char charProximo() {
-      return Convert.ToChar(objetoIdAtual + 1);
+      return Convert.ToChar(++objetoIdAtual);
     }
     public static void AjudaTeclado()
     {
