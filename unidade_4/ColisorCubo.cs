@@ -14,7 +14,7 @@ namespace CG_N4
 
         protected override bool ProcessarColisaoPrecisa(Objeto outro)
         {
-            // se é colisor de Cubo também, a BBox já é o suficiente!
+            // se é colisor de Cubo, a BBox já é o suficiente!
             if (outro.Colisor.GetType().IsInstanceOfType(GetType()))
             {
                 return true;

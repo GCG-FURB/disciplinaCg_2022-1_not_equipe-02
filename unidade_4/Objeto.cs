@@ -18,6 +18,7 @@ namespace CG_N4
         public float PrimitivaTamanho { get; set; } = 1;
         public BBox BBox { get; } = new BBox();
         public Colisor Colisor { get; protected set; }
+        public ForcaFisica ForcaFisica { get; protected set; } = new ForcaFisica();
 
         public Object Pai { get; }
         private List<Objeto> Filhos = new List<Objeto>();
@@ -178,11 +179,8 @@ namespace CG_N4
         {
         }
 
-        public virtual void OnColisao(Objeto outro)
+        public virtual void OnColisao(EventoColisao e)
         {
-            // TODO: Sentido (vetor de sentido)
-            //       Intensidade (Se o objeto colisor possui 10cm/s e são entregues 5cm/s de aceleração, o evento precisa vir com 5cm/s)
-            //       Objeto gerador da colisão
         }
     }
 }

@@ -58,15 +58,29 @@ namespace CG_N4
                 Utilitario.MetrosEmPixels(1.0)
             ));
 
-            var esfera = new EsferaTeste(10, new Vector3(1, 0, 0));
+            var esfera = new EsferaTeste(10);
+            esfera.ForcaFisica.Aceleracao += new Vector3(5.0f, 0.0f, 0.0f);
             esfera.ObjetoCor = new Cor(255, 0, 0);
             esfera.Translacao(0, 10, 125);
             Objetos.Add(esfera);
-
-            esfera = new EsferaTeste(10, new Vector3(0.8f, 0, 0.2f));
+            
+            esfera = new EsferaTeste(10);
+            esfera.ForcaFisica.Aceleracao += new Vector3(2.5f, 0, -2.5f);
             esfera.ObjetoCor = new Cor(0, 255, 0);
-            esfera.Translacao(0, 10, 125);
+            esfera.Translacao(0, 10, 150);
             Objetos.Add(esfera);
+
+            // var esfera = new EsferaTeste(10);
+            // esfera.ForcaFisica.Aceleracao += new Vector3(10f, 0.0f, 0.0f);
+            // esfera.ObjetoCor = new Cor(255, 0, 0);
+            // esfera.Translacao(0, 10, 125);
+            // Objetos.Add(esfera);
+            //
+            // esfera = new EsferaTeste(10);
+            // esfera.ForcaFisica.Aceleracao += new Vector3(-20.0f, 0, 0.0f);
+            // esfera.ObjetoCor = new Cor(0, 255, 0);
+            // esfera.Translacao(200, 10, 125);
+            // Objetos.Add(esfera);
 
             // ObjetoSelecionado = esfera;
 
@@ -207,11 +221,6 @@ namespace CG_N4
 
         private void ProcessarColisaoObjetos()
         {
-            foreach (Objeto objeto in Objetos)
-            {
-                LimparColisoes(objeto);
-            }
-
             for (int i = 0; i < Objetos.Count; i++)
             {
                 Objeto objetoA = Objetos[i];
@@ -223,26 +232,29 @@ namespace CG_N4
             }
         }
 
-        private void LimparColisoes(Objeto objeto)
-        {
-            objeto.Colisor?.Colisoes.Clear();
-            foreach (Objeto filho in objeto.GetFilhos())
-            {
-                LimparColisoes(filho);
-            }
-        }
-
         private void ProcessarColisaoObjetos(Objeto a, Objeto b)
         {
             if (a.Colisor != null && b.Colisor != null)
             {
                 if (a.Colisor.ExisteColisao(b))
                 {
-                    a.OnColisao(b);
-                    b.OnColisao(a);
+                    // já disparou o evento da colisão, ignora rapidamente!
+                    if (!a.Colisor.Colisoes.Contains(b))
+                    {
+                        Vector3 aceleracaoA = a.ForcaFisica.Aceleracao;
+                        Vector3 aceleracaoB = b.ForcaFisica.Aceleracao;
 
-                    a.Colisor.Colisoes.Add(b);
-                    b.Colisor.Colisoes.Add(a);
+                        a.Colisor.Colisoes.Add(b);
+                        b.Colisor.Colisoes.Add(a);
+
+                        a.OnColisao(new EventoColisao(b, new ForcaFisica(aceleracaoB)));
+                        b.OnColisao(new EventoColisao(a, new ForcaFisica(aceleracaoA)));
+                    }
+                }
+                else
+                {
+                    a.Colisor.Colisoes.Remove(b);
+                    b.Colisor.Colisoes.Remove(a);
                 }
             }
 
