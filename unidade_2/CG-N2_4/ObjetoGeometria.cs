@@ -7,7 +7,7 @@ using CG_Biblioteca;
 
 namespace gcgcg
 {
-  internal abstract class ObjetoGeometria : Objetow
+  internal abstract class ObjetoGeometria : Objeto
   {
     protected List<Ponto4D> pontosLista = new List<Ponto4D>();
 

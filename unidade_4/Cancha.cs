@@ -42,7 +42,7 @@ namespace CG_N4
             : base('c', null)
         {
             PrimitivaTipo = PrimitiveType.Quads;
-            ObjetoCor = new Cor(0);
+            ObjetoCor = new Cor(222, 184, 135);
             PrimitivaTamanho = 1;
             Colisor = new ColisorCubo(this);
             ForcaFisica.Massa = 2 * 1000 * 1000 * 1000;
@@ -52,13 +52,72 @@ namespace CG_N4
             Largura = largura;
             Esquerda = esquerda;
             PontoInicial = ponto;
-            
+
             BBox.Atribuir(ponto);
             BBox.Atualizar(ponto + new Ponto4D(comprimento, altura, Esquerda ? largura * -1 : largura));
             BBox.ProcessarCentro();
         }
 
         protected override void DesenharGeometria()
+        {
+            DesenharMuro();
+            DesenharLinhas();
+        }
+
+        private void DesenharLinhas()
+        {
+            double x = PontoInicial.X;
+            double y = PontoInicial.Y;
+            double z = PontoInicial.Z;
+
+            double a = Altura;
+            double c = Comprimento;
+            double l = Largura;
+
+            GL.Color3(0, 0, 0);
+
+            GL.Begin(PrimitiveType.LineLoop);
+            if (Esquerda)
+            {
+                GL.Normal3(0, 0, -1);
+                GL.Vertex3(x, y + a, z);
+                GL.Vertex3(x, y, z);
+                GL.Vertex3(x + c, y, z);
+                GL.Vertex3(x + c, y + a, z);
+            }
+            else
+            {
+                GL.Normal3(0, 0, 1);
+                GL.Vertex3(x, y, z);
+                GL.Vertex3(x, y + a, z);
+                GL.Vertex3(x + c, y + a, z);
+                GL.Vertex3(x + c, y, z);
+            }
+
+            GL.End();
+            GL.Begin(PrimitiveType.LineLoop);
+
+            z -= Esquerda ? l : 0;
+            // face da frente
+            GL.Normal3(-1, 0, 0);
+            GL.Vertex3(x, y, z);
+            GL.Vertex3(x, y, z + l);
+            GL.Vertex3(x, y + a, z + l);
+            GL.Vertex3(x, y + a, z);
+
+            GL.End();
+            GL.Begin(PrimitiveType.LineLoop);
+
+            // face de cima
+            GL.Normal3(0, 1, 0);
+            GL.Vertex3(x, y + a, z);
+            GL.Vertex3(x, y + a, z + l);
+            GL.Vertex3(x + c, y + a, z + l);
+            GL.Vertex3(x + c, y + a, z);
+            GL.End();
+        }
+
+        private void DesenharMuro()
         {
             double x = PontoInicial.X;
             double y = PontoInicial.Y;
@@ -78,7 +137,7 @@ namespace CG_N4
                 GL.Vertex3(x, y + a, z);
                 GL.Vertex3(x, y, z);
                 GL.Vertex3(x + c, y, z);
-                GL.Vertex3(x + c, y + a, z);          
+                GL.Vertex3(x + c, y + a, z);
             }
             else
             {
@@ -88,7 +147,7 @@ namespace CG_N4
                 GL.Vertex3(x + c, y + a, z);
                 GL.Vertex3(x + c, y, z);
             }
-            
+
 
             z -= Esquerda ? l : 0;
             // face da frente
@@ -117,7 +176,7 @@ namespace CG_N4
 
     class ChaoCancha : ObjetoGeometria
     {
-        public ChaoCancha(Ponto4D ponto, double largura, double comprimento) 
+        public ChaoCancha(Ponto4D ponto, double largura, double comprimento)
             : base('c', null)
         {
             PrimitivaTipo = PrimitiveType.Quads;
@@ -134,20 +193,21 @@ namespace CG_N4
 
     class FundoCancha : ObjetoGeometria
     {
-        public FundoCancha(Ponto4D ponto, double largura, double altura) 
+        public FundoCancha(Ponto4D ponto, double largura, double altura)
             : base('c', null)
         {
             PrimitivaTipo = PrimitiveType.Quads;
             ObjetoCor = new Cor(255, 0, 0);
             PrimitivaTamanho = 1;
             Colisor = new ColisorCubo(this);
-            ForcaFisica.Massa = 2 * 1000 * 1000 * 1000;;
+            ForcaFisica.Massa = 2 * 1000 * 1000 * 1000;
+            ;
 
             PontosAdicionar(ponto);
             PontosAdicionar(ponto + new Ponto4D(0, 0, largura));
             PontosAdicionar(ponto + new Ponto4D(0, altura, largura));
             PontosAdicionar(ponto + new Ponto4D(0, altura));
-            
+
             BBox.Atribuir(ponto);
             BBox.Atualizar(ponto + new Ponto4D(0, altura, largura));
             BBox.ProcessarCentro();

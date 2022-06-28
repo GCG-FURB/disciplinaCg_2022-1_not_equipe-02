@@ -41,7 +41,7 @@ namespace CG_N4
             base.OnLoad(e);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
-            GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+            GL.ClearColor(135.0f / 255.0f, 206.0f / 255.0f, 235.0f / 255.0f, 1.0f);
 
             // TODO: Somente temporário
             Jogo.Instance.AdicionarJogador(0, "Ariel");
@@ -59,18 +59,16 @@ namespace CG_N4
             Objetos.Add(new Cancha(
                 new Ponto4D(),
                 Utilitario.MetrosEmPixels(2.5),
-                Utilitario.MetrosEmPixels(23.0),
-                Utilitario.MetrosEmPixels(1.0)
+                Utilitario.MetrosEmPixels(26.0),
+                Utilitario.MetrosEmPixels(1.5)
             ));
 
             var esfera = BolaFactory.BuildBola(Jogo.Instance.Times[0]);
-            esfera.ObjetoCor = new Cor(255, 0, 0);
             esfera.Translacao(50, esfera.Raio, 125);
             Objetos.Add(esfera);
 
             esfera = BolaFactory.BuildBola(Jogo.Instance.Times[1]);
             esfera.ForcaFisica.Velocidade += new Vector3(60.0f, 0, -60.0f);
-            esfera.ObjetoCor = new Cor(0, 255, 0);
             esfera.Translacao(0, esfera.Raio, 175);
             Objetos.Add(esfera);
 

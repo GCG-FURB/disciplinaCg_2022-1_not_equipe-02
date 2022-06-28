@@ -7,7 +7,7 @@ namespace CG_N4
     {
 
         private const float _coeficienteAtrito = 1f;
-        
+
         public ColisorChao(Objeto objeto) : base(objeto)
         {
         }
