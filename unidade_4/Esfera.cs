@@ -7,7 +7,7 @@ namespace CG_N4
 {
     public class Esfera : Objeto
     {
-        public float Raio;
+        public readonly float Raio;
         private uint Stacks;
         private uint Setores;
 
@@ -20,20 +20,20 @@ namespace CG_N4
 
         public Esfera(float raio, uint stackCount = 32, uint sectorCount = 32) : base(Utilitario.charProximo(), null)
         {
-            Set(raio, stackCount, sectorCount);
+            Raio = raio;
+            Set(stackCount, sectorCount);
             Colisor = new ColisorEsfera(this);
         }
 
-        private void Set(float raio, uint setores, uint stacks)
+        private void Set(uint setores, uint stacks)
         {
-            Raio = raio;
             Setores = setores;
             Stacks = stacks;
 
             BuildVertices();
 
-            BBox.Atribuir(new Ponto4D(-raio, -raio, -raio));
-            BBox.Atualizar(new Ponto4D(raio, raio, raio));
+            BBox.Atribuir(new Ponto4D(-Raio, -Raio, -Raio));
+            BBox.Atualizar(new Ponto4D(Raio, Raio, Raio));
             BBox.ProcessarCentro();
         }
 

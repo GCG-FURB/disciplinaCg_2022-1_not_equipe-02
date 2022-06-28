@@ -16,23 +16,26 @@ namespace CG_N4
             Raio = raio;
         }
 
-        protected override bool ProcessarColisaoPrecisa(Objeto outro)
+        protected override bool ExisteColisaoPrecisa(Objeto outro)
         {
-            Ponto4D centro = Objeto.BBox.obterCentro;
-            Ponto4D pontoMaisProximo = outro.Colisor.GetPontoMaisProximo(centro);
-            double distancia = Matematica.Distancia(centro, pontoMaisProximo);
-            // Console.WriteLine(GetType() + " - " + Objeto.GetType()+ "[" + Objeto.Rotulo + "] -> " + objeto.GetType() + "[" + objeto.Rotulo + "] -  Distância: " + distancia + " - " + (distancia <= Raio ? "Colisão por raio" : "Sem colisão por raio"));
+            Vector3 centro = Objeto.BBox.obterCentro.asVector3();
+            Vector3 pontoMaisProximo = outro.Colisor.GetPontoMaisProximo(centro);
+            float distancia = Matematica.Distancia(centro, pontoMaisProximo);
             return distancia <= Raio;
         }
 
-        public override Ponto4D GetPontoMaisProximo(Ponto4D pontoOrigem)
+        public override Vector3 GetPontoMaisProximo(Vector3 pontoOrigem)
         {
             Vector3 centro = Objeto.BBox.obterCentro.asVector3();
-            Vector3 origem = pontoOrigem.asVector3();
+            Vector3 origem = pontoOrigem;
 
             Vector3 esferaPonto = Vector3.Normalize(origem - centro) * Raio;
-            Vector3 pontoMundo = centro + esferaPonto;
-            return new Ponto4D(pontoMundo);
+            return centro + esferaPonto;
+        }
+
+        public override Vector3 GetCentroMassa()
+        {
+            return Objeto.BBox.obterCentro.asVector3();
         }
     }
 }

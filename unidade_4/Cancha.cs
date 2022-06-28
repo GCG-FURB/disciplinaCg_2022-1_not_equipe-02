@@ -1,4 +1,5 @@
 using CG_Biblioteca;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace CG_N4
@@ -44,6 +45,7 @@ namespace CG_N4
             ObjetoCor = new Cor(0);
             PrimitivaTamanho = 1;
             Colisor = new ColisorCubo(this);
+            ForcaFisica.Massa = 2 * 1000 * 1000 * 1000;
 
             Altura = altura;
             Comprimento = comprimento;
@@ -105,6 +107,12 @@ namespace CG_N4
 
             GL.End();
         }
+
+        public override void OnColisao(EventoColisao e)
+        {
+            base.OnColisao(e);
+            ForcaFisica.Aceleracao = Vector3.Zero;
+        }
     }
 
     class ChaoCancha : ObjetoGeometria
@@ -115,6 +123,7 @@ namespace CG_N4
             PrimitivaTipo = PrimitiveType.Quads;
             ObjetoCor = new Cor(200, 200, 0);
             PrimitivaTamanho = 1;
+            Colisor = new ColisorChao(this);
 
             PontosAdicionar(ponto);
             PontosAdicionar(ponto + new Ponto4D(0, 0, largura));
@@ -132,6 +141,7 @@ namespace CG_N4
             ObjetoCor = new Cor(255, 0, 0);
             PrimitivaTamanho = 1;
             Colisor = new ColisorCubo(this);
+            ForcaFisica.Massa = 2 * 1000 * 1000 * 1000;;
 
             PontosAdicionar(ponto);
             PontosAdicionar(ponto + new Ponto4D(0, 0, largura));

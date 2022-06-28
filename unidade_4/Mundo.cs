@@ -41,15 +41,20 @@ namespace CG_N4
             base.OnLoad(e);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
+            GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+
+            // TODO: Somente temporário
+            Jogo.Instance.AdicionarJogador(0, "Ariel");
+            Jogo.Instance.AdicionarJogador(1, "Eliton");
 
             Camera.Eye = new Vector3(
-                (float)Utilitario.MetrosEmPixels(-2.0),
-                (float)Utilitario.MetrosEmPixels(1.5),
+                (float)Utilitario.MetrosEmPixels(-0.5),
+                (float)Utilitario.MetrosEmPixels(1.0),
                 (float)Utilitario.MetrosEmPixels(1.25)
             );
-            Camera.At = new Vector3(1.0f, 0.0f, 0.0f);
+            Camera.At = new Vector3(0.5f, -0.5f, 0.0f);
             Camera.Aspect = Width / (float)Height;
-            Camera.Far = 3000;
+            Camera.Far = (float)Utilitario.MetrosEmPixels(30.0d);
 
             Objetos.Add(new Cancha(
                 new Ponto4D(),
@@ -58,16 +63,15 @@ namespace CG_N4
                 Utilitario.MetrosEmPixels(1.0)
             ));
 
-            var esfera = new EsferaTeste(10);
-            esfera.ForcaFisica.Aceleracao += new Vector3(5.0f, 0.0f, 0.0f);
+            var esfera = BolaFactory.BuildBola(Jogo.Instance.Times[0]);
             esfera.ObjetoCor = new Cor(255, 0, 0);
-            esfera.Translacao(0, 10, 125);
+            esfera.Translacao(50, esfera.Raio, 125);
             Objetos.Add(esfera);
-            
-            esfera = new EsferaTeste(10);
-            esfera.ForcaFisica.Aceleracao += new Vector3(2.5f, 0, -2.5f);
+
+            esfera = BolaFactory.BuildBola(Jogo.Instance.Times[1]);
+            esfera.ForcaFisica.Velocidade += new Vector3(60.0f, 0, -60.0f);
             esfera.ObjetoCor = new Cor(0, 255, 0);
-            esfera.Translacao(0, 10, 150);
+            esfera.Translacao(0, esfera.Raio, 175);
             Objetos.Add(esfera);
 
             // var esfera = new EsferaTeste(10);
@@ -75,7 +79,7 @@ namespace CG_N4
             // esfera.ObjetoCor = new Cor(255, 0, 0);
             // esfera.Translacao(0, 10, 125);
             // Objetos.Add(esfera);
-            //
+
             // esfera = new EsferaTeste(10);
             // esfera.ForcaFisica.Aceleracao += new Vector3(-20.0f, 0, 0.0f);
             // esfera.ObjetoCor = new Cor(0, 255, 0);
@@ -84,10 +88,7 @@ namespace CG_N4
 
             // ObjetoSelecionado = esfera;
 
-            Console.WriteLine(" --- Ajuda / Teclas: ");
-            Console.WriteLine(" [  H     ] mostra teclas usadas. ");
-
-            GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+            Jogo.Instance.Iniciar();
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -212,14 +213,14 @@ namespace CG_N4
 
         private void ProcessarObjetos(FrameEventArgs e)
         {
-            ProcessarColisaoObjetos();
+            ProcessarColisaoObjetos(e);
             foreach (Objeto objeto in Objetos)
             {
                 objeto.UpdateFrame(e);
             }
         }
 
-        private void ProcessarColisaoObjetos()
+        private void ProcessarColisaoObjetos(FrameEventArgs e)
         {
             for (int i = 0; i < Objetos.Count; i++)
             {
@@ -227,46 +228,27 @@ namespace CG_N4
                 for (int x = i + 1; x < Objetos.Count; x++)
                 {
                     Objeto objetoB = Objetos[x];
-                    ProcessarColisaoObjetos(objetoA, objetoB);
+                    ProcessarColisaoObjetos(e, objetoA, objetoB);
                 }
             }
         }
 
-        private void ProcessarColisaoObjetos(Objeto a, Objeto b)
+        private void ProcessarColisaoObjetos(FrameEventArgs e, Objeto a, Objeto b)
         {
             if (a.Colisor != null && b.Colisor != null)
             {
-                if (a.Colisor.ExisteColisao(b))
-                {
-                    // já disparou o evento da colisão, ignora rapidamente!
-                    if (!a.Colisor.Colisoes.Contains(b))
-                    {
-                        Vector3 aceleracaoA = a.ForcaFisica.Aceleracao;
-                        Vector3 aceleracaoB = b.ForcaFisica.Aceleracao;
-
-                        a.Colisor.Colisoes.Add(b);
-                        b.Colisor.Colisoes.Add(a);
-
-                        a.OnColisao(new EventoColisao(b, new ForcaFisica(aceleracaoB)));
-                        b.OnColisao(new EventoColisao(a, new ForcaFisica(aceleracaoA)));
-                    }
-                }
-                else
-                {
-                    a.Colisor.Colisoes.Remove(b);
-                    b.Colisor.Colisoes.Remove(a);
-                }
+                a.Colisor.ProcessarColisao(e, b);
             }
 
             IReadOnlyList<Objeto> filhosA = a.GetFilhos();
             foreach (Objeto filhoA in filhosA)
             {
-                ProcessarColisaoObjetos(filhoA, b);
+                ProcessarColisaoObjetos(e, filhoA, b);
 
                 IReadOnlyList<Objeto> filhosB = b.GetFilhos();
                 foreach (Objeto filhoB in filhosB)
                 {
-                    ProcessarColisaoObjetos(filhoA, filhoB);
+                    ProcessarColisaoObjetos(e, filhoA, filhoB);
                 }
             }
         }

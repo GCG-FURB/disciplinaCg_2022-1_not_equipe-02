@@ -16,9 +16,10 @@ namespace CG_N4
         public Cor ObjetoCor { get; set; } = new Cor();
         public PrimitiveType PrimitivaTipo { get; set; } = PrimitiveType.LineLoop;
         public float PrimitivaTamanho { get; set; } = 1;
-        public BBox BBox { get; } = new BBox();
+
+        public readonly BBox BBox = new BBox();
+        public readonly ForcaFisica ForcaFisica;
         public Colisor Colisor { get; protected set; }
-        public ForcaFisica ForcaFisica { get; protected set; } = new ForcaFisica();
 
         public Object Pai { get; }
         private List<Objeto> Filhos = new List<Objeto>();
@@ -29,6 +30,7 @@ namespace CG_N4
         {
             Rotulo = rotulo;
             Pai = paiRef;
+            ForcaFisica = new ForcaFisica(this);
         }
 
         public void Desenhar()
@@ -177,6 +179,17 @@ namespace CG_N4
 
         protected virtual void OnUpdateFrame(FrameEventArgs e)
         {
+            Console.WriteLine(ForcaFisica);
+
+            // soma a aceleração na velocidade
+            ForcaFisica.Velocidade += ForcaFisica.Aceleracao;
+            ForcaFisica.Aceleracao = Vector3.Zero;
+
+            // calcula o deslocamento (cm) dentro do tempo do frame
+            Vector3 deslocamento = ForcaFisica.Velocidade * (float)e.Time;
+
+            // adiciona o deslocamento no objeto
+            Translacao(deslocamento.X, deslocamento.Y, deslocamento.Z);
         }
 
         public virtual void OnColisao(EventoColisao e)
