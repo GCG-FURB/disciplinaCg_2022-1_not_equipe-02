@@ -23,10 +23,13 @@ namespace gcgcg
         protected override void DesenharGeometria()
         {
             GL.Begin(PrimitivaTipo);
-            
+            GL.Color3(1.0f,0.0f,0.0f);
             GL.Vertex2(PontoA.X, PontoA.Y);
+            GL.Color3(1.0f,0.0f,1.0f);
             GL.Vertex2(PontoB.X, PontoB.Y);
+            GL.Color3(1.0f,0.0f,0.0f);
             GL.Vertex2(PontoC.X, PontoC.Y);
+            GL.Color3(1.0f,0.0f,1.0f);
             GL.Vertex2(PontoD.X, PontoD.Y);
             
             GL.End();
