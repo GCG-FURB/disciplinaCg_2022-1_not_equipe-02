@@ -5,7 +5,7 @@
 using System;
 using OpenTK.Graphics.OpenGL;
 
-namespace gcgcg
+namespace CG_N4
 {
   public abstract class Utilitario
   {
@@ -26,7 +26,7 @@ namespace gcgcg
     }; 
     
     public static char charProximo() {
-      return Convert.ToChar(objetoIdAtual + 1);
+      return Convert.ToChar(++objetoIdAtual);
     }
     public static void AjudaTeclado()
     {

@@ -2,6 +2,8 @@
   Autor: Dalton Solano dos Reis
 **/
 
+using OpenTK;
+
 namespace CG_Biblioteca
 {
   /// <summary>
@@ -32,6 +34,13 @@ namespace CG_Biblioteca
       this.x = pto.x;
       this.y = pto.y;
       this.z = pto.z;
+    }
+
+    public Ponto4D(Vector3 v)
+    {
+      this.x = v.X;
+      this.y = v.Y;
+      this.z = v.Z;
     }
     // Operator overloaded
     /// <summary>
@@ -77,6 +86,11 @@ namespace CG_Biblioteca
     /// </summary>
     /// <value>coordeanda w</value>
     public double W { get => w; }
+
+    public Vector3 asVector3()
+    {
+      return new Vector3((float)X, (float)Y, (float)Z);
+    }
 
     public override string ToString()
     {

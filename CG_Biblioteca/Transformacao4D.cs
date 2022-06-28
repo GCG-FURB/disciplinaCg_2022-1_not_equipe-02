@@ -110,14 +110,15 @@ namespace CG_Biblioteca
       return pointResult;
     }
 
-    public Transformacao4D MultiplicarMatriz(Transformacao4D t)
+    public void MultiplicarMatriz(Transformacao4D t)
     {
-      Transformacao4D result = new Transformacao4D();
       for (int i = 0; i < 16; ++i)
-        result.matriz[i] =
-              matriz[i % 4] * t.matriz[i / 4 * 4] + matriz[(i % 4) + 4] * t.matriz[i / 4 * 4 + 1]
-            + matriz[(i % 4) + 8] * t.matriz[i / 4 * 4 + 2] + matriz[(i % 4) + 12] * t.matriz[i / 4 * 4 + 3];
-      return result;
+      {
+        matriz[i] = matriz[i % 4] * t.matriz[i / 4 * 4]
+                    + matriz[(i % 4) + 4] * t.matriz[i / 4 * 4 + 1]
+                    + matriz[(i % 4) + 8] * t.matriz[i / 4 * 4 + 2]
+                    + matriz[(i % 4) + 12] * t.matriz[i / 4 * 4 + 3];
+      }
     }
 
     public double ObterElemento(int index)

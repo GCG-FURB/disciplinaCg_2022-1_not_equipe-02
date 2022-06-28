@@ -17,8 +17,13 @@ namespace CG_Biblioteca
 
     public void Atribuir(Ponto4D pto)
     {
-      this.menorX = pto.X; this.menorY = pto.Y; this.menorZ = pto.Z;
-      this.maiorX = pto.X; this.maiorY = pto.Y; this.maiorZ = pto.Z;
+      Atribuir(pto.X, pto.Y, pto.Z);
+    }
+
+    public void Atribuir(double x, double y, double z)
+    {
+      this.menorX = x; this.menorY = y; this.menorZ = z;
+      this.maiorX = x; this.maiorY = y; this.maiorZ = z;
     }
 
     public void Atualizar(Ponto4D pto)
@@ -55,13 +60,24 @@ namespace CG_Biblioteca
       centro.Z = (maiorZ + menorZ) / 2;
     }
 
+    public void Translacao(double x, double y, double z)
+    {
+      menorX += x;
+      maiorX += x;
+      menorY += y;
+      maiorY += y;
+      menorZ += z;
+      maiorZ += z;
+      ProcessarCentro();
+    }
+
     public void Desenhar()
     {
       GL.Color3(1.0f, 1.0f, 0.0f);
 
       GL.PointSize(5);
       GL.Begin(PrimitiveType.Points);
-      GL.Vertex2(centro.X, centro.Y);
+      GL.Vertex3(centro.X, centro.Y, centro.Z);
       GL.End();
 
       GL.LineWidth(3);

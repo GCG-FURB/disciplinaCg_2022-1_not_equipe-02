@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>CG_N3</RootNamespace>
+    <RootNamespace>CG_N4</RootNamespace>
   </PropertyGroup>
 
 
@@ -13,7 +13,9 @@
   Windows
      <PackageReference Include="OpenTK" Version="3.2.0"/>
     -->
+    <PackageReference Include="Microsoft.Win32.SystemEvents" Version="4.5.0" />
     <PackageReference Include="OpenTK.NetCore" Version="*" />
+    <PackageReference Include="System.Drawing.Common" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace gcgcg
+﻿namespace CG_N4
 {
     public enum EixoRotacao
     {
