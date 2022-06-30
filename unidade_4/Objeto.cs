@@ -14,6 +14,7 @@ namespace CG_N4
     {
         public char Rotulo { get; }
         public Cor ObjetoCor { get; set; } = new Cor();
+        public Textura Textura;
         public PrimitiveType PrimitivaTipo { get; set; } = PrimitiveType.LineLoop;
         public float PrimitivaTamanho { get; set; } = 1;
 
@@ -41,7 +42,9 @@ namespace CG_N4
             GL.LineWidth(PrimitivaTamanho);
             GL.PointSize(PrimitivaTamanho);
 
+            Textura?.Aplicar();
             DesenharGeometria();
+            Textura?.Remover();
 
             foreach (var filho in Filhos)
             {

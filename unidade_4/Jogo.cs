@@ -13,8 +13,8 @@ namespace CG_N4
 
         private Jogo()
         {
-            Times.Add(new Time(new Cor(255, 255, 0)));
-            Times.Add(new Time(new Cor(0, 0, 255)));
+            Times.Add(new Time(new Cor(255, 217, 61)));
+            Times.Add(new Time(new Cor(43, 43, 255)));
         }
 
         public void Iniciar()

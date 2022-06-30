@@ -176,18 +176,48 @@ namespace CG_N4
 
     class ChaoCancha : ObjetoGeometria
     {
+        public readonly double Largura;
+        public readonly double Comprimento;
+        
         public ChaoCancha(Ponto4D ponto, double largura, double comprimento)
             : base('c', null)
         {
+            Largura = largura;
+            Comprimento = comprimento;
+
             PrimitivaTipo = PrimitiveType.Quads;
-            ObjetoCor = new Cor(200, 200, 0);
             PrimitivaTamanho = 1;
             Colisor = new ColisorChao(this);
+            Textura = new Textura("/home/ariel/Downloads/sand.jpeg");
 
-            PontosAdicionar(ponto);
             PontosAdicionar(ponto + new Ponto4D(0, 0, largura));
             PontosAdicionar(ponto + new Ponto4D(comprimento, 0, largura));
             PontosAdicionar(ponto + new Ponto4D(comprimento));
+            PontosAdicionar(ponto);
+        }
+        
+        protected override void DesenharGeometria()
+        {
+            float s = 20.0f;
+            float t = s * (float) (Largura / Comprimento);
+
+            GL.Begin(PrimitivaTipo);
+
+            GL.Normal3(0.0f, 1.0f, 0.0f);
+
+            GL.TexCoord2(0.0f, t);
+            Pontos[0].Desenhar();
+
+            GL.TexCoord2(s, t);
+            Pontos[1].Desenhar();
+
+            GL.TexCoord2(s, 0.0f);
+            Pontos[2].Desenhar();
+
+            GL.TexCoord2(0.0f, 0.0f);
+            Pontos[3].Desenhar();
+
+            GL.End();
         }
     }
 

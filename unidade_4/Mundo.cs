@@ -41,6 +41,8 @@ namespace CG_N4
             base.OnLoad(e);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
+            GL.Enable(EnableCap.Texture2D);
+            GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
             GL.ClearColor(135.0f / 255.0f, 206.0f / 255.0f, 235.0f / 255.0f, 1.0f);
 
             // TODO: Somente temporário
@@ -56,6 +58,10 @@ namespace CG_N4
             Camera.Aspect = Width / (float)Height;
             Camera.Far = (float)Utilitario.MetrosEmPixels(30.0d);
 
+            Objetos.Add(new Chao(
+                new Ponto4D(Utilitario.MetrosEmPixels(20.0d), -0.1d), 
+                Utilitario.MetrosEmPixels(60))
+            );
             Objetos.Add(new Cancha(
                 new Ponto4D(),
                 Utilitario.MetrosEmPixels(2.5),
@@ -72,19 +78,7 @@ namespace CG_N4
             esfera.Translacao(0, esfera.Raio, 175);
             Objetos.Add(esfera);
 
-            // var esfera = new EsferaTeste(10);
-            // esfera.ForcaFisica.Aceleracao += new Vector3(10f, 0.0f, 0.0f);
-            // esfera.ObjetoCor = new Cor(255, 0, 0);
-            // esfera.Translacao(0, 10, 125);
-            // Objetos.Add(esfera);
-
-            // esfera = new EsferaTeste(10);
-            // esfera.ForcaFisica.Aceleracao += new Vector3(-20.0f, 0, 0.0f);
-            // esfera.ObjetoCor = new Cor(0, 255, 0);
-            // esfera.Translacao(200, 10, 125);
-            // Objetos.Add(esfera);
-
-            // ObjetoSelecionado = esfera;
+            // ObjetoSelecionado = Objetos[2];
 
             Jogo.Instance.Iniciar();
         }
@@ -161,9 +155,25 @@ namespace CG_N4
         {
             switch (e.Key)
             {
-                case Key.H:
-                    Utilitario.AjudaTeclado();
+                case Key.R:
+                    ObjetoSelecionado.ObjetoCor.CorR++;
                     break;
+                case Key.F:
+                    ObjetoSelecionado.ObjetoCor.CorR--;
+                    break;
+                case Key.T:
+                    ObjetoSelecionado.ObjetoCor.CorG++;
+                    break;
+                case Key.G:
+                    ObjetoSelecionado.ObjetoCor.CorG--;
+                    break;
+                case Key.Y:
+                    ObjetoSelecionado.ObjetoCor.CorB++;
+                    break;
+                case Key.H:
+                    ObjetoSelecionado.ObjetoCor.CorB--;
+                    break;
+                
             }
         }
 
