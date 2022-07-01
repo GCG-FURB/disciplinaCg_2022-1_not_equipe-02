@@ -3,6 +3,7 @@
 **/
 
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 
 namespace CG_Biblioteca
 {
@@ -90,6 +91,11 @@ namespace CG_Biblioteca
     public Vector3 asVector3()
     {
       return new Vector3((float)X, (float)Y, (float)Z);
+    }
+
+    public void Desenhar()
+    {
+      GL.Vertex3(X, Y, Z);
     }
 
     public override string ToString()
