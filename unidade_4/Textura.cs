@@ -1,3 +1,4 @@
+using System.Reflection;
 using OpenTK.Graphics.OpenGL;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -9,9 +10,8 @@ namespace CG_N4
     {
         private readonly int _id;
 
-        public Textura(string path)
+        public Textura(Image<Rgba32> image)
         {
-            Image<Rgba32> image = Image.Load<Rgba32>(path);
             image.Mutate(x => x.Flip(FlipMode.Vertical));
 
             int i = 0;
@@ -39,6 +39,17 @@ namespace CG_N4
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ref pixels[0]);
 
             GL.BindTexture(TextureTarget.Texture2D, 0);
+        }
+
+        public Textura(string path) : this(Image.Load<Rgba32>(path))
+        {
+        }
+
+        public static Textura FromResources(string resourceName)
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Image<Rgba32> image = Image.Load<Rgba32>(assembly.GetManifestResourceStream(resourceName));
+            return new Textura(image);
         }
 
         public void Aplicar()
