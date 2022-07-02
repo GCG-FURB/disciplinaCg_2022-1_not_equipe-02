@@ -39,15 +39,16 @@ namespace CG_N4
 
         public Time GetTimeAtual()
         {
-            Time time = Times[_timeAtual];
-
-            _timeAtual++;
-            if (_timeAtual == Times.Count)
-            {
-                _timeAtual = 0;
-            }
-
-            return time;
+            // Time time = Times[_timeAtual];
+            //
+            // _timeAtual++;
+            // if (_timeAtual == Times.Count)
+            // {
+            //     _timeAtual = 0;
+            // }
+            //
+            // return time;
+            return Times[_timeAtual];
         }
 
         public bool IsPodeIniciar() // TODO -> Usar para renderizar o botão

@@ -19,11 +19,16 @@ namespace CG_N4
         private const float CameraSpeed = 100.0f;
 
         private readonly CameraPerspective Camera = new CameraPerspective();
+        private readonly Atirador Atirador = new Atirador();
         private List<Objeto> Objetos = new List<Objeto>();
         private Objeto ObjetoSelecionado = null;
 
+        private bool CameraLivre;
+        private bool Dalton;
+
         private Mundo(int width, int height) : base(width, height)
         {
+            Atirador.Camera = Camera;
         }
 
         public static Mundo GetInstance()
@@ -59,7 +64,7 @@ namespace CG_N4
             Camera.Far = (float)Utilitario.MetrosEmPixels(30.0d);
 
             Objetos.Add(new Chao(
-                new Ponto4D(Utilitario.MetrosEmPixels(20.0d), -0.1d), 
+                new Ponto4D(Utilitario.MetrosEmPixels(20.0d), -0.1d),
                 Utilitario.MetrosEmPixels(60))
             );
             Objetos.Add(new Cancha(
@@ -69,14 +74,14 @@ namespace CG_N4
                 Utilitario.MetrosEmPixels(1.5)
             ));
 
-            var esfera = BolaFactory.BuildBola(Jogo.Instance.Times[0]);
-            esfera.Translacao(50, esfera.Raio, 125);
-            Objetos.Add(esfera);
-
-            esfera = BolaFactory.BuildBola(Jogo.Instance.Times[1]);
-            esfera.ForcaFisica.Velocidade += new Vector3(60.0f, 0, -60.0f);
-            esfera.Translacao(0, esfera.Raio, 175);
-            Objetos.Add(esfera);
+            // var esfera = BolaFactory.BuildBocha(Jogo.Instance.Times[0]);
+            // esfera.Translacao(50, esfera.Raio, 125);
+            // Objetos.Add(esfera);
+            //
+            // esfera = BolaFactory.BuildBocha(Jogo.Instance.Times[1]);
+            // esfera.ForcaFisica.Velocidade += new Vector3(60.0f, 0, -60.0f);
+            // esfera.Translacao(0, esfera.Raio, 175);
+            // Objetos.Add(esfera);
 
             // ObjetoSelecionado = Objetos[2];
 
@@ -86,12 +91,19 @@ namespace CG_N4
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
-            CursorVisible = !Focused;
+            CursorVisible = !Focused || !CameraLivre;
             if (Focused)
             {
-                ProcessarCameraTeclado(e);
-                ProcessarCameraMouse();
-                ProcessarObjetos(e);
+                if (CameraLivre)
+                {
+                    ProcessarCameraTeclado(e);
+                    ProcessarCameraMouse();
+                }
+                else
+                {
+                    Atirador.OnUpdateFrame(e);
+                    ProcessarObjetos(e);   
+                }
             }
 
             MouseCG.ResetarDelta();
@@ -115,8 +127,8 @@ namespace CG_N4
 
             // Sru3D();
             // Cubo();
-            
-            Texto2D.Instance.RenderizarTexto("Teste", 0, 0, 1, Vector2.Zero);
+
+            // Texto2D.Instance.RenderizarTexto("Teste", 10.0f, 5.0f, 2, new Vector2(-1, 0));
 
             SwapBuffers();
         }
@@ -157,25 +169,20 @@ namespace CG_N4
         {
             switch (e.Key)
             {
-                case Key.R:
-                    ObjetoSelecionado.ObjetoCor.CorR++;
-                    break;
-                case Key.F:
-                    ObjetoSelecionado.ObjetoCor.CorR--;
-                    break;
-                case Key.T:
-                    ObjetoSelecionado.ObjetoCor.CorG++;
-                    break;
-                case Key.G:
-                    ObjetoSelecionado.ObjetoCor.CorG--;
-                    break;
-                case Key.Y:
-                    ObjetoSelecionado.ObjetoCor.CorB++;
-                    break;
-                case Key.H:
-                    ObjetoSelecionado.ObjetoCor.CorB--;
+                case Key.C:
+                    if (e.Control)
+                    {
+                        CameraLivre = !CameraLivre;
+                    }
+
                     break;
                 
+                case Key.D:
+                    if (e.Control)
+                    {
+                        Dalton = !Dalton;
+                    }
+                    break;
             }
         }
 
@@ -340,6 +347,11 @@ namespace CG_N4
             GL.Vertex3(-1.0f, -1.0f, -1.0f);
 
             GL.End();
+        }
+
+        public void ObjetosAdicionar(Objeto objeto)
+        {
+            Objetos.Add(objeto);
         }
     }
 

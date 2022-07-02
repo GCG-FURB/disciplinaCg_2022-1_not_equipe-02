@@ -4,7 +4,7 @@ namespace CG_N4
 {
     public abstract class BolaFactory
     {
-        public static Esfera BuildBola(Time time)
+        public static Esfera BuildBocha(Time time)
         {
             Esfera esfera = new Esfera((float)Utilitario.CentimetrosEmPixels(11.5d / 2.0d));
             esfera.ObjetoCor = time.CorBola;
