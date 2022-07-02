@@ -231,7 +231,6 @@ namespace CG_N4
             PrimitivaTamanho = 1;
             Colisor = new ColisorCubo(this);
             ForcaFisica.Massa = 2 * 1000 * 1000 * 1000;
-            ;
 
             PontosAdicionar(ponto);
             PontosAdicionar(ponto + new Ponto4D(0, 0, largura));
