@@ -23,7 +23,7 @@ namespace CG_N4
             Raio = raio;
             Set(stackCount, sectorCount);
             Colisor = new ColisorEsfera(this);
-            Textura = new Textura("/home/ariel/Downloads/wall.png");
+            Textura = Textura.FromResources("CG_N4.Resources.wall.png");
         }
 
         private void Set(uint setores, uint stacks)

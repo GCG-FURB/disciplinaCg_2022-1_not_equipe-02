@@ -188,7 +188,7 @@ namespace CG_N4
             PrimitivaTipo = PrimitiveType.Quads;
             PrimitivaTamanho = 1;
             Colisor = new ColisorChao(this);
-            Textura = new Textura("/home/ariel/Downloads/sand.jpeg");
+            Textura = Textura.FromResources("CG_N4.Resources.sand.jpeg");
 
             PontosAdicionar(ponto + new Ponto4D(0, 0, largura));
             PontosAdicionar(ponto + new Ponto4D(comprimento, 0, largura));

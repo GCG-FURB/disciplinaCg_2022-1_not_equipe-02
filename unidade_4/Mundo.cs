@@ -115,6 +115,8 @@ namespace CG_N4
 
             // Sru3D();
             // Cubo();
+            
+            Texto2D.Instance.RenderizarTexto("Teste", 0, 0, 1, Vector2.Zero);
 
             SwapBuffers();
         }
