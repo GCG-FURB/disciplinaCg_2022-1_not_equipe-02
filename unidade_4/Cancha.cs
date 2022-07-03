@@ -23,6 +23,7 @@ namespace CG_N4
             FilhoAdicionar(new MuroCancha(PontoInicial + new Ponto4D(0, 0, Largura), Altura, Comprimento, 20, false));
             FilhoAdicionar(new ChaoCancha(PontoInicial, Largura, Comprimento));
             FilhoAdicionar(new FundoCancha(PontoInicial + new Ponto4D(Comprimento), Largura, Altura));
+            FilhoAdicionar(new LinhaJogada(PontoInicial + new Ponto4D(Utilitario.MetrosEmPixels(1d)), Largura));
         }
 
         protected override void DesenharGeometria()
@@ -178,7 +179,7 @@ namespace CG_N4
     {
         public readonly double Largura;
         public readonly double Comprimento;
-        
+
         public ChaoCancha(Ponto4D ponto, double largura, double comprimento)
             : base('c', null)
         {
@@ -195,11 +196,11 @@ namespace CG_N4
             PontosAdicionar(ponto + new Ponto4D(comprimento));
             PontosAdicionar(ponto);
         }
-        
+
         protected override void DesenharGeometria()
         {
             float s = 20.0f;
-            float t = s * (float) (Largura / Comprimento);
+            float t = s * (float)(Largura / Comprimento);
 
             GL.Begin(PrimitivaTipo);
 
@@ -240,6 +241,51 @@ namespace CG_N4
             BBox.Atribuir(ponto);
             BBox.Atualizar(ponto + new Ponto4D(0, altura, largura));
             BBox.ProcessarCentro();
+        }
+    }
+
+    class LinhaJogada : ObjetoGeometria
+    {
+        public readonly double Largura;
+        public readonly double Comprimento = 20.0D;
+
+        public LinhaJogada(Ponto4D ponto, double largura) : base(Utilitario.charProximo(), null)
+        {
+            Largura = largura;
+
+            PrimitivaTipo = PrimitiveType.Quads;
+            PrimitivaTamanho = 1;
+            Textura = Textura.FromResources("CG_N4.Resources.sand.jpeg");
+            ObjetoCor = new Cor(255, 0, 0);
+
+            PontosAdicionar(ponto + new Ponto4D(0, 0.1d));
+            PontosAdicionar(ponto + new Ponto4D(0, 0.1d, largura));
+            PontosAdicionar(ponto + new Ponto4D(Utilitario.CentimetrosEmPixels(5d), 0.1d, largura));
+            PontosAdicionar(ponto + new Ponto4D(Utilitario.CentimetrosEmPixels(5d), 0.1d));
+        }
+
+        protected override void DesenharGeometria()
+        {
+            float s = 20.0f;
+            float t = s * (float)(Largura / Comprimento);
+
+            GL.Begin(PrimitivaTipo);
+
+            GL.Normal3(0.0f, 1.0f, 0.0f);
+
+            GL.TexCoord2(0.0f, t);
+            Pontos[0].Desenhar();
+
+            GL.TexCoord2(s, t);
+            Pontos[1].Desenhar();
+
+            GL.TexCoord2(s, 0.0f);
+            Pontos[2].Desenhar();
+
+            GL.TexCoord2(0.0f, 0.0f);
+            Pontos[3].Desenhar();
+
+            GL.End();
         }
     }
 }

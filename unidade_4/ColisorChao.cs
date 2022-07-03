@@ -5,10 +5,10 @@ namespace CG_N4
 {
     public class ColisorChao : Colisor
     {
-        private const float _coeficienteAtrito = 1.0f;
-        
-        private const float _k1 = 1f; // coeficiente de atrito
-        private const float _k2 = _k1 * _k1; // coeficiente ao quadrao
+        private const float _coeficienteAtrito = 0.6f;
+
+        // private const float _k1 = 1f; // coeficiente de atrito
+        // private const float _k2 = _k1 * _k1; // coeficiente ao quadrao
 
         public ColisorChao(Objeto objeto) : base(objeto)
         {
@@ -16,7 +16,8 @@ namespace CG_N4
 
         protected override (Vector3 fA, Vector3 fB) ProcessarForcaColisao(FrameEventArgs e, Objeto objeto)
         {
-            Vector3 v = objeto.ForcaFisica.Velocidade;
+            var ff = objeto.ForcaFisica;
+            Vector3 v = ff.Velocidade;
 
             // Vector3 dragForce = v.Normalized();
             // dragForce = dragForce * _k1 + _k2 * dragForce * dragForce;
@@ -27,22 +28,23 @@ namespace CG_N4
             // //     Diminuir(e, v.Z)
             // // );
             // return (Vector3.Zero, objeto.ForcaFisica.Velocidade - dragForce);
-            
+
+            float va = Math.Abs(v.X) + Math.Abs(v.Y) + Math.Abs(v.Z);
+            if (Math.Abs(va) < (ff.Massa * _coeficienteAtrito) * 0.01)
+            {
+                return (Vector3.Zero, -v);
+            }
+
             Vector3 fB = new Vector3(
                 Diminuir(e, v.X),
                 Diminuir(e, v.Y),
                 Diminuir(e, v.Z)
             );
-            return (Vector3.Zero, objeto.ForcaFisica.Velocidade - fB);
+            return (Vector3.Zero, fB);
         }
 
         private float Diminuir(FrameEventArgs e, float f)
         {
-            if (Math.Abs(f) < _coeficienteAtrito)
-            {
-                return -f;
-            }
-        
             return f * -(_coeficienteAtrito * (float)e.Time);
         }
 

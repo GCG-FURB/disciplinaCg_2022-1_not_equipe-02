@@ -118,7 +118,7 @@ namespace CG_N4
             Transformacao4D tmp = Transformacao4DFactory.Get();
             Transformacao4D acumuladora = Transformacao4DFactory.Get();
 
-            Ponto4D pontoPivo = BBox.obterCentro;
+            Vector3 pontoPivo = BBox.obterCentro.asVector3() - Vector3.Zero;
             acumuladora.AtribuirTranslacao(-pontoPivo.X, -pontoPivo.Y, -pontoPivo.Z); // Inverter sinal
 
             AplicarRotacao(tmp, eixo, angulo);

@@ -16,19 +16,19 @@ namespace CG_N4
         private static Mundo _instancia;
 
         private const float MouseSensibility = 0.05f;
-        private const float CameraSpeed = 100.0f;
+        private float CameraSpeed = 600.0f;
 
         private readonly CameraPerspective Camera = new CameraPerspective();
-        private readonly Atirador Atirador = new Atirador();
         private List<Objeto> Objetos = new List<Objeto>();
         private Objeto ObjetoSelecionado = null;
 
         private bool CameraLivre;
         private bool Dalton;
+        private bool PodeProcessarObjetos = true;
 
         private Mundo(int width, int height) : base(width, height)
         {
-            Atirador.Camera = Camera;
+            Atirador.Instance.Camera = Camera;
         }
 
         public static Mundo GetInstance()
@@ -99,9 +99,10 @@ namespace CG_N4
                     ProcessarCameraTeclado(e);
                     ProcessarCameraMouse();
                 }
-                else
+                
+                if (PodeProcessarObjetos)
                 {
-                    Atirador.OnUpdateFrame(e);
+                    Atirador.Instance.OnUpdateFrame(e);
                     ProcessarObjetos(e);   
                 }
             }
@@ -118,14 +119,19 @@ namespace CG_N4
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref modelview);
 
-            foreach (var objeto in Objetos)
-            {
-                objeto.Desenhar();
-            }
+            // foreach (var objeto in Objetos)
+            // {
+            //     objeto.Desenhar();
+            //
+            //     // if (objeto.GetType().IsEquivalentTo(typeof(Esfera)))
+            //     // {
+            //     //     objeto.BBox.Desenhar();
+            //     // }
+            // }
+            //
+            // ObjetoSelecionado?.BBox.Desenhar();
 
-            ObjetoSelecionado?.BBox.Desenhar();
-
-            // Sru3D();
+            Sru3D();
             // Cubo();
 
             // Texto2D.Instance.RenderizarTexto("Teste", 10.0f, 5.0f, 2, new Vector2(-1, 0));
@@ -173,6 +179,10 @@ namespace CG_N4
                     if (e.Control)
                     {
                         CameraLivre = !CameraLivre;
+                        if (CameraLivre)
+                        {
+                            PodeProcessarObjetos = false;
+                        }
                     }
 
                     break;
@@ -181,6 +191,13 @@ namespace CG_N4
                     if (e.Control)
                     {
                         Dalton = !Dalton;
+                    }
+                    break;
+                
+                case Key.P:
+                    if (e.Control)
+                    {
+                        PodeProcessarObjetos = !PodeProcessarObjetos;
                     }
                     break;
             }
@@ -214,9 +231,19 @@ namespace CG_N4
                 Camera.Eye += Camera.Up * CameraSpeed * (float)e.Time;
             }
 
-            if (state.IsKeyDown(Key.LControl))
+            if (state.IsKeyDown(Key.LShift))
             {
                 Camera.Eye -= Camera.Up * CameraSpeed * (float)e.Time;
+            }
+
+            if (state.IsKeyDown(Key.Plus) || state.IsKeyDown(Key.KeypadPlus))
+            {
+                CameraSpeed++;
+            }
+            
+            if (state.IsKeyDown(Key.Minus) || state.IsKeyDown(Key.KeypadMinus))
+            {
+                CameraSpeed--;
             }
         }
 
@@ -351,13 +378,26 @@ namespace CG_N4
 
         public void ObjetosAdicionar(Objeto objeto)
         {
-            Objetos.Add(objeto);
+            if (!Objetos.Contains(objeto))
+            {
+                Objetos.Add(objeto);
+            }
+        }
+
+        public void ObjetosRemover(Objeto objeto)
+        {
+            Objetos.Remove(objeto);
+        }
+
+        public IReadOnlyList<Objeto> GetObjetos()
+        {
+            return Objetos.AsReadOnly();
         }
     }
 
     class Program
     {
-        static void Main(string[] args)
+        static void Main3(string[] args)
         {
             ToolkitOptions.Default.EnableHighResolution = false;
 
