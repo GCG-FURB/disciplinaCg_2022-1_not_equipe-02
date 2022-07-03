@@ -25,8 +25,6 @@ namespace CG_N4
 
         public string TextoCentral;
 
-        private Esfera _esfera;
-
         private Mundo(int width, int height) : base(width, height)
         {
             Atirador.Instance.Camera = Camera;
@@ -74,9 +72,6 @@ namespace CG_N4
                 Utilitario.MetrosEmPixels(26.0),
                 Utilitario.MetrosEmPixels(1.5)
             ));
-
-            _esfera = BolaFactory.BuildBocha(Jogo.Instance.Times[1]);
-            Objetos.Add(_esfera);
 
             Jogo.Instance.Iniciar();
         }
@@ -214,25 +209,6 @@ namespace CG_N4
                         PodeProcessarObjetos = !PodeProcessarObjetos;
                     }
 
-                    break;
-
-                case Key.R:
-                    _esfera.ObjetoCor.CorR++;
-                    break;
-                case Key.F:
-                    _esfera.ObjetoCor.CorR--;
-                    break;
-                case Key.T:
-                    _esfera.ObjetoCor.CorG++;
-                    break;
-                case Key.G:
-                    _esfera.ObjetoCor.CorG--;
-                    break;
-                case Key.Y:
-                    _esfera.ObjetoCor.CorB++;
-                    break;
-                case Key.H:
-                    _esfera.ObjetoCor.CorB--;
                     break;
             }
         }
