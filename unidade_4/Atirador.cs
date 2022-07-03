@@ -10,8 +10,8 @@ namespace CG_N4
     public class Atirador
     {
         private static readonly float SensibilidadeMovimento = 100.0f;
-        private static readonly float SensibilidadeAngulo = 70.0f;
-        private static readonly float SensibilidadeForca = 1400.0f;
+        private static readonly float SensibilidadeAngulo = 50.0f;
+        private static readonly float SensibilidadeForca = 1200.0f;
 
         private static readonly float ForcaMinima = 1.0f;
         private static readonly float ForcaMaxima = 2000.0f;
@@ -33,6 +33,9 @@ namespace CG_N4
         private double _frameAtirou;
         private double _frameAtual;
 
+        public float Angulo => _angulo;
+        public float Forca => _mira.Forca;
+
         public void Iniciar(Esfera esfera)
         {
             _estado = EstadoAtirador.POSICIONAR;
@@ -40,47 +43,45 @@ namespace CG_N4
             _angulo = 90.0f;
 
             _esfera = esfera;
-            _esfera.Translacao(0, _esfera.Raio, (float)Utilitario.MetrosEmPixels(1.25d));
-            
+            _esfera.Translacao(0, _esfera.Raio, (float) Utilitario.MetrosEmPixels(1.25d));
+
             Ponto4D centro = _esfera.BBox.obterCentro;
             _esfera.Translacao(
                 Jogo.LinhaLancamentoXMinimo - centro.X + _esfera.Raio,
                 -centro.Y + _esfera.Raio,
                 (Jogo.LinhaLancamentoZMaximo - Jogo.LinhaLancamentoZMinimo) / 2 - centro.Z + _esfera.Raio
             );
-            
+
             Mundo.GetInstance().ObjetosAdicionar(_esfera);
 
             PosicionarCamera();
         }
 
-        public void OnUpdateFrame(FrameEventArgs e)
+        public void OnUpdateFrame(FrameEventArgs e, KeyboardDevice keyboard)
         {
             _frameAtual = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-            KeyboardState state = Keyboard.GetState();
-
             if (_estado == EstadoAtirador.INICIO)
             {
                 ProximoEstado();
             }
             else if (_estado == EstadoAtirador.POSICIONAR)
             {
-                if (state.IsKeyDown(Key.A))
+                if (keyboard[Key.A])
                 {
                     _esfera.Translacao(0, 0, -(SensibilidadeMovimento * e.Time));
                 }
 
-                if (state.IsKeyDown(Key.D))
+                if (keyboard[Key.D])
                 {
                     _esfera.Translacao(0, 0, SensibilidadeMovimento * e.Time);
                 }
 
-                if (state.IsKeyDown(Key.W))
+                if (keyboard[Key.W])
                 {
                     _esfera.Translacao(SensibilidadeMovimento * e.Time, 0, 0);
                 }
 
-                if (state.IsKeyDown(Key.S))
+                if (keyboard[Key.S])
                 {
                     _esfera.Translacao(-(SensibilidadeMovimento * e.Time), 0, 0);
                 }
@@ -89,24 +90,24 @@ namespace CG_N4
             }
             else if (_estado == EstadoAtirador.ANGULO)
             {
-                if (state.IsKeyDown(Key.A))
+                if (keyboard[Key.A])
                 {
-                    _angulo -= (float)(SensibilidadeAngulo * e.Time);
+                    _angulo -= (float) (SensibilidadeAngulo * e.Time);
                 }
 
-                if (state.IsKeyDown(Key.D))
+                if (keyboard[Key.D])
                 {
-                    _angulo += (float)(SensibilidadeAngulo * e.Time);
+                    _angulo += (float) (SensibilidadeAngulo * e.Time);
                 }
 
-                if (state.IsKeyDown(Key.W))
+                if (keyboard[Key.W])
                 {
-                    _forca += (float)(SensibilidadeForca * e.Time);
+                    _forca += (float) (SensibilidadeForca * e.Time);
                 }
 
-                if (state.IsKeyDown(Key.S))
+                if (keyboard[Key.S])
                 {
-                    _forca -= (float)(SensibilidadeForca * e.Time);
+                    _forca -= (float) (SensibilidadeForca * e.Time);
                 }
 
                 GarantirForcaAnguloCorretos();
@@ -122,7 +123,8 @@ namespace CG_N4
                 {
                     PosicionarCamera();
                 }
-            } else if (_estado == EstadoAtirador.ATIROU)
+            }
+            else if (_estado == EstadoAtirador.ATIROU)
             {
                 if (_frameAtual - _frameAtirou > 1000)
                 {
@@ -130,14 +132,15 @@ namespace CG_N4
                 }
             }
 
-            if (_estado == EstadoAtirador.POSICIONAR || _estado == EstadoAtirador.ANGULO || _estado == EstadoAtirador.ATIROU)
+            if (_estado == EstadoAtirador.POSICIONAR || _estado == EstadoAtirador.ANGULO ||
+                _estado == EstadoAtirador.ATIROU)
             {
-                if ((_estado == EstadoAtirador.POSICIONAR || _estado == EstadoAtirador.ANGULO) && state.IsKeyDown(Key.Escape))
+                if ((_estado == EstadoAtirador.POSICIONAR || _estado == EstadoAtirador.ANGULO) && keyboard[Key.Escape])
                 {
                     VoltarEstado();
                 }
 
-                if (state.IsKeyDown(Key.Enter) || state.IsKeyDown(Key.KeypadEnter))
+                if (keyboard[Key.Enter] || keyboard[Key.KeypadEnter])
                 {
                     if (_frameAtual - _frameUltimoEnter > 250)
                     {
@@ -272,8 +275,8 @@ namespace CG_N4
             {
                 Camera.Eye = new Vector3(
                     0,
-                    (float)Utilitario.MetrosEmPixels(2.5d),
-                    (float)Utilitario.MetrosEmPixels(1.25d)
+                    (float) Utilitario.MetrosEmPixels(2.5d),
+                    (float) Utilitario.MetrosEmPixels(1.25d)
                 );
                 Camera.At = new Vector3(0.35f, -0.9998477f, 0.0f);
             }
@@ -281,9 +284,9 @@ namespace CG_N4
             {
                 Ponto4D centro = _esfera.BBox.obterCentro;
                 Camera.Eye = new Vector3(
-                    (float)(centro.X - Utilitario.MetrosEmPixels(1)),
-                    (float)(centro.Y + Utilitario.CentimetrosEmPixels(80)),
-                    (float)centro.Z
+                    (float) (centro.X - Utilitario.MetrosEmPixels(1)),
+                    (float) (centro.Y + Utilitario.CentimetrosEmPixels(80)),
+                    (float) centro.Z
                 );
                 Camera.At = new Vector3(0.9265f, -0.38f, 0.0f);
             }
@@ -291,9 +294,9 @@ namespace CG_N4
             {
                 Ponto4D centro = _esfera.BBox.obterCentro;
                 Camera.Eye = new Vector3(
-                    (float)centro.X,
-                    (float)(centro.Y + Utilitario.MetrosEmPixels(5)),
-                    (float)centro.Z
+                    (float) centro.X,
+                    (float) (centro.Y + Utilitario.MetrosEmPixels(5)),
+                    (float) centro.Z
                 );
                 Camera.At = new Vector3(0.018f, -0.9998477f, 0.0f);
             }
@@ -310,9 +313,9 @@ namespace CG_N4
         {
             Vector3 p1 = _mira.Ponto;
             Vector3 p2 = new Vector3(
-                p1.X + (float)(1 * Math.Cos(Math.PI * _mira.Angulo / 180.0)),
+                p1.X + (float) (1 * Math.Cos(Math.PI * _mira.Angulo / 180.0)),
                 p1.Y,
-                p1.Z + (float)(1 * Math.Sin(Math.PI * _mira.Angulo / 180.0))
+                p1.Z + (float) (1 * Math.Sin(Math.PI * _mira.Angulo / 180.0))
             );
 
             float d = Matematica.Distancia(p1, p2);
@@ -323,6 +326,11 @@ namespace CG_N4
                 _forca * n.Y,
                 _forca * n.Z
             );
+        }
+
+        public bool IsPosicionando()
+        {
+            return _estado == EstadoAtirador.POSICIONAR || _estado == EstadoAtirador.ANGULO;
         }
     }
 
@@ -352,28 +360,28 @@ namespace CG_N4
             double raio = Utilitario.CentimetrosEmPixels(80);
             float angulo = Angulo;
 
-            float d1 = (float)(Forca * raio);
-            float d2 = (float)(raio - d1);
+            float d1 = (float) (Forca * raio);
+            float d2 = (float) (raio - d1);
 
             Vector3 pontoMeio = new Vector3(
-                Ponto.X + (float)(d1 * Math.Cos(Math.PI * angulo / 180.0)),
+                Ponto.X + (float) (d1 * Math.Cos(Math.PI * angulo / 180.0)),
                 Ponto.Y,
-                Ponto.Z + (float)(d1 * Math.Sin(Math.PI * angulo / 180.0))
+                Ponto.Z + (float) (d1 * Math.Sin(Math.PI * angulo / 180.0))
             );
 
             Vector3 pontoFinal = new Vector3(
-                pontoMeio.X + (float)(d2 * Math.Cos(Math.PI * angulo / 180.0)),
+                pontoMeio.X + (float) (d2 * Math.Cos(Math.PI * angulo / 180.0)),
                 pontoMeio.Y,
-                pontoMeio.Z + (float)(d2 * Math.Sin(Math.PI * angulo / 180.0))
+                pontoMeio.Z + (float) (d2 * Math.Sin(Math.PI * angulo / 180.0))
             );
 
-            GL.Color3((byte)0, (byte)255, (byte)0);
+            GL.Color3((byte) 0, (byte) 255, (byte) 0);
             GL.Begin(PrimitivaTipo);
             GL.Vertex3(Ponto.X, Ponto.Y, Ponto.Z);
             GL.Vertex3(pontoMeio.X, pontoMeio.Y, pontoMeio.Z);
             GL.End();
 
-            GL.Color3((byte)255, (byte)0, (byte)0);
+            GL.Color3((byte) 255, (byte) 0, (byte) 0);
             GL.Begin(PrimitivaTipo);
             GL.Vertex3(pontoMeio.X, pontoMeio.Y, pontoMeio.Z);
             GL.Vertex3(pontoFinal.X, pontoFinal.Y, pontoFinal.Z);

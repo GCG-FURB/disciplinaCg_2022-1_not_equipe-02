@@ -18,8 +18,9 @@ namespace CG_N4
         public static readonly Jogo Instance = new Jogo();
 
         public readonly List<Time> Times = new List<Time>();
+        public Esfera BolaAtual { get; protected set; }
+
         private int _timeAtual;
-        private int _jogadas;
         private TipoBola _tipoBola = TipoBola.BOLIN;
 
         private Jogo()
@@ -34,18 +35,19 @@ namespace CG_N4
             _timeAtual = new Random().Next(0, 1);
 
             Esfera bolin = BolaFactory.BuildBolin();
+            BolaAtual = bolin;
             Atirador.Instance.Iniciar(bolin);
         }
 
         public void Resetar()
         {
             _timeAtual = 0;
-            _jogadas = 0;
             _tipoBola = TipoBola.BOLIN;
             foreach (Time time in Times)
             {
                 time.Resetar();
             }
+            ResetarBolas();
         }
 
         public void AdicionarJogador(int time, string jogador)
@@ -56,6 +58,11 @@ namespace CG_N4
         public Time GetTimeAtual()
         {
             return Times[_timeAtual];
+        }
+
+        public int GetIdxTimeAtual()
+        {
+            return _timeAtual;
         }
 
         public bool IsPodeIniciar() // TODO -> Usar para renderizar o botão
@@ -91,8 +98,6 @@ namespace CG_N4
 
         public void OnJogadaFinalizada()
         {
-            _jogadas++;
-
             IReadOnlyList<Objeto> objetos = Mundo.GetInstance().GetObjetos();
 
             Esfera bolin = GetBolin(objetos);
@@ -107,6 +112,7 @@ namespace CG_N4
                 if (IsLancamentoQueimado(bolin))
                 {
                     Atirador.Instance.Iniciar(bolin);
+                    return;
                 }
 
                 NovaBocha();
@@ -145,12 +151,48 @@ namespace CG_N4
 
                 if (Times[timeMaisProximo].Pontos >= 24)
                 {
-                    Console.WriteLine("Time " + Times[timeMaisProximo].JogadoresToString() + " foi o vencedor com " + Times[timeMaisProximo].Pontos + " pontos!");
-
+                    string mensagem = "Time " + Times[timeMaisProximo].JogadoresToString() +
+                                      " foi o vencedor\ncom " + Times[timeMaisProximo].Pontos +
+                                      " pontos!";
+                    Console.WriteLine(mensagem);
+                    Mundo.GetInstance().TextoCentral = mensagem;
+                    Mundo.GetInstance().PodeProcessarObjetos = false; // trava o jogo para parar tudo!
                     Resetar();
                     Iniciar();
                 }
+                else
+                {
+                    ProximaRodada();
+                }
             }
+        }
+
+        private void ProximaRodada()
+        {
+            ResetarBolas();
+            _tipoBola = TipoBola.BOLIN;
+            Esfera bolin = BolaFactory.BuildBolin();
+            BolaAtual = bolin;
+            Atirador.Instance.Iniciar(bolin);
+        }
+
+        private void ResetarBolas()
+        {
+            foreach (Time time in Times)
+            {
+                time.Bolas = 4;
+            }
+
+            List<Objeto> objetosRemover = new List<Objeto>();
+            foreach (Objeto objeto in Mundo.GetInstance().GetObjetos())
+            {
+                if (objeto.GetType().IsEquivalentTo(typeof(Esfera)))
+                {
+                    objetosRemover.Add(objeto);
+                }
+            }
+            
+            objetosRemover.ForEach(o => Mundo.GetInstance().ObjetosRemover(o));
         }
 
         private void NovaBocha()
@@ -159,6 +201,7 @@ namespace CG_N4
             timeAtual.Bolas--;
 
             Esfera bocha = BolaFactory.BuildBocha(timeAtual);
+            BolaAtual = bocha;
             Atirador.Instance.Iniciar(bocha);
         }
 
@@ -219,7 +262,7 @@ namespace CG_N4
             return distanciaPorBocha;
         }
 
-        private Esfera GetBolin(IReadOnlyList<Objeto> objetos)
+        public Esfera GetBolin(IReadOnlyList<Objeto> objetos)
         {
             foreach (Objeto objeto in objetos)
             {

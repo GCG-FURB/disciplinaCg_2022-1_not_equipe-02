@@ -27,10 +27,15 @@ namespace CG_N4
         public override Vector3 GetPontoMaisProximo(Vector3 pontoOrigem)
         {
             Vector3 centro = Objeto.BBox.obterCentro.asVector3();
-            Vector3 origem = pontoOrigem;
 
+            Vector3 origem = pontoOrigem;
             Vector3 esferaPonto = Vector3.Normalize(origem - centro) * Raio;
-            return centro + esferaPonto;
+
+            Vector3 pontoMaisProximo = centro + esferaPonto;
+            // inicio gambiarra
+            pontoMaisProximo.Y = pontoOrigem.Y;
+            // fim gambiarra 
+            return pontoMaisProximo;
         }
 
         public override Vector3 GetCentroMassa()

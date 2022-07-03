@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using CG_Biblioteca;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -78,6 +79,12 @@ namespace CG_N4
             MatrizTransformacao.AtribuirIdentidade();
             BBox.Atribuir(0.0, 0.0, 0.0);
             BBox.ProcessarCentro();
+        }
+
+        public void AtribuirTransformacao(Transformacao4D transformacao)
+        {
+            Transformacao4DFactory.Offer(MatrizTransformacao);
+            MatrizTransformacao = transformacao;
         }
 
         public void Translacao(double tx, double ty, double tz)

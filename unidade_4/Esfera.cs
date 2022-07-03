@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CG_Biblioteca;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace CG_N4
@@ -23,7 +24,7 @@ namespace CG_N4
             Raio = raio;
             Set(stackCount, sectorCount);
             Colisor = new ColisorEsfera(this);
-            Textura = Textura.FromResources("CG_N4.Resources.wall.png");
+            Textura = TexturaImagem.FromResources("CG_N4.Resources.wall.png");
         }
 
         private void Set(uint setores, uint stacks)
@@ -43,21 +44,21 @@ namespace CG_N4
             // clear memory of prev arrays
             ClearArrays();
 
-            List<uint> indices = new List<uint>((int)(Stacks * Setores * 3 * 2));
+            List<uint> indices = new List<uint>((int) (Stacks * Setores * 3 * 2));
 
             float x, y, z, xy; // vertex position
             float nx, ny, nz, lengthInv = 1.0f / Raio; // normal
             float s, t; // texCoord
 
-            float sectorStep = (float)(2.0 * Math.PI) / Setores;
-            float stackStep = (float)Math.PI / Stacks;
+            float sectorStep = (float) (2.0 * Math.PI) / Setores;
+            float stackStep = (float) Math.PI / Stacks;
             float sectorAngle, stackAngle;
 
             for (int i = 0; i <= Stacks; ++i)
             {
-                stackAngle = (float)Math.PI / 2 - i * stackStep; // starting from pi/2 to -pi/2
-                xy = (float)(Raio * Math.Cos(stackAngle)); // r * cos(u)
-                z = (float)(Raio * Math.Sin(stackAngle)); // r * sin(u)
+                stackAngle = (float) Math.PI / 2 - i * stackStep; // starting from pi/2 to -pi/2
+                xy = (float) (Raio * Math.Cos(stackAngle)); // r * cos(u)
+                z = (float) (Raio * Math.Sin(stackAngle)); // r * sin(u)
 
                 // add (sectorCount+1) vertices per stack
                 // the first and last vertices have same position and normal, but different tex coords
@@ -66,8 +67,8 @@ namespace CG_N4
                     sectorAngle = j * sectorStep; // starting from 0 to 2pi
 
                     // vertex position
-                    x = (float)(xy * Math.Cos(sectorAngle)); // r * cos(u) * cos(v)
-                    y = (float)(xy * Math.Sin(sectorAngle)); // r * cos(u) * sin(v)
+                    x = (float) (xy * Math.Cos(sectorAngle)); // r * cos(u) * cos(v)
+                    y = (float) (xy * Math.Sin(sectorAngle)); // r * cos(u) * sin(v)
                     AddVertex(x, y, z);
 
                     // normalized vertex normal
@@ -77,8 +78,8 @@ namespace CG_N4
                     AddNormal(nx, ny, nz);
 
                     // vertex tex coord between [0, 1]
-                    s = (float)j / Setores;
-                    t = (float)i / Stacks;
+                    s = (float) j / Setores;
+                    t = (float) i / Stacks;
                     AddTexCoord(s, t);
                 }
             }
@@ -169,21 +170,74 @@ namespace CG_N4
             Indices = Array.Empty<uint>();
         }
 
+        protected override void OnUpdateFrame(FrameEventArgs e)
+        {
+            base.OnUpdateFrame(e);
+            if (Mundo.GetInstance().Dalton)
+            {
+                if (Jogo.Instance.Times[1].CorBola == ObjetoCor)
+                {
+                    Textura = TexturaImagem.FromResources("CG_N4.Resources.doritos-azul.png");
+                }
+                else
+                {
+                    Textura = TexturaImagem.FromResources("CG_N4.Resources.doritos.png");                    
+                }
+            }
+            else
+            {
+                Textura = TexturaImagem.FromResources("CG_N4.Resources.wall.png");
+            }
+        }
+
         protected override void DesenharGeometria()
         {
-            GL.EnableClientState(ArrayCap.VertexArray);
-            GL.EnableClientState(ArrayCap.NormalArray);
-            GL.EnableClientState(ArrayCap.TextureCoordArray);
+            if (Mundo.GetInstance().Dalton)
+            {
+                float s = Raio;
+                GL.Begin(PrimitiveType.Triangles);
+                GL.Normal3(0, 0, -1);
 
-            GL.VertexPointer(3, VertexPointerType.Float, 32, ref InterleavedVertices[0]);
-            GL.NormalPointer(NormalPointerType.Float, 32, ref InterleavedVertices[3]);
-            GL.TexCoordPointer(2, TexCoordPointerType.Float, 32, ref InterleavedVertices[6]);
+                GL.TexCoord2(0, 0);
+                GL.Vertex3(0, 0, s);
+                
+                GL.TexCoord2(0, 1);
+                GL.Vertex3(s, s, 0);
+                
+                GL.TexCoord2(1, 0.5);                
+                GL.Vertex3(0, 0, -s);
 
-            GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, ref Indices[0]);
+                // GL.TexCoord2(0, 1);
+                // GL.Vertex3(0, 0, s);
+                //
+                // GL.TexCoord2(1, 1);
+                // GL.Vertex3(s, s, s);
+                //
+                // GL.TexCoord2(1, 0);
+                // GL.Vertex3(s, s, -s);
+                //
+                // GL.TexCoord2(0, 0);
+                // GL.Vertex3(0, 0, -s);
+                GL.End();
+                
+                
+            }
+            else
+            {
+                GL.EnableClientState(ArrayCap.VertexArray);
+                GL.EnableClientState(ArrayCap.NormalArray);
+                GL.EnableClientState(ArrayCap.TextureCoordArray);
 
-            GL.DisableClientState(ArrayCap.VertexArray);
-            GL.DisableClientState(ArrayCap.NormalArray);
-            GL.DisableClientState(ArrayCap.TextureCoordArray);
+                GL.VertexPointer(3, VertexPointerType.Float, 32, ref InterleavedVertices[0]);
+                GL.NormalPointer(NormalPointerType.Float, 32, ref InterleavedVertices[3]);
+                GL.TexCoordPointer(2, TexCoordPointerType.Float, 32, ref InterleavedVertices[6]);
+
+                GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, ref Indices[0]);
+
+                GL.DisableClientState(ArrayCap.VertexArray);
+                GL.DisableClientState(ArrayCap.NormalArray);
+                GL.DisableClientState(ArrayCap.TextureCoordArray);
+            }
         }
     }
 }

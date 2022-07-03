@@ -11,9 +11,7 @@ namespace CG_N4
         public Chao(Ponto4D centro, double tamanho) : base(Utilitario.charProximo(), null)
         {
             PrimitivaTipo = PrimitiveType.Quads;
-            // Textura = new Textura("/home/ariel/Downloads/grass.jpeg");
-            // Textura = Textura.FromResources("Resources\\grass.jpeg");
-            Textura = Textura.FromResources("CG_N4.Resources.grass.jpeg");
+            Textura = TexturaImagem.FromResources("CG_N4.Resources.grass.jpeg");
             Centro = centro;
             Tamanho = tamanho;
         }

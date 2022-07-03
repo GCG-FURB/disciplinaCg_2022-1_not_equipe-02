@@ -189,7 +189,7 @@ namespace CG_N4
             PrimitivaTipo = PrimitiveType.Quads;
             PrimitivaTamanho = 1;
             Colisor = new ColisorChao(this);
-            Textura = Textura.FromResources("CG_N4.Resources.sand.jpeg");
+            Textura = TexturaImagem.FromResources("CG_N4.Resources.sand.jpeg");
 
             PontosAdicionar(ponto + new Ponto4D(0, 0, largura));
             PontosAdicionar(ponto + new Ponto4D(comprimento, 0, largura));
@@ -228,7 +228,7 @@ namespace CG_N4
             : base('c', null)
         {
             PrimitivaTipo = PrimitiveType.Quads;
-            ObjetoCor = new Cor(255, 0, 0);
+            ObjetoCor = new Cor(222, 184, 135);
             PrimitivaTamanho = 1;
             Colisor = new ColisorCubo(this);
             ForcaFisica.Massa = 2 * 1000 * 1000 * 1000;
@@ -239,8 +239,14 @@ namespace CG_N4
             PontosAdicionar(ponto + new Ponto4D(0, altura));
 
             BBox.Atribuir(ponto);
-            BBox.Atualizar(ponto + new Ponto4D(0, altura, largura));
+            BBox.Atualizar(ponto + new Ponto4D(200, altura, largura));
             BBox.ProcessarCentro();
+        }
+
+        public override void OnColisao(EventoColisao e)
+        {
+            base.OnColisao(e);
+            ForcaFisica.Aceleracao = Vector3.Zero;
         }
     }
 
@@ -255,7 +261,7 @@ namespace CG_N4
 
             PrimitivaTipo = PrimitiveType.Quads;
             PrimitivaTamanho = 1;
-            Textura = Textura.FromResources("CG_N4.Resources.sand.jpeg");
+            Textura = TexturaImagem.FromResources("CG_N4.Resources.sand.jpeg");
             ObjetoCor = new Cor(255, 0, 0);
 
             PontosAdicionar(ponto + new Ponto4D(0, 0.1d));

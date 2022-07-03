@@ -1,7 +1,3 @@
-/**
-  Autor: Dalton Solano dos Reis
-**/
-
 using System;
 using System.Collections.Generic;
 using CG_Biblioteca;
@@ -20,11 +16,16 @@ namespace CG_N4
 
         private readonly CameraPerspective Camera = new CameraPerspective();
         private List<Objeto> Objetos = new List<Objeto>();
+        private List<Texto2D> ObjetosHUD = new List<Texto2D>();
         private Objeto ObjetoSelecionado = null;
 
         private bool CameraLivre;
-        private bool Dalton;
-        private bool PodeProcessarObjetos = true;
+        public bool Dalton;
+        public bool PodeProcessarObjetos = true;
+
+        public string TextoCentral;
+
+        private Esfera _esfera;
 
         private Mundo(int width, int height) : base(width, height)
         {
@@ -55,16 +56,16 @@ namespace CG_N4
             Jogo.Instance.AdicionarJogador(1, "Eliton");
 
             Camera.Eye = new Vector3(
-                (float)Utilitario.MetrosEmPixels(-0.5),
-                (float)Utilitario.MetrosEmPixels(1.0),
-                (float)Utilitario.MetrosEmPixels(1.25)
+                (float) Utilitario.MetrosEmPixels(-0.5),
+                (float) Utilitario.MetrosEmPixels(1.0),
+                (float) Utilitario.MetrosEmPixels(1.25)
             );
             Camera.At = new Vector3(0.5f, -0.5f, 0.0f);
-            Camera.Aspect = Width / (float)Height;
-            Camera.Far = (float)Utilitario.MetrosEmPixels(30.0d);
+            Camera.Aspect = Width / (float) Height;
+            Camera.Far = (float) Utilitario.MetrosEmPixels(30.0d);
 
             Objetos.Add(new Chao(
-                new Ponto4D(Utilitario.MetrosEmPixels(20.0d), -0.1d),
+                new Ponto4D(Utilitario.MetrosEmPixels(20.0d), -3d),
                 Utilitario.MetrosEmPixels(60))
             );
             Objetos.Add(new Cancha(
@@ -74,16 +75,8 @@ namespace CG_N4
                 Utilitario.MetrosEmPixels(1.5)
             ));
 
-            // var esfera = BolaFactory.BuildBocha(Jogo.Instance.Times[0]);
-            // esfera.Translacao(50, esfera.Raio, 125);
-            // Objetos.Add(esfera);
-            //
-            // esfera = BolaFactory.BuildBocha(Jogo.Instance.Times[1]);
-            // esfera.ForcaFisica.Velocidade += new Vector3(60.0f, 0, -60.0f);
-            // esfera.Translacao(0, esfera.Raio, 175);
-            // Objetos.Add(esfera);
-
-            // ObjetoSelecionado = Objetos[2];
+            _esfera = BolaFactory.BuildBocha(Jogo.Instance.Times[1]);
+            Objetos.Add(_esfera);
 
             Jogo.Instance.Iniciar();
         }
@@ -99,13 +92,15 @@ namespace CG_N4
                     ProcessarCameraTeclado(e);
                     ProcessarCameraMouse();
                 }
-                
+
                 if (PodeProcessarObjetos)
                 {
-                    Atirador.Instance.OnUpdateFrame(e);
-                    ProcessarObjetos(e);   
+                    Atirador.Instance.OnUpdateFrame(e, Keyboard);
+                    ProcessarObjetos(e);
                 }
             }
+
+            ProcessarHUD();
 
             MouseCG.ResetarDelta();
         }
@@ -119,24 +114,42 @@ namespace CG_N4
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref modelview);
 
-            // foreach (var objeto in Objetos)
-            // {
-            //     objeto.Desenhar();
-            //
-            //     // if (objeto.GetType().IsEquivalentTo(typeof(Esfera)))
-            //     // {
-            //     //     objeto.BBox.Desenhar();
-            //     // }
-            // }
-            //
-            // ObjetoSelecionado?.BBox.Desenhar();
+            foreach (var objeto in Objetos)
+            {
+                objeto.Desenhar();
+            }
 
-            Sru3D();
+            ObjetoSelecionado?.BBox.Desenhar();
+
+            // Sru3D();
             // Cubo();
 
-            // Texto2D.Instance.RenderizarTexto("Teste", 10.0f, 5.0f, 2, new Vector2(-1, 0));
+            DesenharHUD();
 
             SwapBuffers();
+        }
+
+        private void DesenharHUD()
+        {
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.PushMatrix();
+            GL.LoadIdentity();
+            GL.Ortho(0.0, Width, 0.0, Height, 0.0, 4.0);
+
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.PushMatrix();
+            GL.LoadIdentity();
+
+            foreach (Objeto objeto in ObjetosHUD)
+            {
+                objeto.Desenhar();
+            }
+
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.PopMatrix();
+
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.PopMatrix();
         }
 
         protected override void OnResize(EventArgs e)
@@ -186,62 +199,82 @@ namespace CG_N4
                     }
 
                     break;
-                
+
                 case Key.D:
                     if (e.Control)
                     {
                         Dalton = !Dalton;
                     }
+
                     break;
-                
+
                 case Key.P:
                     if (e.Control)
                     {
                         PodeProcessarObjetos = !PodeProcessarObjetos;
                     }
+
+                    break;
+
+                case Key.R:
+                    _esfera.ObjetoCor.CorR++;
+                    break;
+                case Key.F:
+                    _esfera.ObjetoCor.CorR--;
+                    break;
+                case Key.T:
+                    _esfera.ObjetoCor.CorG++;
+                    break;
+                case Key.G:
+                    _esfera.ObjetoCor.CorG--;
+                    break;
+                case Key.Y:
+                    _esfera.ObjetoCor.CorB++;
+                    break;
+                case Key.H:
+                    _esfera.ObjetoCor.CorB--;
                     break;
             }
         }
 
         private void ProcessarCameraTeclado(FrameEventArgs e)
         {
-            KeyboardState state = Keyboard.GetState();
-            if (state.IsKeyDown(Key.W))
+            if (Keyboard[Key.W])
             {
-                Camera.Eye += Camera.At * CameraSpeed * (float)e.Time;
+                Camera.Eye += Camera.At * CameraSpeed * (float) e.Time;
             }
 
-            if (state.IsKeyDown(Key.S))
+            if (Keyboard[Key.S])
             {
-                Camera.Eye -= Camera.At * CameraSpeed * (float)e.Time;
+                Camera.Eye -= Camera.At * CameraSpeed * (float) e.Time;
             }
 
-            if (state.IsKeyDown(Key.A))
+            if (Keyboard[Key.A])
             {
-                Camera.Eye -= Vector3.Normalize(Vector3.Cross(Camera.At, Camera.Up)) * CameraSpeed * (float)e.Time;
+                Camera.Eye -= Vector3.Normalize(Vector3.Cross(Camera.At, Camera.Up)) * CameraSpeed * (float) e.Time;
             }
 
-            if (state.IsKeyDown(Key.D))
+            if (Keyboard[Key.D])
             {
-                Camera.Eye += Vector3.Normalize(Vector3.Cross(Camera.At, Camera.Up)) * CameraSpeed * (float)e.Time;
+                Camera.Eye += Vector3.Normalize(Vector3.Cross(Camera.At, Camera.Up)) * CameraSpeed * (float) e.Time;
             }
 
-            if (state.IsKeyDown(Key.Space))
+            if (Keyboard[Key.Space])
             {
-                Camera.Eye += Camera.Up * CameraSpeed * (float)e.Time;
+                Camera.Eye += Camera.Up * CameraSpeed * (float) e.Time;
             }
 
-            if (state.IsKeyDown(Key.LShift))
+            if (Keyboard[Key.LShift])
             {
-                Camera.Eye -= Camera.Up * CameraSpeed * (float)e.Time;
+                Camera.Eye -= Camera.Up * CameraSpeed * (float) e.Time;
             }
 
-            if (state.IsKeyDown(Key.Plus) || state.IsKeyDown(Key.KeypadPlus))
+            if (Keyboard[Key.Plus] || Keyboard[Key.KeypadPlus])
             {
                 CameraSpeed++;
             }
-            
-            if (state.IsKeyDown(Key.Minus) || state.IsKeyDown(Key.KeypadMinus))
+
+            if (Keyboard[Key.Minus] || Keyboard[Key.KeypadMinus])
             {
                 CameraSpeed--;
             }
@@ -294,6 +327,120 @@ namespace CG_N4
                 {
                     ProcessarColisaoObjetos(e, filhoA, filhoB);
                 }
+            }
+        }
+
+        private void ProcessarHUD()
+        {
+            Time time1 = Jogo.Instance.Times[0];
+            Time time2 = Jogo.Instance.Times[1];
+
+            List<string> textos = new List<string>();
+            textos.Add("Time 1:");
+            textos.Add("  Pontos: " + time1.Pontos);
+            textos.Add("  Bolas: " + time1.Bolas);
+            textos.Add("  Jogadores: ");
+            for (var i = 0; i < time1.Jogadores.Count; i++)
+            {
+                textos.Add("    Jogador " + (i + 1) + ": " + time1.Jogadores[i]);
+            }
+
+            textos.Add(" ");
+
+            textos.Add("Time 2:");
+            textos.Add("  Pontos: " + time2.Pontos);
+            textos.Add("  Bolas: " + time2.Bolas);
+            textos.Add("  Jogadores: ");
+            for (var i = 0; i < time2.Jogadores.Count; i++)
+            {
+                textos.Add("    Jogador " + (i + 1) + ": " + time2.Jogadores[i]);
+            }
+
+            textos.Add(" ");
+            textos.Add("Time atual: " + (Jogo.Instance.GetIdxTimeAtual() + 1));
+
+            Esfera bochaAtual = Jogo.Instance.BolaAtual;
+            if (bochaAtual != null && bochaAtual.Raio != BolaFactory.RaioBolin)
+            {
+                Esfera bolin = Jogo.Instance.GetBolin(Objetos);
+                double distancia = Matematica.Distancia(bolin.BBox.obterCentro, bochaAtual.BBox.obterCentro);
+
+                Vector3 v = bochaAtual.ForcaFisica.Velocidade;
+                float va = Math.Abs(v.X) + Math.Abs(v.Y) + Math.Abs(v.Z);
+                float km = va / 27.77778f;
+                textos.Add(" ");
+                textos.Add("Distância Bolin: " + Math.Round(distancia, 2) + "cm"
+                           + "\nVelocidade: " + Math.Round(km, 2) + "km/h");
+            }
+
+            if (Atirador.Instance.IsPosicionando())
+            {
+                textos.Add(" ");
+                textos.Add("Ângulo: " + Math.Round(Atirador.Instance.Angulo, 0) + "º");
+                textos.Add("Força: " + Math.Round(Atirador.Instance.Forca * 100, 0) + "%");
+            }
+
+            if (TextoCentral != null)
+            {
+                textos.Add(TextoCentral);
+            }
+
+            Dictionary<string, Queue<Texto2D>> dic = new Dictionary<string, Queue<Texto2D>>();
+            foreach (Texto2D texto2D in ObjetosHUD)
+            {
+                if (!textos.Contains(texto2D.Texto))
+                {
+                    texto2D.Dispose();
+                }
+                else
+                {
+                    if (!dic.ContainsKey(texto2D.Texto))
+                    {
+                        dic.Add(texto2D.Texto, new Queue<Texto2D>());
+                    }
+
+                    dic[texto2D.Texto].Enqueue(texto2D);
+                }
+            }
+
+            ObjetosHUD.Clear();
+
+            float y = Height;
+            foreach (string texto in textos)
+            {
+                Texto2D texto2D;
+                if (dic.ContainsKey(texto))
+                {
+                    Queue<Texto2D> queue = dic[texto];
+                    texto2D = queue.Dequeue();
+                    texto2D.AtribuirMatrizIdentidade();
+                    if (queue.Count == 0)
+                    {
+                        dic.Remove(texto);
+                    }
+                }
+                else
+                {
+                    texto2D = new Texto2D(texto);
+                }
+
+                y -= texto2D.Height;
+                if (!texto.Equals(" "))
+                {
+                    texto2D.Translacao(0, y, 0);
+                    ObjetosHUD.Add(texto2D);
+                }
+            }
+
+            if (TextoCentral != null)
+            {
+                Texto2D textoCentral = ObjetosHUD.Find(t => t.Texto.Equals(TextoCentral));
+                textoCentral.AtribuirMatrizIdentidade();
+                textoCentral.Translacao(
+                    (Width / 2) - (textoCentral.Width / 2),
+                    (Height / 2) - (textoCentral.Height / 2),
+                    0
+                );
             }
         }
 
@@ -397,7 +544,7 @@ namespace CG_N4
 
     class Program
     {
-        static void Main3(string[] args)
+        static void Main(string[] args)
         {
             ToolkitOptions.Default.EnableHighResolution = false;
 
