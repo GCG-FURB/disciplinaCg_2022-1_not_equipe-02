@@ -264,10 +264,10 @@ namespace CG_N4
             Textura = TexturaImagem.FromResources("CG_N4.Resources.sand.jpeg");
             ObjetoCor = new Cor(255, 0, 0);
 
-            PontosAdicionar(ponto + new Ponto4D(0, 0.1d));
-            PontosAdicionar(ponto + new Ponto4D(0, 0.1d, largura));
-            PontosAdicionar(ponto + new Ponto4D(Utilitario.CentimetrosEmPixels(5d), 0.1d, largura));
-            PontosAdicionar(ponto + new Ponto4D(Utilitario.CentimetrosEmPixels(5d), 0.1d));
+            PontosAdicionar(ponto + new Ponto4D(0, 1d));
+            PontosAdicionar(ponto + new Ponto4D(0, 1d, largura));
+            PontosAdicionar(ponto + new Ponto4D(Utilitario.CentimetrosEmPixels(5d), 1d, largura));
+            PontosAdicionar(ponto + new Ponto4D(Utilitario.CentimetrosEmPixels(5d), 1d));
         }
 
         protected override void DesenharGeometria()
