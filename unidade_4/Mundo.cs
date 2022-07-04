@@ -525,7 +525,7 @@ namespace CG_N4
             ToolkitOptions.Default.EnableHighResolution = false;
 
             Mundo window = Mundo.GetInstance();
-            window.Title = "CG_N4";
+            window.Title = "Cancha de Bocha - Ariel e Eliton";
             window.Run(1.0 / 60.0);
         }
     }
