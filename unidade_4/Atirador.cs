@@ -10,8 +10,8 @@ namespace CG_N4
     public class Atirador
     {
         private static readonly float SensibilidadeMovimento = 100.0f;
-        private static readonly float SensibilidadeAngulo = 50.0f;
-        private static readonly float SensibilidadeForca = 1200.0f;
+        private static readonly float SensibilidadeAngulo = 20.0f;
+        private static readonly float SensibilidadeForca = 800.0f;
 
         private static readonly float ForcaMinima = 1.0f;
         private static readonly float ForcaMaxima = 2000.0f;
